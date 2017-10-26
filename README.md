@@ -1,4 +1,4 @@
-# CartoView Feature List
+# CartoView Story Map
 
 This app will allow creation of items that can display on the map and show on a list
 The app allows to search for items and further navigate to provide details

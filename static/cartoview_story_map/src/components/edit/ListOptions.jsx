@@ -14,6 +14,7 @@ const formConfig = t.struct({
     titleAttribute: t.String,
     subtitleAttribute: t.maybe(t.String),
     filters: t.maybe(t.String),
+    description:t.maybe(t.String),
     pagination: t.String,
     zoomOnSelect: t.Boolean,
     enableImageListView: t.Boolean
@@ -40,6 +41,7 @@ export default class ListOptions extends Component {
                 pagination: getPropertyFromConfig(config,
                     'pagination', "10"),
                 filters: getPropertyFromConfig(config, 'filters', null),
+                description: getPropertyFromConfig(config, 'description', null),
                 zoomOnSelect: getPropertyFromConfig(config,
                     'zoomOnSelect', true),
                 enableImageListView: getPropertyFromConfig(config,
@@ -139,6 +141,13 @@ export default class ListOptions extends Component {
                     nullOption: { value: '', text: 'Choose subTitle Attribute' },
                     options: attributeOptions
                 },
+                description:{
+                    label: "Description Attribute (optional)",
+                    factory: t.form.Select,
+                    nullOption: { value: '', text: 'Choose Description Attribute' },
+                    options: attributeOptions
+                },
+
                 filters: {
                     factory: t.form.Select,
                     nullOption: { value: '', text: 'Choose Search Attribute' },

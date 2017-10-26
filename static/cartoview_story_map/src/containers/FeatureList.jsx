@@ -1,5 +1,5 @@
 import 'openlayers/dist/ol.css'
-
+import'../app.css'
 import React, { Component } from 'react'
 import {
     addSelectionLayer,
@@ -144,7 +144,7 @@ class FeatureListContainer extends Component {
             typeNames: config.layer,
             outputFormat: 'json',
             srsName: this.map.getView().getProjection().getCode(),
-            count: parseInt(config.pagination),
+           
             startIndex
         })
         fetch(this.urls.getProxiedURL(requestUrl)).then((response) =>
@@ -259,23 +259,48 @@ class FeatureListContainer extends Component {
             body: JSON.stringify(data)
         }).then((response) => response.json())
     }
-    zoomToFeature = (feature) => {
+    zoomToFeature = (feature,done=()=>{}) => {
+        var duration = 2000;
+        console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
+        var location = feature.getGeometry().getFirstCoordinate()
+        var view=this.map.getView()
+        var zoom = view.getZoom();
+        var parts = 2;
+        var called = false;
+        function callback(complete) {
+          --parts;
+          if (called) {
+            return;
+          }
+          if (parts === 0 || !complete) {
+            called = true;
+         done(complete);
+          }
+        }
+        view.animate({
+          center: location,
+          duration: duration
+        }, callback);
+        view.animate({
+          zoom: zoom - 1,
+          duration: duration / 2
+        }, {
+          zoom: zoom,
+          duration: duration / 2
+        }, callback);
+        
         const { config } = this.props
+        
         if (config && config.zoomOnSelect) {
-            this.map.getView().fit(feature.getGeometry().getExtent(),
-                this.map.getSize(), { duration: 10000 })
+            // this.map.getView().fit(feature.getGeometry().getExtent(),
+            //     this.map.getSize(), { duration: 10000 })
+            // console.log("cordinate",feature)
+         
         }
     }
     singleClickListner = () => {
         this.map.on('singleclick', (e) => {
-            this.setState({
-                featureIdentifyLoading: true,
-                activeFeatures: null,
-                featureIdentifyResult: null,
-                selectionModeEnabled: true
-            })
-            document.body.style.cursor = "progress"
-            this.featureIdentify(this.map, e.coordinate)
+            
         })
     }
     backToAllFeatures = () => {

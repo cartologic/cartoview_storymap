@@ -20,7 +20,15 @@ import TextField from 'material-ui/TextField'
 import Typography from 'material-ui/Typography'
 import { checkURL } from '../../containers/staticMethods'
 import noImage from '../../img/no-img.png'
-
+import { withStyles } from 'material-ui/styles';
+import classnames from 'classnames';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Collapse from 'material-ui/transitions/Collapse';
+import Avatar from 'material-ui/Avatar';
+import red from 'material-ui/colors/red';
+import FavoriteIcon from 'material-ui-icons/Favorite';
+import ShareIcon from 'material-ui-icons/Share';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
     return (
@@ -40,17 +48,26 @@ Message.propTypes = {
 }
 export const Item = (props) => {
     const { openDetails, classes, feature, attachment, config } = props
-    return <div>
-        <ListItem onClick={() => openDetails({ detailsModeEnabled: true, detailsOfFeature: feature })} button className={classes.listItem}>
-            {config.enableImageListView && <Img className={classes.bigAvatar}
+    return <div className="mydiv">
+         <Card className={classes.card}  onClick={() => openDetails({  detailsOfFeature: feature })}>
+          <CardHeader
+ 
+            title={`${feature.getProperties()[config.titleAttribute]}`}
+            subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`}/>
+        
+          <Img className={classes.bigAvatar}
                 src={[
-                    attachment.length > 0 ? attachment[0].file : noImage
+                    attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
                 ]}
-                loader={<Loader />}
-            />}
-            <ListItemText primary={`${feature.getProperties()[config.titleAttribute]}`} secondary={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
-        </ListItem>
-        <Divider />
+                loader={<Loader />}/>
+          <CardContent>
+            <Typography component="p">
+            {config.description ? feature.getProperties()[config.description] : ''}
+                </Typography>
+          </CardContent>
+          </Card>
+            <Divider />
+        <br/>
     </div>
 }
 Item.propTypes = {

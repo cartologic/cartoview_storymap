@@ -17,8 +17,10 @@ const styles = theme => ( {
         margin: 10,
     },
     bigAvatar: {
-        width: 80,
-        height: 'auto',
+        width: "80%",
+        marginLeft: "10%",
+        height: "auto",
+    
     },
     loadingCenter: {
         textAlign: 'center'
@@ -66,7 +68,13 @@ class CartoviewList extends React.Component {
         addStyleToFeature( [ detailsOfFeature ] )
         zoomToFeature( detailsOfFeature )
     }
+    componentWillMount(){
+        const allFeature=this.props.getFeatures(0)
+        console.log(allFeature,this.props)
+    }
     render() {
+       
+        
         const {
             classes,
             featuresIsLoading,
@@ -85,6 +93,7 @@ class CartoviewList extends React.Component {
             addComment,
             SaveImageBase64
         } = this.props
+
         let { detailsModeEnabled, detailsOfFeature } = this.state
         return (
             <div className={classes.root}>
@@ -93,19 +102,10 @@ class CartoviewList extends React.Component {
                     <Divider />
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled && <FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} message={"No Features Found"} />}
-                {selectionModeEnabled && !detailsModeEnabled && <FeatureListComponent {...this.props} subheader="Identified Features" loading={featureIdentifyLoading} features={featureIdentifyResult} openDetails={this.openDetails} message={"No Features At this Point"} />}
-                {selectionModeEnabled && !detailsModeEnabled && <div className={classes.loadingCenter}>
-                    <Button onClick={() => backToAllFeatures()} color="primary" className={classNames(classes.button, classes.pagination)}>
-                        All Features
-                    </Button>
-                </div>}
+               
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>
-                    <UltimatePaginationMaterialUi
-                        totalPages={Math.ceil(totalFeatures / parseInt(config.pagination))}
-                        currentPage={this.state.currentPage}
-                        onChange={number => this.setState({ currentPage: number }, getFeatures((number - 1) * parseInt(config.pagination)))} />
-                </div>}
+                            </div>}
             </div>
         )
     }
