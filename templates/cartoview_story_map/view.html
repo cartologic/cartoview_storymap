@@ -67,6 +67,23 @@
     props.username="{{request.user.username}}"
     CartoviewFeatureList.show('root', props,urls);
   </script>
-  
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script>
+  var scrollPosition = 0;
+$('div#contents').scroll(function() {
+  scrollPosition = $(this).scrollTop();
+});
+$('div#contents').scroll(function() {
+            if ($(this).scrollTop() >= areaTop && $(this).scrollTop() < areaBottom) {
+              $('.image-container').removeClass("inFocus").addClass("outFocus");
+              $('div#container' + feature.properties['id']).addClass("inFocus").removeClass("outFocus");
+console.log("scrollunggg")
+            //   map.flyTo([feature.geometry.coordinates[1], feature.geometry.coordinates[0] ], feature.properties['zoom']);
+            }
+          });
+  </script>
 </body>
 </html>

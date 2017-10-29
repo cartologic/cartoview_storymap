@@ -48,8 +48,8 @@ Message.propTypes = {
 }
 export const Item = (props) => {
     const { openDetails, classes, feature, attachment, config } = props
-    return <div className="mydiv">
-         <Card className={classes.card}  onClick={() => openDetails({  detailsOfFeature: feature })}>
+    return <div >
+         <Card className={classes.card }  onClick={() => openDetails({  detailsOfFeature: feature })}>
           <CardHeader
  
             title={`${feature.getProperties()[config.titleAttribute]}`}

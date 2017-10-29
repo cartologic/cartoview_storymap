@@ -260,7 +260,7 @@ class FeatureListContainer extends Component {
         }).then((response) => response.json())
     }
     zoomToFeature = (feature,done=()=>{}) => {
-        var duration = 2000;
+        var duration = 1000;
         console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
         var view=this.map.getView()

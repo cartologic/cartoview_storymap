@@ -7,7 +7,7 @@ from django.shortcuts import HttpResponse
 from . import APP_NAME
 
 
-class StroyMap(StandardAppViews):
+class StoryMap(StandardAppViews):
     def save(self, request, instance_id=None):
         res_json = dict(success=False)
         data = json.loads(request.body)

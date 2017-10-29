@@ -82,7 +82,12 @@
   position: absolute;
   left: 20px;
 }
+.inFocus {
+  opacity: 1.0;
+  background-color: #f0f0f0;
+}
 
-.MuiPaper-root-15:visited{
-  background-color: rgba(151, 160, 151, 0.692) !important;
+.outFocus {
+  opacity: 0.3;
+  background-color: white;
 }
