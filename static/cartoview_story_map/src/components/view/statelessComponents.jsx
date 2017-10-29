@@ -29,6 +29,7 @@ import red from 'material-ui/colors/red';
 import FavoriteIcon from 'material-ui-icons/Favorite';
 import ShareIcon from 'material-ui-icons/Share';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import AddIcon from 'material-ui-icons/Add';
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
     return (
@@ -75,9 +76,11 @@ Item.propTypes = {
     feature: PropTypes.object.isRequired,
     attachment: PropTypes.array.isRequired,
     config: PropTypes.object.isRequired,
-    openDetails: PropTypes.func.isRequired
+    openDetails: PropTypes.func.isRequired,
+
 }
 export const FeatureListComponent = (props) => {
+
     const {
         features,
         loading,
@@ -88,12 +91,16 @@ export const FeatureListComponent = (props) => {
         attachmentIsLoading,
         searchFilesById,
         openDetails,
+        addEntry
     } = props
     return (!loading && !attachmentIsLoading && features && features.length >
         0 ?
         <div>
+
+
+           
             <Message align="left" message={subheader} type="subheading" />
-            <List>
+            <List style={{"marginTop":"10%"}}>
                 {features && features.map((feature, index) => {
                     const attachment = searchFilesById(feature.getId())
                     return <Item key={index} classes={classes} feature={feature} config={config} attachment={attachment} openDetails={openDetails} />
@@ -109,6 +116,7 @@ FeatureListComponent.propTypes = {
     features: PropTypes.array,
     config: PropTypes.object.isRequired,
     openDetails: PropTypes.func.isRequired,
+  
     subheader: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,

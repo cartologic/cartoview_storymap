@@ -117,16 +117,18 @@ class FeatureListContainer extends Component {
         this.singleClickListner()
     }
     loadMap = (mapUrl, proxyURL) => {
+       
         this.setState({ mapIsLoading: true })
         fetch(mapUrl, {
             method: "GET",
             credentials: 'include'
         }).then((response) => {
+           
             return response.json()
         }).then((config) => {
             if (config) {
-                MapConfigService.load(MapConfigTransformService.transform(
-                    config), this.map, proxyURL)
+//             MapConfigService.load(MapConfigTransformService.transform(
+// config), this.map, proxyURL)
                 this.setState({ mapIsLoading: false })
             }
         }).catch((error) => {
@@ -155,6 +157,11 @@ class FeatureListContainer extends Component {
                     data, {
                         featureProjection: this.map.getView().getProjection()
                     })
+                features.forEach((f,i)=>{
+                   
+                    f.set('featureIndex',i+1)
+                })
+                this.featureCollection.extend(features)
                 const total = data.totalFeatures
                 if (totalFeatures == 0) {
                     this.setState({ totalFeatures: total })
@@ -261,7 +268,7 @@ class FeatureListContainer extends Component {
     }
     zoomToFeature = (feature,done=()=>{}) => {
         var duration = 1000;
-        console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
+        // console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
         var view=this.map.getView()
         var zoom = view.getZoom();
@@ -326,7 +333,7 @@ class FeatureListContainer extends Component {
         document.body.style.cursor = "default"
     }
     addStyleToFeature = (features) => {
-        this.featureCollection.clear()
+        // this.featureCollection.clear()
         if (features && features.length > 0) {
             this.featureCollection.extend(features)
         }
@@ -338,7 +345,7 @@ class FeatureListContainer extends Component {
         const url = getFeatureInfoUrl(layer, coordinate, view,
             'application/json')
         fetch(this.urls.getProxiedURL(url)).then((response) =>
-            response.json()).then(
+            response.json(Car)).then(
             (result) => {
                 if (result.features.length > 0) {
                     const features = wmsGetFeatureInfoFormats[

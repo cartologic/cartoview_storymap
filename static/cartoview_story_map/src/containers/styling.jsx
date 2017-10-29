@@ -1,11 +1,26 @@
 import ol from 'openlayers'
-const image = new ol.style.Circle( {
-    radius: 5,
-    fill: null,
-    stroke: new ol.style.Stroke( { color: 'black', width: 2 } )
-} )
+
+export const styleFunction = ( feature ) => {
+  
+
+    const text=props.DisplayNumbersOnMarkers? new ol.style.Text({
+        text:feature.getProperties().featureIndex.toString(),
+        offsetY:-30,
+        scale:1,
+        fill: new ol.style.Fill({
+          color: '#fff'
+        })
+    }):""
+
+    const image =new ol.style.Icon(({
+    anchor: [0.5, 45],
+   anchorXUnits: 'fraction',
+   anchorYUnits: 'pixels',
+   src: urls.static +'cartoview_story_map/marker.png'
+}))
+
 const styles = {
-    'Point': new ol.style.Style( { image: image } ),
+    'Point': new ol.style.Style( { image: image,text:text } ),
     'LineString': new ol.style.Style( {
         stroke: new ol.style.Stroke( { color: 'green', width: 1 } )
     } ),
@@ -36,12 +51,12 @@ const styles = {
         } )
     } ),
     'Circle': new ol.style.Style( {
-        stroke: new ol.style.Stroke( { color: 'red', width: 2 } ),
+        stroke: new ol.style.Stroke( { color: 'yellow', width: 2 } ),
         fill: new ol.style.Fill( { color: 'rgba(255,0,0,0.2)' } )
     } )
 }
-export const styleFunction = ( feature ) => {
-    const style = feature ? styles[ feature.getGeometry( ).getType( ) ] :
-        null
+    // const x=new ol.style.Style( { image: image,text: text } )
+    const style = feature ? styles[ feature.getGeometry( ).getType( ) ] :  null
+
     return style
 }

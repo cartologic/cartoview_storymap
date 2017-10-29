@@ -20,7 +20,6 @@
 </head>
 <body>
 <div style="height: 100%;" id="root"></div>
-<script src="{% static 'cartoview_story_map/dist/FeatureList.bundle.js?version=2' %}"></script>
 <script type="text/javascript">
     {% if instance %}
             const instanceId= {{ instance.id }}
@@ -61,12 +60,21 @@
     {% endif %}
 
     const props = {{ instance.config | safe }}
-    
+    var center_x={{instance.map.center_x}}
+    var center_y={{instance.map.center_y}}
+    var zoom={{instance.map.zoom}}
+    var loggedUser="{{request.user.username}}"
+    var owner="{{instance.owner.username}}"
+
     props.formTitle="{{instance.title}}"
     props.formAbstract="{{instance.abstract}}"
     props.username="{{request.user.username}}"
-    CartoviewFeatureList.show('root', props,urls);
   </script>
+<script src="{% static 'cartoview_story_map/dist/FeatureList.bundle.js?version=2' %}"></script>
+
+    <script  type="text/javascript">
+     CartoviewFeatureList.show('root', props,urls);
+    </script>
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

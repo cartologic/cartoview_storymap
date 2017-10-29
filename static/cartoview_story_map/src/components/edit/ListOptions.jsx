@@ -15,9 +15,9 @@ const formConfig = t.struct({
     subtitleAttribute: t.maybe(t.String),
     filters: t.maybe(t.String),
     description:t.maybe(t.String),
-    pagination: t.String,
-    zoomOnSelect: t.Boolean,
-    enableImageListView: t.Boolean
+    // pagination: t.String,
+    DisplayNumbersOnMarkers: t.Boolean,
+    // enableImageListView: t.Boolean
 })
 const Form = t.form.Form
 const getPropertyFromConfig = (config, property, defaultValue) => {
@@ -38,14 +38,14 @@ export default class ListOptions extends Component {
                     'titleAttribute', null),
                 subtitleAttribute: getPropertyFromConfig(config,
                     'subtitleAttribute', null),
-                pagination: getPropertyFromConfig(config,
-                    'pagination', "10"),
+                // pagination: getPropertyFromConfig(config,
+                //     'pagination', "10"),
                 filters: getPropertyFromConfig(config, 'filters', null),
                 description: getPropertyFromConfig(config, 'description', null),
-                zoomOnSelect: getPropertyFromConfig(config,
-                    'zoomOnSelect', true),
-                enableImageListView: getPropertyFromConfig(config,
-                    'enableImageListView', true),
+                DisplayNumbersOnMarkers: getPropertyFromConfig(config,
+                    'DisplayNumbersOnMarkers', true),
+                // enableImageListView: getPropertyFromConfig(config,
+                //     'enableImageListView', true),
             },
             attributeOptions: [],
             attributes: [],
@@ -153,16 +153,16 @@ export default class ListOptions extends Component {
                     nullOption: { value: '', text: 'Choose Search Attribute' },
                     options: attributeOptions
                 },
-                pagination: {
-                    factory: t.form.Select,
-                    nullOption: { value: '', text: 'Choose number of Features' },
-                    options: [
-                        { value: '10', text: "10" },
-                        { value: '20', text: "20" },
-                        { value: '40', text: "40" },
-                        { value: '80', text: "80" }
-                    ]
-                }
+                // pagination: {
+                //     factory: t.form.Select,
+                //     nullOption: { value: '', text: 'Choose number of Features' },
+                //     options: [
+                //         { value: '10', text: "10" },
+                //         { value: '20', text: "20" },
+                //         { value: '40', text: "40" },
+                //         { value: '80', text: "80" }
+                //     ]
+                // }
             }
         }
         return options

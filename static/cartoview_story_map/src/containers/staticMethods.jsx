@@ -1,6 +1,7 @@
 import LayerSwitcher from '../vendor/ol3-layerswitcher/src/ol3-layerswitcher'
 import isURL from 'validator/lib/isURL'
 import ol from 'openlayers'
+import Map from 'ol/map';
 export const isWMSLayer = ( layer ) => {
     return layer.getSource() instanceof ol.source.TileWMS || layer.getSource() instanceof ol
         .source.ImageWMS
@@ -19,22 +20,18 @@ export const getFeatureInfoUrl = ( layer, coordinate, view, infoFormat ) => {
     return `${url}&FEATURE_COUNT=10`
 }
 export const getMap = () => {
-    const map = new ol.Map( {
-        interactions: ol.interaction.defaults().extend( [
-            new ol.interaction.DragRotateAndZoom()
-        ] ),
-        layers: [ new ol.layer.Tile( {
-            title: 'OpenStreetMap',
+    const map=new ol.Map({
+        view: new ol.View({
+          center:[center_x,center_y],
+          zoom:zoom
+        }),
+        layers: [
+          new ol.layer.Tile({
             source: new ol.source.OSM()
-        } ) ],
-        view: new ol.View( {
-            center: [
-                0, 0
-            ],
-            minZoom: 4,
-            maxZoom: 16
-        } )
-    } )
+          })
+        ],
+        target: 'map'
+      })
     let layerSwitcher = new LayerSwitcher()
     map.addControl( layerSwitcher )
     return map
@@ -73,6 +70,7 @@ export const checkURL = ( value ) => {
     return false
 }
 export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
+
     new ol.layer.Vector( {
         source: new ol.source.Vector( { features: featureCollection } ),
         style: styleFunction,
