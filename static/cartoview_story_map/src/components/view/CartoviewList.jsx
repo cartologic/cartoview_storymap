@@ -1,6 +1,7 @@
 import Button from 'material-ui/Button'
 import Divider from 'material-ui/Divider'
 import { FeatureListComponent } from './statelessComponents'
+import {getdescribeFeatureType} from '../../containers/staticMethods'
 import ItemDetails from "./ItemDetails"
 import AddForm from "./AddForm"
 import React from 'react'
@@ -46,7 +47,8 @@ class CartoviewList extends React.Component {
         currentPage: 1,
         detailsModeEnabled: false,
         detailsOfFeature: null,
-        add:false
+        add:false,
+        featureTypes:null
     }
     back = () => {
         const {
@@ -73,9 +75,10 @@ class CartoviewList extends React.Component {
     }
     componentWillMount(){
         const allFeature=this.props.getFeatures(0)
+       getdescribeFeatureType(this.props.config.layer).then(data=>{this.setState({featureTypes:data})})
     }
  componentWillReceiveProps(nextProps){
-     console.log(nextProps)
+    
      this.setState({add:nextProps.addEntry})
  }
     render() {
@@ -109,7 +112,7 @@ class CartoviewList extends React.Component {
                     <Divider />
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled &&!add &&<FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
-                {!selectionModeEnabled && !detailsModeEnabled && add &&<AddForm {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} back={this.back}  message={"No Features Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && add &&<AddForm {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} back={this.back}  message={"No Features Found"} />}
                 
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>

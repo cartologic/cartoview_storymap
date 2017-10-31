@@ -10,8 +10,28 @@ import { withStyles } from 'material-ui/styles'
 import withWidth from 'material-ui/utils/withWidth'
 import AddIcon from 'material-ui-icons/Add';
 import IconButton from 'material-ui/IconButton';
-
+import {
+    addSelectionLayer,
+    getFeatureInfoUrl,
+    getFilter,
+    getFilterByName,
+    getMap,
+    getWMSLayer,
+    layerName,
+    layerNameSpace,
+    wmsGetFeatureInfoFormats
+} from '../../containers/staticMethods'
+import ol from 'openlayers'
 import Button from 'material-ui/Button'
+import { styleFunction } from '../../containers/styling.jsx'
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog';
+
+  
 const styles = theme => ({
     root: {
         [theme.breakpoints.up('md')]: {
@@ -32,7 +52,8 @@ const styles = theme => ({
 class ContentGrid extends Component {
     state = {
     
-        add:false
+        add:false,
+        showDialoge:this.props.childrenProps.showDialoge
     }
     componentDidMount(){
         const {map}=this.props
@@ -41,10 +62,18 @@ class ContentGrid extends Component {
     componentDidUpdate(prevProps, prevState) {
         prevProps.map.updateSize()
     }
+    componentWillReceiveProps(nextProps){
+    
+        this.setState({showDialoge:nextProps.childrenProps.showDialoge},console.log(this.state))
+    }
     addEntry=()=>{
-        this.setState({add:true})
+        this.setState({showDialoge:false,add:true})
         }
+        handleRequestClose = () => {
+            this.setState({ showDialoge: false });
+          };
     render() {
+  
         const { classes, childrenProps } = this.props
         return (
             <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
@@ -54,14 +83,36 @@ class ContentGrid extends Component {
                     </div>
                    
                 
-                    {/* {loggedUser==owner?
-          <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.addEntry()}}>
-        <AddIcon />
-      </Button>:""} */}
+                    {loggedUser==owner?
+          <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.props.childrenProps.getLocation()}}>
+                <AddIcon />
+            </Button>:""}
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
                     <Paper className={classes.paper}><CartoviewList addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
+
+
+
+
+            <div>
+       
+        <Dialog open={this.state.showDialoge} onRequestClose={this.handleRequestClose}>
+          <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
+          <DialogContent>
+          
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleRequestClose} color="primary">
+              Disagree
+            </Button>
+            <Button onClick={this.addEntry} color="primary" autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+
             </Grid>
         )
     }

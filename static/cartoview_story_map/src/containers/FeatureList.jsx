@@ -45,13 +45,83 @@ class FeatureListContainer extends Component {
             featureIdentifyResult: null,
             activeFeatures: null,
             filterType: null,
-            ImageBase64: null
+            ImageBase64: null,
+            xyValue:null,
+            showDialoge:false
         }
         this.urls = new URLS(this.props.urls)
-        this.map = getMap()
+        this.map=getMap()
         this.featureCollection = new ol.Collection()
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
+        // this.getLocation()
     }
+
+    onFeatureMove = (event) => {
+        console.log(event)
+        // this.props.onFeatureMove(this.feature.getGeometry().getCoordinates())
+        var center=ol.proj.transform(event.mapBrowserEvent.coordinate, 'EPSG:3857',
+        'EPSG:4326')
+        console.log(center)
+        const geometry = {
+            name: 'the_geom',
+            srsName: "EPSG:4326",
+            x: center[0],
+            y: center[1]
+        }
+                console.log(event.mapBrowserEvent.coordinate)
+
+
+
+            this.setState({
+                geometry,showDialoge:true
+            },console.log(this.state))
+            }
+            getLocation=()=>{
+                console.log("in get location ")
+                this.feature = new ol.Feature({
+                    geometry: new ol.geom.Point([0, 0]),
+                    geometryName: 'the_geom'
+                })
+                const featureStyle = new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [
+                            0.5, 31
+                        ],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'pixels',
+                        color: "#00B7F1",
+                        src: this.props.urls.static +
+                        'cartoview_story_map/greenmarker.png'
+                    }),
+                    text: new ol.style.Text({
+                        text: '+',
+                        fill: new ol.style.Fill({ color: '#fff' }),
+                        stroke: new ol.style.Stroke({
+                            color: '#fff',
+                            width: 2
+                        }),
+                        textAlign: 'center',
+                        offsetY: -20,
+                        font: '18px serif'
+                    })
+                })
+                this.vectorLayer = new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        features: [this.feature]
+                    }),
+                    style: featureStyle
+                })
+                this.modifyInteraction = new ol.interaction.Modify({
+                    features: new ol.Collection([this.feature]),
+                    pixelTolerance: 32
+                })
+                this.modifyInteraction.on('modifyend', this.onFeatureMove)
+                this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
+                this.map.addLayer(this.vectorLayer)
+                this.map.addInteraction(this.modifyInteraction)
+                addSelectionLayer(this.map, this.featureCollection, styleFunction)
+         
+            }
     addComment = (data) => {
         const { urls, config } = this.props
         const apiData = { ...data, username: config.username }
@@ -375,6 +445,7 @@ class FeatureListContainer extends Component {
                 }
             })
     }
+   
     render() {
         const { config, urls } = this.props
         let childrenProps = {
@@ -391,7 +462,12 @@ class FeatureListContainer extends Component {
             addComment: this.addComment,
             searchCommentById: this.searchCommentById,
             urls,
-            SaveImageBase64: this.SaveImageBase64
+            SaveImageBase64: this.SaveImageBase64,
+            getLocation:this.getLocation,
+            showDialoge:this.state.showDialoge,
+            geometry:this.state.geometry
+
+          
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />
     }

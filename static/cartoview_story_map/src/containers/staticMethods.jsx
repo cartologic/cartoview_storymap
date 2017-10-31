@@ -83,6 +83,14 @@ export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
         map: map
     } )
 }
+export const getdescribeFeatureType=(typename)=>{
+   
+    var url= urls.describeFeatureType(typename)
+    return fetch(url).then((response) =>
+    {return response.json()}).then((data)=>{return data.featureTypes[0].properties})
+  
+    
+    }
 export const getLayers = ( layers ) => {
     var children = []
     layers.forEach( ( layer ) => {
