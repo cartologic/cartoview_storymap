@@ -72,9 +72,7 @@ class FeatureListContainer extends Component {
 
 
 
-            this.setState({
-                geometry,showDialoge:true
-            },console.log(this.state))
+            this.setState({geometry,showDialoge:true})
             }
             getLocation=()=>{
                 console.log("in get location ")
@@ -89,7 +87,7 @@ class FeatureListContainer extends Component {
                         ],
                         anchorXUnits: 'fraction',
                         anchorYUnits: 'pixels',
-                        color: "#00B7F1",
+                       
                         src: this.props.urls.static +
                         'cartoview_story_map/greenmarker.png'
                     }),
@@ -103,7 +101,8 @@ class FeatureListContainer extends Component {
                         textAlign: 'center',
                         offsetY: -20,
                         font: '18px serif'
-                    })
+                    }),
+                     
                 })
                 this.vectorLayer = new ol.layer.Vector({
                     source: new ol.source.Vector({
@@ -113,14 +112,14 @@ class FeatureListContainer extends Component {
                 })
                 this.modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.feature]),
-                    pixelTolerance: 32
+                    pixelTolerance: 32,
+                    style: [] 
                 })
                 this.modifyInteraction.on('modifyend', this.onFeatureMove)
                 this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
                 this.map.addLayer(this.vectorLayer)
-                this.map.addInteraction(this.modifyInteraction)
+                this.map.addInteraction(this.modifyInteraction)          
                 addSelectionLayer(this.map, this.featureCollection, styleFunction)
-         
             }
     addComment = (data) => {
         const { urls, config } = this.props
