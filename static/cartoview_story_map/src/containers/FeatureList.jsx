@@ -111,7 +111,8 @@ class FeatureListContainer extends Component {
                     source: new ol.source.Vector({
                         features: [this.feature]
                     }),
-                    style: featureStyle
+                    style: featureStyle,
+                    
                 })
                 this.modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.feature]),
@@ -120,9 +121,15 @@ class FeatureListContainer extends Component {
                 })
                 this.modifyInteraction.on('modifyend', this.onFeatureMove)
                 this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
+                this.setState({vectorLayer:this.vectorLayer})
                 this.map.addLayer(this.vectorLayer)
                 this.map.addInteraction(this.modifyInteraction)          
                 addSelectionLayer(this.map, this.featureCollection, styleFunction)
+            }
+            removeLocation=()=>{
+                console.log("remoce")
+               this.map.removeLayer(this.state.vectorLayer);
+                
             }
     addComment = (data) => {
         const { urls, config } = this.props
@@ -495,6 +502,7 @@ class FeatureListContainer extends Component {
             urls,
             SaveImageBase64: this.SaveImageBase64,
             getLocation:this.getLocation,
+            removeLocation:this.removeLocation,
             showDialoge:this.state.showDialoge,
             geometry:this.state.geometry
 

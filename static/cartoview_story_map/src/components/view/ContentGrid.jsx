@@ -9,6 +9,7 @@ import {upperPropTypes} from './sharedPropTypes'
 import { withStyles } from 'material-ui/styles'
 import withWidth from 'material-ui/utils/withWidth'
 import AddIcon from 'material-ui-icons/Add';
+import RemoveIcon from 'material-ui-icons/Remove';
 import IconButton from 'material-ui/IconButton';
 import {
     addSelectionLayer,
@@ -53,7 +54,8 @@ class ContentGrid extends Component {
     state = {
     
         add:false,
-        showDialoge:this.props.childrenProps.showDialoge
+        showDialoge:this.props.childrenProps.showDialoge,
+        switch:true
     }
     componentDidMount(){
         const {map}=this.props
@@ -83,10 +85,22 @@ class ContentGrid extends Component {
                     </div>
                    
                 
-                    {loggedUser==owner?
-          <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.props.childrenProps.getLocation()}}>
+                    {loggedUser==owner&& 
+                    <div>
+                      {this.state.switch&&
+          <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{
+              this.setState({switch:false})
+              this.props.childrenProps.getLocation()}}>
                 <AddIcon />
-            </Button>:""}
+            </Button>}
+        
+        
+            {!this.state.switch&& <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.setState({switch:true})
+             this.props.childrenProps.removeLocation()}}>
+                <RemoveIcon />
+            </Button>}
+        </div>
+        }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
                     <Paper className={classes.paper}><CartoviewList addEntry={this.state.add} {...childrenProps} /></Paper>

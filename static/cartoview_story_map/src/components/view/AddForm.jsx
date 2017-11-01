@@ -19,7 +19,7 @@ import WFSClient from '../../utils/WFSClient.jsx'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
 
 
-const styles = theme => ( {
+const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
         padding: theme.spacing.unit * 2
@@ -31,13 +31,13 @@ const styles = theme => ( {
         width: "80%",
         marginLeft: "10%",
         height: "auto",
-    
+
     },
     loadingCenter: {
         textAlign: 'center'
     },
     pagination: {
-        [ theme.breakpoints.down( 'md' ) ]: {
+        [theme.breakpoints.down('md')]: {
             marginBottom: 40,
         },
     },
@@ -51,43 +51,41 @@ const styles = theme => ( {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
         // width: 200,
-      },
+    },
     progress: {
         margin: `0 ${theme.spacing.unit * 2}px`,
     },
-} )
+})
 class addForm extends React.Component {
-    constructor( props ) {
-        super( props )
-        this.state={
-            formValue:{}
+    constructor(props) {
+        super(props)
+        this.state = {
+            formValue: {}
         }
     }
     WFS = new WFSClient(this.props.urls)
-    componentDidMount(){
+    componentDidMount() {
         console.log(this.props)
     }
-    getType=(type)=>{
-        var result=""
-        if(type=="string")
-        {result=""}
-        else if(type=="int"||type=='long'||type=='double')
-        {result="number"}
-        else if (type=="datetime"){
-            result="datetime-local"
+    getType = (type) => {
+        var result = ""
+        if (type == "string") { result = "" }
+        else if (type == "int" || type == 'long' || type == 'double') { result = "number" }
+        else if (type == "date-time") {
+            result = "datetime-local"
         }
-return result
+        return result
     }
-    handleChange = attr => event =>{
-        this.state.formValue[attr]=event.target.value
+    handleChange = attr => event => {
+        this.state.formValue[attr] = event.target.value
         // this.setState({
         //     this.state.[attr]: event.target.value,
         //   });
     }
-    save=()=>{
-console.log( "geomertry",this.props.geometry)
-             this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
-             res.text()).then((xml) => {console.log(xml)})
+    save = () => {
+        console.log("geomertry", this.props.geometry)
+        this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
+            res.text()).then((xml) => { console.log(xml) })
     }
     render() {
         console.log(this.props)
@@ -104,55 +102,59 @@ console.log( "geomertry",this.props.geometry)
         } = this.props
         return (
             <div>
-                 <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
-                 <BackIcon />
-               </IconButton>
-              <div>
-                  {
-                      featureTypes&&featureTypes.map((feature,i)=>{
-                          if(feature.localType!="boolean"&&feature.localType!="Point"){
-                          return   <TextField   key={i}
-                                                fullWidth
-                                                required={!feature.nillable}
-                                                type={this.getType(feature.localType)}
-                                                id={feature.name}
-                                                label={feature.name}
-                                                className={classes.textField}
-                                                onChange={this.handleChange(feature.name)}
-                                                margin="normal"
-                                                />
-                      }
-                    else if(feature.localType=="boolean"){
-                        return  <FormControlLabel
+                <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
+                    <BackIcon />
+                </IconButton>
+                <div>
+                    {
+                        featureTypes && featureTypes.map((feature, i) => {
+                            console.log(feature.name, feature.localType)
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime") {
+                                return <TextField key={i}
+                                    fullWidth
+                                    required={!feature.nillable}
+                                    type={this.getType(feature.localType)}
+                                    id={feature.name}
+                                    label={feature.name}
+                                    className={classes.textField}
+                                    onChange={this.handleChange(feature.name)}
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: feature.localType=="date-time"?true:false,
+                                    }}
+                                />
+                            }
+                            else if (feature.localType == "boolean") {
+                                return <FormControlLabel
                                     control={
                                         <Checkbox
-                                        checked={"true"}
-                                        onChange={this.handleChange(feature.name)}
-                                        value="checkedA"
+                                            checked={"true"}
+                                            onChange={this.handleChange(feature.name)}
+                                            value="checkedA"
                                         />
                                     }
                                     label={feature.name}
-                                         />
+                                />
 
+                            }
+                        })
                     }
-                    })
-                  }
-                   <Button raised color="primary" onClick={this.save } className={classes.button} style={{float:"right"}}>
-        Save
+                    <Button raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+                        Save
       </Button>
-              </div>
+                </div>
                 <div className={classes.textCenter}>
-                  
+
                 </div>
             </div>
         )
     }
 }
 // ItemDetails.propTypes = { ...commentsPropTypes,
-    // searchFilesById: PropTypes.func.isRequired,
-    // back: PropTypes.func.isRequired,
-    // searchCommentById: PropTypes.func.isRequired,
-    // username: PropTypes.string.isRequired,
-    // SaveImageBase64: PropTypes.func.isRequired,
+// searchFilesById: PropTypes.func.isRequired,
+// back: PropTypes.func.isRequired,
+// searchCommentById: PropTypes.func.isRequired,
+// username: PropTypes.string.isRequired,
+// SaveImageBase64: PropTypes.func.isRequired,
 // }
-export default withStyles( styles )( addForm )
+export default withStyles(styles)(addForm)
