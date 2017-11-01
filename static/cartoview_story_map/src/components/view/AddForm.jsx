@@ -60,7 +60,8 @@ class addForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            formValue: {}
+            formValue: {},
+            success:false
         }
     }
     WFS = new WFSClient(this.props.urls)
@@ -85,10 +86,18 @@ class addForm extends React.Component {
     save = () => {
         console.log("geomertry", this.props.geometry)
         this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
-            res.text()).then((xml) => { console.log(xml) })
-    }
+            res.text()).then((res) => {
+            this.setState({success:true},this.props.back())
+             }).catch((error) => {
+                throw Error(error)
+            })
+         this.props.handleOpen()
+         this.props.back()
+        }
+   
+    
     render() {
-        console.log(this.props)
+        const  vertical= 'bottom', horizontal='center'
         const {
             selectedFeature,
             searchFilesById,
@@ -120,7 +129,7 @@ class addForm extends React.Component {
                                     onChange={this.handleChange(feature.name)}
                                     margin="normal"
                                     InputLabelProps={{
-                                        shrink: feature.localType=="date-time"?true:false,
+                                        shrink:true
                                     }}
                                 />
                             }
@@ -141,11 +150,12 @@ class addForm extends React.Component {
                     }
                     <Button raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
                         Save
-      </Button>
+                 </Button>
                 </div>
                 <div className={classes.textCenter}>
 
                 </div>
+              
             </div>
         )
     }

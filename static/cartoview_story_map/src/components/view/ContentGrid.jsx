@@ -55,7 +55,8 @@ class ContentGrid extends Component {
     
         add:false,
         showDialoge:this.props.childrenProps.showDialoge,
-        switch:true
+        switch:true,
+        success:false,
     }
     componentDidMount(){
         const {map}=this.props
@@ -74,6 +75,7 @@ class ContentGrid extends Component {
         handleRequestClose = () => {
             this.setState({ showDialoge: false });
           };
+ 
     render() {
   
         const { classes, childrenProps } = this.props
@@ -95,7 +97,8 @@ class ContentGrid extends Component {
             </Button>}
         
         
-            {!this.state.switch&& <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.setState({switch:true})
+            {!this.state.switch&& 
+            <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.setState({switch:true,add:false})
              this.props.childrenProps.removeLocation()}}>
                 <RemoveIcon />
             </Button>}
@@ -103,7 +106,7 @@ class ContentGrid extends Component {
         }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper className={classes.paper}><CartoviewList addEntry={this.state.add} {...childrenProps} /></Paper>
+                    <Paper className={classes.paper}><CartoviewList handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
 
 
@@ -126,7 +129,7 @@ class ContentGrid extends Component {
           </DialogActions>
         </Dialog>
       </div>
-
+     
             </Grid>
         )
     }
