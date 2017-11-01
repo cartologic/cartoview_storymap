@@ -57,24 +57,27 @@ class FeatureListContainer extends Component {
     }
 
     onFeatureMove = (event) => {
-        console.log(event)
-        // this.props.onFeatureMove(this.feature.getGeometry().getCoordinates())
-        var center=ol.proj.transform(event.mapBrowserEvent.coordinate, 'EPSG:3857',
-        'EPSG:4326')
-        console.log(center)
+
+        
+        console.log(this.map.getView().getProjection().getCode())
+        const crs ='EPSG:'+this.state.crs
+        console.log(crs)
+        var center=ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
+            this.map.getView().getProjection())
+
         const geometry = {
             name: 'the_geom',
-            srsName: "EPSG:4326",
+            srsName: crs,
             x: center[0],
             y: center[1]
         }
-                console.log(event.mapBrowserEvent.coordinate)
-
+                
 
 
             this.setState({geometry,showDialoge:true})
-            }
+    }
             getLocation=()=>{
+                
                 console.log("in get location ")
                 this.feature = new ol.Feature({
                     geometry: new ol.geom.Point([0, 0]),
@@ -204,6 +207,24 @@ class FeatureListContainer extends Component {
             throw Error(error)
         })
     }
+    getCRS = (crs) => {
+        let promise = new Promise((resolve, reject) => {
+            if (proj4.defs('EPSG:' + crs)) {
+                resolve(crs)
+            } else {
+                fetch("https://epsg.io/?format=json&q=" + crs).then(
+                    response => response.json()).then(
+                    projres => {
+                        proj4.defs('EPSG:' + crs, projres.results[
+                            0].proj4)
+                        resolve(crs)
+                    })
+            }
+        })
+        return promise
+    }
+ 
+
     getFeatures = (startIndex) => {
         let { totalFeatures } = this.state
         const { urls, config } = this.props
@@ -221,6 +242,15 @@ class FeatureListContainer extends Component {
         fetch(this.urls.getProxiedURL(requestUrl)).then((response) =>
             response.json()).then(
             (data) => {
+
+
+            const crs = data.features.length > 0 ? data.crs
+                .properties.name.split(":").pop() : null
+                this.getCRS(crs).then((newCRS) => {
+            this.setState({crs})
+                }, (error) => {
+                    throw (error)
+                })
                 this.setState({ featuresIsLoading: false })
                 let features = new ol.format.GeoJSON().readFeatures(
                     data, {
@@ -387,6 +417,7 @@ class FeatureListContainer extends Component {
         this.addStyleToFeature([])
     }
     transformFeatures = (layer, features, map, crs) => {
+      
         let transformedFeatures = []
         features.forEach((feature) => {
             feature.getGeometry().transform('EPSG:' + crs, map.getView()
@@ -434,11 +465,12 @@ class FeatureListContainer extends Component {
                                     features, map, crs)
                             })
                     }
-                } else {
+                   
+                    } else {
                     this.setState({
                         featureIdentifyResult: [],
                         activeFeatures: null,
-                        featureIdentifyLoading: false
+                        featureIdentifyLoading: false,
                     })
                     document.body.style.cursor = "default"
                 }
