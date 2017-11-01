@@ -185,7 +185,7 @@ Slider.propTypes = {
     attachments: PropTypes.array.isRequired
 }
 export const MobileDrawer = (props) => {
-    const { theme, mobileOpen, classes, handleDrawerToggle, childrenProps } =
+    const { theme, mobileOpen, classes, handleDrawerToggle, childrenProps ,addEntry} =
         props
     return (
         <Drawer
@@ -207,7 +207,7 @@ export const MobileDrawer = (props) => {
             </div>
             <Divider />
 
-            <Paper className={classes.paper}><CartoviewList {...childrenProps} /></Paper>
+            <Paper className={classes.paper}><CartoviewList addEntry={addEntry} {...childrenProps} /></Paper>
         </Drawer>
     )
 }

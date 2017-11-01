@@ -11,7 +11,7 @@ import enLocaleData from 'react-intl/locale-data/en'
 import enMessages from '@boundlessgeo/sdk/locale/en'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import { theme } from './theme.jsx'
-import {upperPropTypes} from './sharedPropTypes'
+import { upperPropTypes } from './sharedPropTypes'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -20,16 +20,28 @@ const styles = theme => ({
     }
 })
 injectTapEventPlugin()
+
 addLocaleData(enLocaleData)
 class FeatureList extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            open: false,
+            addEntry: false
+        }
+    }
+    handleOpen = () => {
+        this.setState({ open: true, addEntry: true })
+    }
+
     render() {
         let { classes, map, childrenProps } = this.props
         return (
             <IntlProvider locale='en' messages={enMessages}>
                 <MuiThemeProvider theme={theme}>
                     <div className={classes.root}>
-                        <NavBar childrenProps={childrenProps} />
-                        <ContentGrid childrenProps={childrenProps} map={map} />
+                        <NavBar childrenProps={childrenProps} open={this.state.open} addEntry={this.state.addEntry} />
+                        <ContentGrid handleOpen={this.handleOpen} childrenProps={childrenProps} map={map} />
                     </div>
                 </MuiThemeProvider>
             </IntlProvider>

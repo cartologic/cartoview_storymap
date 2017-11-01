@@ -47,15 +47,17 @@ class FeatureListContainer extends Component {
             filterType: null,
             ImageBase64: null,
             xyValue:null,
-            showDialoge:false
+            showDialog:false
         }
         this.urls = new URLS(this.props.urls)
         this.map=getMap()
         this.featureCollection = new ol.Collection()
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
-        // this.getLocation()
-    }
 
+    }
+    openDialog=(bool)=>{
+        this.setState({showDialog:bool})
+    }
     onFeatureMove = (event) => {
 
         
@@ -74,7 +76,7 @@ class FeatureListContainer extends Component {
                 
 
 
-            this.setState({geometry,showDialoge:true})
+            this.setState({geometry,showDialog:true})
     }
             getLocation=()=>{
                 
@@ -105,14 +107,14 @@ class FeatureListContainer extends Component {
                         offsetY: -20,
                         font: '18px serif'
                     }),
-                     
+                    zIndex:50000
                 })
                 this.vectorLayer = new ol.layer.Vector({
                     source: new ol.source.Vector({
                         features: [this.feature]
                     }),
                     style: featureStyle,
-                    
+                    zIndex:10000
                 })
                 this.modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.feature]),
@@ -122,10 +124,12 @@ class FeatureListContainer extends Component {
                 this.modifyInteraction.on('modifyend', this.onFeatureMove)
                 this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
                 this.setState({vectorLayer:this.vectorLayer})
+             
                 this.map.addLayer(this.vectorLayer)
+                console.log(this.map.getLayers())
                 this.map.addInteraction(this.modifyInteraction)          
                 addSelectionLayer(this.map, this.featureCollection, styleFunction)
-            }
+               }
             removeLocation=()=>{
                 console.log("remoce")
                this.map.removeLayer(this.state.vectorLayer);
@@ -206,8 +210,6 @@ class FeatureListContainer extends Component {
             return response.json()
         }).then((config) => {
             if (config) {
-//             MapConfigService.load(MapConfigTransformService.transform(
-// config), this.map, proxyURL)
                 this.setState({ mapIsLoading: false })
             }
         }).catch((error) => {
@@ -231,7 +233,6 @@ class FeatureListContainer extends Component {
         return promise
     }
  
-
     getFeatures = (startIndex) => {
         let { totalFeatures } = this.state
         const { urls, config } = this.props
@@ -503,8 +504,9 @@ class FeatureListContainer extends Component {
             SaveImageBase64: this.SaveImageBase64,
             getLocation:this.getLocation,
             removeLocation:this.removeLocation,
-            showDialoge:this.state.showDialoge,
-            geometry:this.state.geometry
+            showDialog:this.state.showDialog,
+            geometry:this.state.geometry,
+            openDialog:this.openDialog
 
           
         }

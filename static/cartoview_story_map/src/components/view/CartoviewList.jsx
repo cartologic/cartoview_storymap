@@ -80,7 +80,7 @@ class CartoviewList extends React.Component {
        getdescribeFeatureType(this.props.config.layer).then(data=>{this.setState({featureTypes:data})})
     }
  componentWillReceiveProps(nextProps){
-    
+ 
      this.setState({add:nextProps.addEntry})
  }
  handleClose=()=>{

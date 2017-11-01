@@ -39,11 +39,20 @@ const styles = theme => ( {
 } )
 class NavBar extends React.Component {
     state = {
-        mobileOpen: false,
+        mobileOpen: this.props.open,
+        addEntry:this.props.addEntry
     }
     handleDrawerClose = () => {
         const { mobileOpen } = this.state
-        this.setState( { mobileOpen: !mobileOpen } )
+        this.setState( { mobileOpen: !mobileOpen,addEntry:false } )
+    }
+    handleDrawerOpen = () => {
+        const { mobileOpen } = this.state
+        this.setState( { mobileOpen:true } )
+    }
+    componentWillReceiveProps(nextProps){
+       
+        this.setState({mobileOpen:nextProps.open,addEntry:nextProps.addEntry})
     }
     render() {
         const { classes, theme, childrenProps } = this.props
@@ -64,7 +73,7 @@ class NavBar extends React.Component {
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
-                    <MobileDrawer theme={theme} classes={classes} mobileOpen={mobileOpen} childrenProps={childrenProps} handleDrawerToggle={this.handleDrawerClose} />
+                    <MobileDrawer addEntry={this.state.addEntry} theme={theme} classes={classes} mobileOpen={mobileOpen} childrenProps={childrenProps} handleDrawerToggle={this.handleDrawerClose} />
                 </Hidden>
             </div>
         )

@@ -71,17 +71,18 @@ export const checkURL = ( value ) => {
 }
 export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
 
-    new ol.layer.Vector( {
+   const layer= new ol.layer.Vector( {
         source: new ol.source.Vector( { features: featureCollection } ),
         style: styleFunction,
         title: "Selected Features",
-        zIndex: 10000,
+        zIndex: 10,
         format: new ol.format.GeoJSON( {
             defaultDataProjection: map.getView().getProjection(),
             featureProjection: map.getView().getProjection()
         } ),
         map: map
     } )
+layer.setZIndex(10000)
 }
 export const getdescribeFeatureType=(typename)=>{
    

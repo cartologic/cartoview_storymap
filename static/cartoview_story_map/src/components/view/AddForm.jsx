@@ -8,6 +8,7 @@ import ImageDialog from './ImageUploadDialog'
 import { Message } from './statelessComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Hidden from 'material-ui/Hidden'
 import { commentsPropTypes } from './sharedPropTypes'
 import { withStyles } from 'material-ui/styles'
 import IconButton from 'material-ui/IconButton';
@@ -66,7 +67,7 @@ class addForm extends React.Component {
     }
     WFS = new WFSClient(this.props.urls)
     componentDidMount() {
-        console.log(this.props)
+        
     }
     getType = (type) => {
         var result = ""
@@ -84,7 +85,7 @@ class addForm extends React.Component {
         //   });
     }
     save = () => {
-        console.log("geomertry", this.props.geometry)
+
         this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
             res.text()).then((res) => {
             this.setState({success:true},this.props.back())
@@ -111,13 +112,15 @@ class addForm extends React.Component {
         } = this.props
         return (
             <div>
+                <Hidden smDown>
                 <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
                     <BackIcon />
                 </IconButton>
+                </Hidden>
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
-                            console.log(feature.name, feature.localType)
+            
                             if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime") {
                                 return <TextField key={i}
                                     fullWidth

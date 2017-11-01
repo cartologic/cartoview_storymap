@@ -5,7 +5,7 @@ import Grid from 'material-ui/Grid'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import compose from 'recompose/compose'
-import {upperPropTypes} from './sharedPropTypes'
+import { upperPropTypes } from './sharedPropTypes'
 import { withStyles } from 'material-ui/styles'
 import withWidth from 'material-ui/utils/withWidth'
 import AddIcon from 'material-ui-icons/Add';
@@ -30,9 +30,9 @@ import Dialog, {
     DialogContent,
     DialogContentText,
     DialogTitle,
-  } from 'material-ui/Dialog';
+} from 'material-ui/Dialog';
 
-  
+
 const styles = theme => ({
     root: {
         [theme.breakpoints.up('md')]: {
@@ -52,58 +52,65 @@ const styles = theme => ({
 })
 class ContentGrid extends Component {
     state = {
-    
-        add:false,
-        showDialoge:this.props.childrenProps.showDialoge,
-        switch:true,
-        success:false,
+
+        add: false,
+        switch: true,
+        success: false,
     }
-    componentDidMount(){
-        const {map}=this.props
+    componentDidMount() {
+        const { map } = this.props
         map.setTarget(this.mapDiv)
     }
     componentDidUpdate(prevProps, prevState) {
         prevProps.map.updateSize()
     }
-    componentWillReceiveProps(nextProps){
-    
-        this.setState({showDialoge:nextProps.childrenProps.showDialoge},console.log(this.state))
+    openDrawerShowDialog = () => {
+        const {childrenProps,handleOpen}=this.props
+        childrenProps.openDialog(false)
+        handleOpen()
     }
-    addEntry=()=>{
-        this.setState({showDialoge:false,add:true})
-        }
-        handleRequestClose = () => {
-            this.setState({ showDialoge: false });
-          };
- 
+    addEntry = () => {
+
+        this.setState({ add: true }, this.openDrawerShowDialog)
+
+    }
+    handleRequestClose = () => {
+        const { childrenProps } = this.props
+        childrenProps.openDialog(false)
+    };
+
     render() {
-  
+
         const { classes, childrenProps } = this.props
         return (
             <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
-                <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{position:"relative"}}>
-                    <div ref={(mapDiv)=>this.mapDiv=mapDiv} className={classes.mapPanel}>
-                   
+                <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{ position: "relative" }}>
+                    <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classes.mapPanel}>
+
                     </div>
-                   
-                
-                    {loggedUser==owner&& 
-                    <div>
-                      {this.state.switch&&
-          <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{
-              this.setState({switch:false})
-              this.props.childrenProps.getLocation()}}>
-                <AddIcon />
-            </Button>}
-        
-        
-            {!this.state.switch&& 
-            <Button style={{position:"absolute",bottom:10,left:10,zIndex:100}} fab color="primary" aria-label="add" onClick={()=>{this.setState({switch:true,add:false})
-             this.props.childrenProps.removeLocation()}}>
-                <RemoveIcon />
-            </Button>}
-        </div>
-        }
+
+
+                    {loggedUser == owner &&
+                        <div>
+                            {this.state.switch &&
+                                <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                    this.setState({ switch: false })
+
+                                    this.props.childrenProps.getLocation()
+                                }}>
+                                    <AddIcon />
+                                </Button>}
+
+
+                            {!this.state.switch &&
+                                <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                    this.setState({ switch: true, add: false })
+                                    this.props.childrenProps.removeLocation()
+                                }}>
+                                    <RemoveIcon />
+                                </Button>}
+                        </div>
+                    }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
                     <Paper className={classes.paper}><CartoviewList handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
@@ -112,24 +119,24 @@ class ContentGrid extends Component {
 
 
 
-            <div>
-       
-        <Dialog open={this.state.showDialoge} onRequestClose={this.handleRequestClose}>
-          <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
-          <DialogContent>
-          
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleRequestClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={this.addEntry} color="primary" autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-     
+                <div>
+
+                    <Dialog open={ childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
+                        <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
+                        <DialogContent>
+
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleRequestClose} color="primary">
+                                Disagree
+                             </Button>
+                            <Button onClick={this.addEntry} color="primary" autoFocus>
+                                Agree
+                              </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+
             </Grid>
         )
     }
