@@ -48,26 +48,27 @@ Message.propTypes = {
     align: PropTypes.string
 }
 export const Item = (props) => {
+
     const { openDetails, classes, feature, attachment, config } = props
     return <div >
-         <Card className={classes.card }  onClick={() => openDetails({  detailsOfFeature: feature })}>
-          <CardHeader
- 
-            title={`${feature.getProperties()[config.titleAttribute]}`}
-            subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`}/>
-        
-          <Img className={classes.bigAvatar}
+        <Card className="Scrollable" onClick={() => openDetails({ detailsOfFeature: feature })}>
+            <CardHeader
+
+                title={`${feature.getProperties()[config.titleAttribute]}`}
+                subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
+
+            <Img className={classes.bigAvatar}
                 src={[
                     attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
                 ]}
-                loader={<Loader />}/>
-          <CardContent>
-            <Typography component="p">
-            {config.description ? feature.getProperties()[config.description] : ''}
+                loader={<Loader />} />
+            <CardContent>
+                <Typography component="p">
+                    {config.description ? feature.getProperties()[config.description] : ''}
                 </Typography>
-          </CardContent>
-          </Card>
-            <Divider />
+            </CardContent>
+        </Card>
+        <Divider />
         <br/>
     </div>
 }
@@ -80,7 +81,7 @@ Item.propTypes = {
 
 }
 export const FeatureListComponent = (props) => {
-
+    var count=0
     const {
         features,
         loading,
@@ -96,14 +97,63 @@ export const FeatureListComponent = (props) => {
     return (!loading && !attachmentIsLoading && features && features.length >
         0 ?
         <div>
-
-
-           
+  
             <Message align="left" message={subheader} type="subheading" />
-            <List style={{"marginTop":"10%"}}>
+
+            <List style={{ "marginTop": "10%" }} onscr>
+
                 {features && features.map((feature, index) => {
                     const attachment = searchFilesById(feature.getId())
-                    return <Item key={index} classes={classes} feature={feature} config={config} attachment={attachment} openDetails={openDetails} />
+                    return <div key={index} >
+                  
+                        <Card id={"id" + index} 
+                        className="outFocus"
+                            onWheel={() => {
+                            //    if(count==index)
+                            // {    
+                                console.log(count,index)
+                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
+                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
+                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
+                                openDetails({ detailsOfFeature: feature }, console.log("done"))
+                                // count=count+1
+                                console.log(count,index)
+                            // }
+                            // else{console.log("jj",count,index)}
+                        }}
+                            onScroll={() => {
+                                console.log("Scroll")
+                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
+                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
+                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
+                                openDetails({ detailsOfFeature: feature }, console.log("done"))
+                            }}
+                            onClick={() => {
+                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
+                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
+                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
+                                openDetails({ detailsOfFeature: feature }, console.log("done"))
+                            }}>
+
+                        <CardHeader
+
+                            title={`${feature.getProperties()[config.titleAttribute]}`}
+                            subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
+
+                        <Img className={classes.bigAvatar}
+                            src={[
+                                attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
+                            ]}
+                            loader={<Loader />} />
+                        <CardContent>
+                            <Typography component="p">
+                                {config.description ? feature.getProperties()[config.description] : ''}
+                            </Typography>
+                        </CardContent>
+                              </Card>
+                              <br/>
+        <Divider/>
+       </div>
                 })}
             </List>
         </div> :

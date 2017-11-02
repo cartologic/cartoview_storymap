@@ -109,7 +109,8 @@ this.setState({success:true})
             searchCommentById,
             addComment,
             SaveImageBase64,
-            addEntry
+            addEntry,
+            handleSwitch
         } = this.props
 
         let { detailsModeEnabled, detailsOfFeature ,add} = this.state
@@ -120,7 +121,7 @@ this.setState({success:true})
                     <Divider />
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled &&!add &&<FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
-                {!selectionModeEnabled && !detailsModeEnabled && add &&<AddForm {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back}  message={"No Features Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && add &&<AddForm  {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back}  message={"No Features Found"} />}
                 
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>

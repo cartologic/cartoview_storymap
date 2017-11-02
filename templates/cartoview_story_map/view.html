@@ -6,7 +6,12 @@
     <title>{{ instance.title }}</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" />    
     <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
-    <style>
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+</script>
+   <style>
         html,body {
             height: 100%;
             margin: 0px;
@@ -19,6 +24,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
 </head>
 <body>
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</script>
 <div style="height: 100%;" id="root"></div>
 <script type="text/javascript">
     {% if instance %}

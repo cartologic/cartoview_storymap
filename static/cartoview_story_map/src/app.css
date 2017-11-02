@@ -83,12 +83,12 @@
   left: 20px;
 }
 .inFocus {
-  opacity: 1.0;
-  background-color: #f0f0f0;
+  opacity: 1.0 !important;
+  background-color: #f0f0f0!important;
 }
 
 .outFocus {
-  opacity: 0.3;
+  opacity: 0.7;
   background-color: white;
 }
 .m-button{

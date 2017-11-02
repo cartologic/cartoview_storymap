@@ -93,6 +93,7 @@ class addForm extends React.Component {
                 throw Error(error)
             })
          this.props.handleOpen()
+         this.props.handleSwitch()
          this.props.back()
         }
    

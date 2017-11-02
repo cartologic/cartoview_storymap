@@ -59,8 +59,12 @@ class ContentGrid extends Component {
     }
     componentDidMount() {
         const { map } = this.props
+       
+          
+          
         map.setTarget(this.mapDiv)
     }
+    
     componentDidUpdate(prevProps, prevState) {
         prevProps.map.updateSize()
     }
@@ -78,7 +82,10 @@ class ContentGrid extends Component {
         const { childrenProps } = this.props
         childrenProps.openDialog(false)
     };
-
+handleSwitch=()=>{
+    this.setState({switch:true})
+    this.props.childrenProps.removeLocation()
+}
     render() {
 
         const { classes, childrenProps } = this.props
@@ -113,7 +120,7 @@ class ContentGrid extends Component {
                     }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper className={classes.paper}><CartoviewList handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
+                    <Paper className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
 
 
