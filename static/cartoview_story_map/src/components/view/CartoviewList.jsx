@@ -117,7 +117,7 @@ this.setState({success:true})
         return (
             <div className={classes.root}>
                 {config.filters && <div className={classes.searchMargin}>
-                    <SearchInput openDetails={this.openDetails} search={search} config={config} addStyleZoom={this.addStyleZoom} searchFilesById={searchFilesById} />
+                    {/* <SearchInput openDetails={this.openDetails} search={search} config={config} addStyleZoom={this.addStyleZoom} searchFilesById={searchFilesById} /> */}
                     <Divider />
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled &&!add &&<FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
