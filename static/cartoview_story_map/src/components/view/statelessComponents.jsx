@@ -100,7 +100,7 @@ export const FeatureListComponent = (props) => {
   
             <Message align="left" message={subheader} type="subheading" />
 
-            <List style={{ "marginTop": "10%" }} onscr>
+            <List style={{ "marginTop": "10%" }} >
 
                 {features && features.map((feature, index) => {
                     const attachment = searchFilesById(feature.getId())

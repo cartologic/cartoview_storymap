@@ -27,21 +27,25 @@ class FeatureList extends Component {
         super(props)
         this.state = {
             open: false,
-            addEntry: false
+            addEntry: false,
+            switch:true
         }
     }
     handleOpen = () => {
         this.setState({ open: true, addEntry: true })
     }
-
+handleSwitch(){
+this.setstate({switch:true})
+this.props.childrenProps.removeLocation()
+}
     render() {
         let { classes, map, childrenProps } = this.props
         return (
             <IntlProvider locale='en' messages={enMessages}>
                 <MuiThemeProvider theme={theme}>
                     <div className={classes.root}>
-                        <NavBar childrenProps={childrenProps} open={this.state.open} addEntry={this.state.addEntry} />
-                        <ContentGrid handleOpen={this.handleOpen} childrenProps={childrenProps} map={map} />
+                        <NavBar handeSwitch={this.handleSwitch} childrenProps={childrenProps} open={this.state.open} addEntry={this.state.addEntry} />
+                        <ContentGrid handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} childrenProps={childrenProps} map={map} />
                     </div>
                 </MuiThemeProvider>
             </IntlProvider>

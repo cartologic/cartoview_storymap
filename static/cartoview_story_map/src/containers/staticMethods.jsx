@@ -75,14 +75,14 @@ export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
         source: new ol.source.Vector( { features: featureCollection } ),
         style: styleFunction,
         title: "Selected Features",
-        zIndex: 10,
+  
         format: new ol.format.GeoJSON( {
             defaultDataProjection: map.getView().getProjection(),
             featureProjection: map.getView().getProjection()
         } ),
-        map: map
+        // map: map
     } )
-layer.setZIndex(10000)
+       map.addLayer(layer)
 }
 export const getdescribeFeatureType=(typename)=>{
    

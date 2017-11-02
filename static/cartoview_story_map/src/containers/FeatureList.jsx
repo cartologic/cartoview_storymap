@@ -107,14 +107,14 @@ class FeatureListContainer extends Component {
                         offsetY: -20,
                         font: '18px serif'
                     }),
-                    zIndex:50000
+                  
                 })
                 this.vectorLayer = new ol.layer.Vector({
                     source: new ol.source.Vector({
                         features: [this.feature]
                     }),
                     style: featureStyle,
-                    zIndex:10000
+                   
                 })
                 this.modifyInteraction = new ol.interaction.Modify({
                     features: new ol.Collection([this.feature]),
@@ -126,9 +126,9 @@ class FeatureListContainer extends Component {
                 this.setState({vectorLayer:this.vectorLayer})
              
                 this.map.addLayer(this.vectorLayer)
-                console.log(this.map.getLayers())
+                this.vectorLayer.setZIndex(10)
                 this.map.addInteraction(this.modifyInteraction)          
-                addSelectionLayer(this.map, this.featureCollection, styleFunction)
+               
                }
             removeLocation=()=>{
                 console.log("remoce")
@@ -377,8 +377,10 @@ class FeatureListContainer extends Component {
         var duration = 1000;
         // console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
+        
         var view=this.map.getView()
         var zoom = view.getZoom();
+        console.log("zoom",zoom)
         var parts = 2;
         var called = false;
         function callback(complete) {
@@ -404,7 +406,7 @@ class FeatureListContainer extends Component {
         }, callback);
         
         const { config } = this.props
-        
+      
         if (config && config.zoomOnSelect) {
             // this.map.getView().fit(feature.getGeometry().getExtent(),
             //     this.map.getSize(), { duration: 10000 })
