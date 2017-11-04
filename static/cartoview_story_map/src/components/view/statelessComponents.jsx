@@ -108,26 +108,26 @@ export const FeatureListComponent = (props) => {
                   
                         <Card id={"id" + index} 
                         className="outFocus"
-                            onWheel={() => {
-                            //    if(count==index)
-                            // {    
-                                console.log(count,index)
-                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
-                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
-                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
-                                openDetails({ detailsOfFeature: feature }, console.log("done"))
-                                // count=count+1
-                                console.log(count,index)
-                            // }
-                            // else{console.log("jj",count,index)}
-                        }}
-                            onScroll={() => {
-                                console.log("Scroll")
-                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
-                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
-                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
-                                openDetails({ detailsOfFeature: feature }, console.log("done"))
-                            }}
+                        //     onWheel={() => {
+                        //     //    if(count==index)
+                        //     // {    
+                        //         console.log(count,index)
+                        //         $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
+                        //         $('#id' + index).removeClass("outFocus").addClass("inFocus");
+                        //         $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
+                        //         openDetails({ detailsOfFeature: feature }, console.log("done"))
+                        //         // count=count+1
+                        //         console.log(count,index)
+                        //     // }
+                        //     // else{console.log("jj",count,index)}
+                        // }}
+                        //     onScroll={() => {
+                        //         console.log("Scroll")
+                        //         $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
+                        //         $('#id' + index).removeClass("outFocus").addClass("inFocus");
+                        //         $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
+                        //         openDetails({ detailsOfFeature: feature }, console.log("done"))
+                        //     }}
                             onClick={() => {
                                 $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
                                 $('#id' + index).removeClass("outFocus").addClass("inFocus");

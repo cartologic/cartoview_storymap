@@ -9,6 +9,12 @@ const filter = t.struct({
     type: t.String,
     name: t.String
 })
+const Color = t.enums({
+  bluemarker: 'Blue',
+  yellowmarker: 'Yellow',
+  blakmarker: 'Black',
+  redmarker:'Red'
+});
 const formConfig = t.struct({
     layer: t.String,
     titleAttribute: t.String,
@@ -18,6 +24,7 @@ const formConfig = t.struct({
     // pagination: t.String,
     DisplayNumbersOnMarkers: t.Boolean,
     // enableImageListView: t.Boolean
+    color:Color
 })
 const Form = t.form.Form
 const getPropertyFromConfig = (config, property, defaultValue) => {
@@ -162,7 +169,10 @@ export default class ListOptions extends Component {
                 //         { value: '40', text: "40" },
                 //         { value: '80', text: "80" }
                 //     ]
-                // }
+                // } 
+                color:{
+                    label: "Marker Color"
+                }
             }
         }
         return options

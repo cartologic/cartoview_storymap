@@ -16,9 +16,9 @@ export const styleFunction = ( feature ) => {
     anchor: [0.5, 45],
    anchorXUnits: 'fraction',
    anchorYUnits: 'pixels',
-   src: urls.static +'cartoview_story_map/marker.png'
+   src: urls.static +'cartoview_story_map/'+props.color+'.png'
 }))
-
+console.log(props)
 const styles = {
     'Point': new ol.style.Style( { image: image,text:text } ),
     'LineString': new ol.style.Style( {
