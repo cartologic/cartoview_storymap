@@ -1,6 +1,6 @@
 import List, { ListItem, ListItemText } from 'material-ui/List'
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
-
+import ReactDOM from 'react-dom'
 import Button from 'material-ui/Button'
 import { Carousel } from 'react-responsive-carousel'
 import CartoviewList from './CartoviewList'
@@ -30,6 +30,8 @@ import FavoriteIcon from 'material-ui-icons/Favorite';
 import ShareIcon from 'material-ui-icons/Share';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import AddIcon from 'material-ui-icons/Add';
+import Waypoint from 'react-waypoint';
+
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
     return (
@@ -69,7 +71,7 @@ export const Item = (props) => {
             </CardContent>
         </Card>
         <Divider />
-        <br/>
+        <br />
     </div>
 }
 Item.propTypes = {
@@ -80,93 +82,102 @@ Item.propTypes = {
     openDetails: PropTypes.func.isRequired,
 
 }
-export const FeatureListComponent = (props) => {
-    var count=0
-    const {
-        features,
-        loading,
-        subheader,
-        message,
-        classes,
-        config,
-        attachmentIsLoading,
-        searchFilesById,
-        openDetails,
-        addEntry
-    } = props
-    return (!loading && !attachmentIsLoading && features && features.length >
-        0 ?
-        <div>
-  
-            <Message align="left" message={subheader} type="subheading" />
+$('#contents').scroll(function () {
+    // scrollPosition = $(this).scrollTop();
+    console.log("scroll")
+});
 
-            <List style={{ "marginTop": "10%" }} >
+export class FeatureListComponent extends React.Component {
+    constructor(props) {
+        super(props)
 
-                {features && features.map((feature, index) => {
-                    const attachment = searchFilesById(feature.getId())
-                    return <div key={index} >
-                  
-                        <Card id={"id" + index} 
-                        className="outFocus"
-                        //     onWheel={() => {
-                        //     //    if(count==index)
-                        //     // {    
-                        //         console.log(count,index)
-                        //         $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
-                        //         $('#id' + index).removeClass("outFocus").addClass("inFocus");
-                        //         $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
-                        //         openDetails({ detailsOfFeature: feature }, console.log("done"))
-                        //         // count=count+1
-                        //         console.log(count,index)
-                        //     // }
-                        //     // else{console.log("jj",count,index)}
-                        // }}
-                        //     onScroll={() => {
-                        //         console.log("Scroll")
-                        //         $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
-                        //         $('#id' + index).removeClass("outFocus").addClass("inFocus");
-                        //         $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
-                        //         openDetails({ detailsOfFeature: feature }, console.log("done"))
-                        //     }}
-                            onClick={() => {
-                                $('#id' + (index - 1)).removeClass("inFocus").addClass("outFocus");
-                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
-                                $('#id' + (index + 1)).removeClass("inFocus").addClass("outFocus");
-                                openDetails({ detailsOfFeature: feature }, console.log("done"))
-                            }}>
 
-                        <CardHeader
+    }
 
-                            title={`${feature.getProperties()[config.titleAttribute]}`}
-                            subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
+    componentDidMount() {
 
-                        <Img className={classes.bigAvatar}
-                            src={[
-                                attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
-                            ]}
-                            loader={<Loader />} />
-                        <CardContent>
-                            <Typography component="p">
-                                {config.description ? feature.getProperties()[config.description] : ''}
-                            </Typography>
-                        </CardContent>
-                              </Card>
-                              <br/>
-        <Divider/>
-       </div>
-                })}
-            </List>
-        </div> :
-        features && features.length == 0 ?
-            <Message message={message} type="body2" /> :
-            <Loader />)
+        const { featuresIsLoading, attachmentIsLoading, features } = this.props
+        //    if(!featuresIsLoading && !attachmentIsLoading && features && features.length){
+        //    
+
+    }
+    render() {
+        const {
+            features,
+            featuresIsLoading,
+            subheader,
+            message,
+            classes,
+            config,
+            attachmentIsLoading,
+            searchFilesById,
+            openDetails,
+            addEntry
+        } = this.props
+        console.log(this.props)
+        return (
+            <div style={{ height: "100%" }} >
+                {!featuresIsLoading && !attachmentIsLoading && features && features.length >
+                    0 ?
+                    <div id="contents" style={{ height: "100%", overflowY: 'overlay' }} >
+
+                        <Message align="left" message={subheader} type="subheading" />
+
+                        <List style={{ "marginTop": "10%", overflowY: 'overlay' }}  >
+
+                            {features && features.map((feature, index) => {
+                                const attachment = searchFilesById(feature.getId())
+                                return <div key={index} >
+
+
+                                    <div>
+                                        <Card id={"id" + index} ref={this.props.innerRef} className='image-container'
+
+
+                                            onClick={() => {
+                                                $('.image-container').removeClass("inFocus").addClass("outFocus");
+                                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
+
+                                                openDetails({ detailsOfFeature: feature }, console.log("done"))
+                                            }}>
+
+                                            <CardHeader
+
+                                                title={`${feature.getProperties()[config.titleAttribute]}`}
+                                                subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
+
+                                            <Img className={classes.bigAvatar} style={{ height: "250px" }}
+                                                src={[
+                                                    attachment.length > 0 ? attachment[0].file : urls.static + 'cartoview_story_map/img/no-img.png'
+                                                ]}
+                                                loader={<Loader />} />
+                                            <CardContent>
+                                                <Typography component="p">
+                                                    {config.description ? feature.getProperties()[config.description] : ''}
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+
+                                    <br />
+                                    <Divider />
+                                </div>
+                            })}
+                        </List>
+                    </div> :
+                    features && features.length == 0 ?
+                        <Message message={message} type="body2" /> :
+                        <Loader />}
+            </div>
+        )
+    }
 }
 FeatureListComponent.propTypes = {
     classes: PropTypes.object.isRequired,
     features: PropTypes.array,
     config: PropTypes.object.isRequired,
     openDetails: PropTypes.func.isRequired,
-  
+
     subheader: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -235,7 +246,7 @@ Slider.propTypes = {
     attachments: PropTypes.array.isRequired
 }
 export const MobileDrawer = (props) => {
-    const { theme, mobileOpen, classes, handleDrawerToggle, childrenProps ,addEntry} =
+    const { theme, mobileOpen, classes, handleDrawerToggle, childrenProps, addEntry } =
         props
     return (
         <Drawer

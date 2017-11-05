@@ -12,7 +12,7 @@ const filter = t.struct({
 const Color = t.enums({
   bluemarker: 'Blue',
   yellowmarker: 'Yellow',
-  blakmarker: 'Black',
+  blackmarker: 'Black',
   redmarker:'Red'
 });
 const formConfig = t.struct({

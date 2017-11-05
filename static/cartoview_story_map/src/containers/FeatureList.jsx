@@ -1,5 +1,5 @@
 import 'openlayers/dist/ol.css'
-import'../app.css'
+import '../app.css'
 import React, { Component } from 'react'
 import {
     addSelectionLayer,
@@ -46,25 +46,25 @@ class FeatureListContainer extends Component {
             activeFeatures: null,
             filterType: null,
             ImageBase64: null,
-            xyValue:null,
-            showDialog:false
+            xyValue: null,
+            showDialog: false
         }
         this.urls = new URLS(this.props.urls)
-        this.map=getMap()
+        this.map = getMap()
         this.featureCollection = new ol.Collection()
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
 
     }
-    openDialog=(bool)=>{
-        this.setState({showDialog:bool})
+    openDialog = (bool) => {
+        this.setState({ showDialog: bool })
     }
     onFeatureMove = (event) => {
 
-        
+
         console.log(this.map.getView().getProjection().getCode())
-        const crs ='EPSG:'+this.state.crs
+        const crs = 'EPSG:' + this.state.crs
         console.log(crs)
-        var center=ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
+        var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
             this.map.getView().getProjection())
 
         const geometry = {
@@ -73,68 +73,68 @@ class FeatureListContainer extends Component {
             x: center[0],
             y: center[1]
         }
-                
 
 
-            this.setState({geometry,showDialog:true})
+
+        this.setState({ geometry, showDialog: true })
     }
-            getLocation=()=>{
-                
-                console.log("in get location ")
-                this.feature = new ol.Feature({
-                    geometry: new ol.geom.Point([0, 0]),
-                    geometryName: 'the_geom'
-                })
-                const featureStyle = new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [
-                            0.5, 31
-                        ],
-                        anchorXUnits: 'fraction',
-                        anchorYUnits: 'pixels',
-                       
-                        src: this.props.urls.static +
-                        'cartoview_story_map/greenmarker.png'
-                    }),
-                    text: new ol.style.Text({
-                        text: '+',
-                        fill: new ol.style.Fill({ color: '#fff' }),
-                        stroke: new ol.style.Stroke({
-                            color: '#fff',
-                            width: 2
-                        }),
-                        textAlign: 'center',
-                        offsetY: -20,
-                        font: '18px serif'
-                    }),
-                  
-                })
-                this.vectorLayer = new ol.layer.Vector({
-                    source: new ol.source.Vector({
-                        features: [this.feature]
-                    }),
-                    style: featureStyle,
-                   
-                })
-                this.modifyInteraction = new ol.interaction.Modify({
-                    features: new ol.Collection([this.feature]),
-                    pixelTolerance: 32,
-                    style: [] 
-                })
-                this.modifyInteraction.on('modifyend', this.onFeatureMove)
-                this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
-                this.setState({vectorLayer:this.vectorLayer})
-             
-                this.map.addLayer(this.vectorLayer)
-                this.vectorLayer.setZIndex(10)
-                this.map.addInteraction(this.modifyInteraction)          
-               
-               }
-            removeLocation=()=>{
-                console.log("remoce")
-               this.map.removeLayer(this.state.vectorLayer);
-                
-            }
+    getLocation = () => {
+
+        console.log("in get location ")
+        this.feature = new ol.Feature({
+            geometry: new ol.geom.Point([0, 0]),
+            geometryName: 'the_geom'
+        })
+        const featureStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [
+                    0.5, 31
+                ],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+
+                src: this.props.urls.static +
+                'cartoview_story_map/greenmarker.png'
+            }),
+            text: new ol.style.Text({
+                text: '+',
+                fill: new ol.style.Fill({ color: '#fff' }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                }),
+                textAlign: 'center',
+                offsetY: -20,
+                font: '18px serif'
+            }),
+
+        })
+        this.vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [this.feature]
+            }),
+            style: featureStyle,
+
+        })
+        this.modifyInteraction = new ol.interaction.Modify({
+            features: new ol.Collection([this.feature]),
+            pixelTolerance: 32,
+            style: []
+        })
+        this.modifyInteraction.on('modifyend', this.onFeatureMove)
+        this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
+        this.setState({ vectorLayer: this.vectorLayer })
+
+        this.map.addLayer(this.vectorLayer)
+        this.vectorLayer.setZIndex(10)
+        this.map.addInteraction(this.modifyInteraction)
+
+    }
+    removeLocation = () => {
+        console.log("remoce")
+        this.map.removeLayer(this.state.vectorLayer);
+
+    }
     addComment = (data) => {
         const { urls, config } = this.props
         const apiData = { ...data, username: config.username }
@@ -200,13 +200,13 @@ class FeatureListContainer extends Component {
         this.singleClickListner()
     }
     loadMap = (mapUrl, proxyURL) => {
-       
+
         this.setState({ mapIsLoading: true })
         fetch(mapUrl, {
             method: "GET",
             credentials: 'include'
         }).then((response) => {
-           
+
             return response.json()
         }).then((config) => {
             if (config) {
@@ -232,7 +232,7 @@ class FeatureListContainer extends Component {
         })
         return promise
     }
- 
+
     getFeatures = (startIndex) => {
         let { totalFeatures } = this.state
         const { urls, config } = this.props
@@ -244,7 +244,7 @@ class FeatureListContainer extends Component {
             typeNames: config.layer,
             outputFormat: 'json',
             srsName: this.map.getView().getProjection().getCode(),
-           
+
             startIndex
         })
         fetch(this.urls.getProxiedURL(requestUrl)).then((response) =>
@@ -252,10 +252,10 @@ class FeatureListContainer extends Component {
             (data) => {
 
 
-            const crs = data.features.length > 0 ? data.crs
-                .properties.name.split(":").pop() : null
+                const crs = data.features.length > 0 ? data.crs
+                    .properties.name.split(":").pop() : null
                 this.getCRS(crs).then((newCRS) => {
-            this.setState({crs})
+                    this.setState({ crs })
                 }, (error) => {
                     throw (error)
                 })
@@ -264,9 +264,9 @@ class FeatureListContainer extends Component {
                     data, {
                         featureProjection: this.map.getView().getProjection()
                     })
-                features.forEach((f,i)=>{
-                   
-                    f.set('featureIndex',i+1)
+                features.forEach((f, i) => {
+
+                    f.set('featureIndex', i + 1)
                 })
                 this.featureCollection.extend(features)
                 const total = data.totalFeatures
@@ -330,7 +330,7 @@ class FeatureListContainer extends Component {
     }
     SaveImageBase64 = (file, featureId) => {
         const { config } = this.props
-        const {attachments}=this.state
+        const { attachments } = this.state
         let promise = new Promise((resolve, reject) => {
             // do a thing, possibly async, then…
             var reader = new FileReader()
@@ -353,8 +353,8 @@ class FeatureListContainer extends Component {
             }
         })
         promise.then((apiData) => {
-            this.saveAttachment(apiData).then(result=>{
-                this.setState({attachments:[...attachments,result]})
+            this.saveAttachment(apiData).then(result => {
+                this.setState({ attachments: [...attachments, result] })
             })
         }, (error) => {
             throw (error)
@@ -373,50 +373,50 @@ class FeatureListContainer extends Component {
             body: JSON.stringify(data)
         }).then((response) => response.json())
     }
-    zoomToFeature = (feature,done=()=>{}) => {
+    zoomToFeature = (feature, done = () => { }) => {
         var duration = 1000;
         // console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
-        
-        var view=this.map.getView()
+
+        var view = this.map.getView()
         var zoom = view.getZoom();
-        console.log("zoom",zoom)
+        console.log("zoom", zoom)
         var parts = 2;
         var called = false;
         function callback(complete) {
-          --parts;
-          if (called) {
-            return;
-          }
-          if (parts === 0 || !complete) {
-            called = true;
-         done(complete);
-          }
+            --parts;
+            if (called) {
+                return;
+            }
+            if (parts === 0 || !complete) {
+                called = true;
+                done(complete);
+            }
         }
         view.animate({
-          center: location,
-          duration: duration
+            center: location,
+            duration: duration
         }, callback);
         view.animate({
-          zoom: zoom - 1,
-          duration: duration / 2
+            zoom: zoom - 1,
+            duration: duration / 2
         }, {
-          zoom: zoom,
-          duration: duration / 2
-        }, callback);
-        
+                zoom: zoom,
+                duration: duration / 2
+            }, callback);
+
         const { config } = this.props
-      
+
         if (config && config.zoomOnSelect) {
             // this.map.getView().fit(feature.getGeometry().getExtent(),
             //     this.map.getSize(), { duration: 10000 })
             // console.log("cordinate",feature)
-         
+
         }
     }
     singleClickListner = () => {
         this.map.on('singleclick', (e) => {
-            
+
         })
     }
     backToAllFeatures = () => {
@@ -427,7 +427,7 @@ class FeatureListContainer extends Component {
         this.addStyleToFeature([])
     }
     transformFeatures = (layer, features, map, crs) => {
-      
+
         let transformedFeatures = []
         features.forEach((feature) => {
             feature.getGeometry().transform('EPSG:' + crs, map.getView()
@@ -475,8 +475,8 @@ class FeatureListContainer extends Component {
                                     features, map, crs)
                             })
                     }
-                   
-                    } else {
+
+                } else {
                     this.setState({
                         featureIdentifyResult: [],
                         activeFeatures: null,
@@ -486,7 +486,7 @@ class FeatureListContainer extends Component {
                 }
             })
     }
-   
+
     render() {
         const { config, urls } = this.props
         let childrenProps = {
@@ -504,13 +504,13 @@ class FeatureListContainer extends Component {
             searchCommentById: this.searchCommentById,
             urls,
             SaveImageBase64: this.SaveImageBase64,
-            getLocation:this.getLocation,
-            removeLocation:this.removeLocation,
-            showDialog:this.state.showDialog,
-            geometry:this.state.geometry,
-            openDialog:this.openDialog
+            getLocation: this.getLocation,
+            removeLocation: this.removeLocation,
+            showDialog: this.state.showDialog,
+            geometry: this.state.geometry,
+            openDialog: this.openDialog
 
-          
+
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />
     }

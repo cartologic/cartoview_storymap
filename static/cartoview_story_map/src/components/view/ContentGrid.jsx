@@ -40,11 +40,10 @@ const styles = theme => ({
         },
         [theme.breakpoints.down('md')]: {
             height: `calc(100% - 64px)`,
-        }
+        },
     },
     paper: {
         height: "100%",
-        overflowY: 'overlay'
     },
     mapPanel: {
         height: '100%'
@@ -59,17 +58,14 @@ class ContentGrid extends Component {
     }
     componentDidMount() {
         const { map } = this.props
-       
-          
-          
         map.setTarget(this.mapDiv)
     }
-    
+
     componentDidUpdate(prevProps, prevState) {
         prevProps.map.updateSize()
     }
     openDrawerShowDialog = () => {
-        const {childrenProps,handleOpen}=this.props
+        const { childrenProps, handleOpen } = this.props
         childrenProps.openDialog(false)
         handleOpen()
     }
@@ -82,10 +78,13 @@ class ContentGrid extends Component {
         const { childrenProps } = this.props
         childrenProps.openDialog(false)
     };
-handleSwitch=()=>{
-    this.setState({switch:true})
-    this.props.childrenProps.removeLocation()
-}
+    handleSwitch = () => {
+        this.setState({ switch: true })
+        this.props.childrenProps.removeLocation()
+    }
+    handleScroll = () => {
+
+    }
     render() {
 
         const { classes, childrenProps } = this.props
@@ -93,10 +92,7 @@ handleSwitch=()=>{
             <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                 <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{ position: "relative" }}>
                     <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classes.mapPanel}>
-
                     </div>
-
-
                     {loggedUser == owner &&
                         <div>
                             {this.state.switch &&
@@ -107,8 +103,6 @@ handleSwitch=()=>{
                                 }}>
                                     <AddIcon />
                                 </Button>}
-
-
                             {!this.state.switch &&
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
                                     this.setState({ switch: true, add: false })
@@ -120,26 +114,20 @@ handleSwitch=()=>{
                     }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
+                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
-
-
-
-
                 <div>
-
-                    <Dialog open={ childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
+                    <Dialog open={childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
                         <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
                         <DialogContent>
-
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={this.handleRequestClose} color="primary">
                                 Disagree
-                             </Button>
+                            </Button>
                             <Button onClick={this.addEntry} color="primary" autoFocus>
                                 Agree
-                              </Button>
+                            </Button>
                         </DialogActions>
                     </Dialog>
                 </div>
