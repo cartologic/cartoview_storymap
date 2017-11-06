@@ -57,15 +57,18 @@ const styles = theme => ({
         margin: `0 ${theme.spacing.unit * 2}px`,
     },
 })
-class addForm extends React.Component {
+class EditForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            formValue: {},
-            success: false
+            formValue: this.props.featureEdit.getProperties(),
+            success: false,
+            id: this.props.featureEdit.getProperties()['featureIndex'],
+            geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 }
         }
 
     }
+
     WFS = new WFSClient(this.props.urls)
     componentDidMount() {
 
@@ -81,19 +84,17 @@ class addForm extends React.Component {
     }
     handleChange = attr => event => {
         this.state.formValue[attr] = event.target.value
-        // this.setState({
-        //     this.state.[attr]: event.target.value,
-        //   });
+
     }
     save = () => {
 
-        this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
+        this.WFS.updateFeature(this.props.config.layer, this.state.id, this.state.formValue).then(res =>
             res.text()).then((res) => {
                 this.setState({ success: true }, this.props.back())
             }).catch((error) => {
                 throw Error(error)
             })
-        this.props.handleOpen("Feature created Successfully")
+        this.props.handleOpen("Feature updated Successfully")
         this.props.handleSwitch()
         this.props.back()
     }
@@ -114,6 +115,7 @@ class addForm extends React.Component {
         } = this.props
         return (
             <div>
+
                 <Hidden smDown>
                     <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
                         <BackIcon />
@@ -122,13 +124,13 @@ class addForm extends React.Component {
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
-
                             if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
                                     type={this.getType(feature.localType)}
                                     id={feature.name}
+                                    defaultValue={this.props.featureEdit.getProperties()[feature.name]}
                                     label={feature.name}
                                     className={classes.textField}
                                     onChange={this.handleChange(feature.name)}
@@ -172,4 +174,4 @@ class addForm extends React.Component {
 // username: PropTypes.string.isRequired,
 // SaveImageBase64: PropTypes.func.isRequired,
 // }
-export default withStyles(styles)(addForm)
+export default withStyles(styles)(EditForm)

@@ -4,6 +4,7 @@ import { FeatureListComponent } from './statelessComponents'
 import { getdescribeFeatureType } from '../../containers/staticMethods'
 import ItemDetails from "./ItemDetails"
 import AddForm from "./AddForm"
+import EditForm from "./EditForm"
 import React from 'react'
 import SearchInput from './SearchInput'
 import UltimatePaginationMaterialUi from './MaterialPagination'
@@ -51,7 +52,11 @@ class CartoviewList extends React.Component {
         detailsOfFeature: null,
         add: false,
         featureTypes: null,
-        success: false
+        success: false,
+        edit: false,
+        feature: {},
+        msg: ""
+
     }
     back = () => {
         const {
@@ -59,7 +64,7 @@ class CartoviewList extends React.Component {
             featureIdentifyResult,
             addStyleToFeature
         } = this.props
-        this.setState({ detailsModeEnabled: false, detailsOfFeature: null, add: false })
+        this.setState({ detailsModeEnabled: false, detailsOfFeature: null, add: false, edit: false })
         if (selectionModeEnabled) {
             addStyleToFeature(featureIdentifyResult)
         } else {
@@ -73,7 +78,7 @@ class CartoviewList extends React.Component {
 
         const { zoomToFeature, addStyleToFeature } = this.props
         const { detailsOfFeature } = this.state
-        // addStyleToFeature( [ detailsOfFeature ] )
+
         zoomToFeature(detailsOfFeature)
     }
     componentWillMount() {
@@ -87,8 +92,12 @@ class CartoviewList extends React.Component {
     handleClose = () => {
         this.setState({ success: false })
     }
-    handleOpen = () => {
-        this.setState({ success: true })
+    handleOpen = (msg) => {
+        this.setState({ msg, success: true })
+    }
+    handleEditFeature = (feature) => {
+        this.setState({ edit: true, feature: feature })
+
     }
     render() {
         const vertical = 'bottom', horizontal = 'center'
@@ -114,16 +123,16 @@ class CartoviewList extends React.Component {
             handleSwitch
         } = this.props
 
-        let { detailsModeEnabled, detailsOfFeature, add } = this.state
+        let { detailsModeEnabled, detailsOfFeature, add, edit } = this.state
         return (
             <div className={classes.root}>
                 {config.filters && <div className={classes.searchMargin}>
                     {/* <SearchInput openDetails={this.openDetails} search={search} config={config} addStyleZoom={this.addStyleZoom} searchFilesById={searchFilesById} /> */}
-           
-                </div>}
-                {!selectionModeEnabled && !detailsModeEnabled && !add && <FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
-                {!selectionModeEnabled && !detailsModeEnabled && add && <AddForm  {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
 
+                </div>}
+                {!selectionModeEnabled && !detailsModeEnabled && !add && !edit && <FeatureListComponent handleEditFeature={this.handleEditFeature}{...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && add && !edit && <AddForm  {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && !add && edit && <EditForm  {...this.props} featureEdit={this.state.feature} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>
                 </div>}
@@ -134,7 +143,7 @@ class CartoviewList extends React.Component {
                     SnackbarContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">Feature created Successfully</span>}
+                    message={<span id="message-id">{this.state.msg}</span>}
                 />
             </div>
         )

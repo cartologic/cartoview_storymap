@@ -85,9 +85,7 @@ Item.propTypes = {
 }
 $('#contents').scroll(function () {
     // scrollPosition = $(this).scrollTop();
-    console.log("scroll")
 });
-
 export class FeatureListComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -98,21 +96,17 @@ export class FeatureListComponent extends React.Component {
     onSortEnd = ({ oldIndex, newIndex }) => {
         const { openDetails } = this.props
         if (oldIndex == newIndex) {
-
             $('.image-container').removeClass("inFocus").addClass("outFocus");
             $('#id' + newIndex).removeClass("outFocus").addClass("inFocus");
-            openDetails({ detailsOfFeature: this.state.features[newIndex] }, console.log("done"))
+            openDetails({ detailsOfFeature: this.state.features[newIndex] })
         }
-        console.log("features", this.state.features)
         this.setState({
             features: arrayMove(this.state.features, oldIndex, newIndex),
         });
     };
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps)
         this.setState({ features: nextProps.features })
     }
-  
     render() {
 
         const {
@@ -131,17 +125,29 @@ export class FeatureListComponent extends React.Component {
         const SortableItem = SortableElement(({ value, sortIndex, index }) =>
             <div className="card-div" >
                 < Card id={"id" + sortIndex} className='image-container'>
-                    <CardHeader
-                        title={`${value.getProperties()[config.titleAttribute]}`}
-                        subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+                    <div style={{ display: "flex" }}>
+                        <div style={{ "flexGrow": "2" }}> <CardHeader
+                            title={`${value.getProperties()[config.titleAttribute]}`}
+                            subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+                        </div>
+                        <div>
+                            <IconButton onMouseDown={() => { this.props.handleEditFeature(value) }}
+                                className={classes.button} aria-label="Delete" color="primary">
+                                <EditIcon />
+                            </IconButton>
+                        </div>
+                    </div>
                     <Img className={classes.bigAvatar} style={{ height: "250px" }} src={[urls.static + 'cartoview_story_map/img/no-img.png'
                     ]} loader={<Loader />} />
                     <CardContent>
                         <Typography component="p">
                             {config.description ? value.getProperties()[config.description] : ''}
                         </Typography>
+
                     </CardContent>
+
                 </Card>
+
                 <Divider />
                 <br />
             </div>
@@ -240,9 +246,6 @@ export const Slider = (props) => {
                     )}
                 </Carousel>
             </Grid> : <Message align="center" message={'No Attachments'} type="body1" />}
-
-
-
         </Grid>
     </div>
 }

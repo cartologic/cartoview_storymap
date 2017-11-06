@@ -48,7 +48,10 @@ class FeatureListContainer extends Component {
             ImageBase64: null,
             xyValue: null,
             showDialog: false
+
+
         }
+
         this.urls = new URLS(this.props.urls)
         this.map = getMap()
         this.featureCollection = new ol.Collection()
@@ -61,9 +64,9 @@ class FeatureListContainer extends Component {
     onFeatureMove = (event) => {
 
 
-        console.log(this.map.getView().getProjection().getCode())
+
         const crs = 'EPSG:' + this.state.crs
-        console.log(crs)
+
         var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
             this.map.getView().getProjection())
 
@@ -80,7 +83,7 @@ class FeatureListContainer extends Component {
     }
     getLocation = () => {
 
-        console.log("in get location ")
+
         this.feature = new ol.Feature({
             geometry: new ol.geom.Point([0, 0]),
             geometryName: 'the_geom'
@@ -131,7 +134,7 @@ class FeatureListContainer extends Component {
 
     }
     removeLocation = () => {
-        console.log("remoce")
+
         this.map.removeLayer(this.state.vectorLayer);
 
     }
@@ -375,12 +378,12 @@ class FeatureListContainer extends Component {
     }
     zoomToFeature = (feature, done = () => { }) => {
         var duration = 1000;
-        // console.log(feature.getGeometry()[0],feature.getGeometry().getFirstCoordinate(),feature.getGeometry())
+
         var location = feature.getGeometry().getFirstCoordinate()
 
         var view = this.map.getView()
         var zoom = view.getZoom();
-        console.log("zoom", zoom)
+
         var parts = 2;
         var called = false;
         function callback(complete) {
@@ -408,9 +411,6 @@ class FeatureListContainer extends Component {
         const { config } = this.props
 
         if (config && config.zoomOnSelect) {
-            // this.map.getView().fit(feature.getGeometry().getExtent(),
-            //     this.map.getSize(), { duration: 10000 })
-            // console.log("cordinate",feature)
 
         }
     }

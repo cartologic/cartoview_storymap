@@ -57,7 +57,7 @@ class WFSClient {
     }
     insertFeature(typeName, properties, geometry) {
         const [namespace, name] = typeName.split(":");
-        console.log("", typeName);
+     
         const xml =
             `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
           <Insert>
@@ -74,26 +74,21 @@ class WFSClient {
         return this.sendXMLRequest(xml);
     }
     getProps = (properties) => {
-        propsXML = Object.keys(properties).map(key => `<Property>
+        const propsXML = Object.keys(properties).map(key =>
+      {if(key!=="geometry"&&key!=="featureIndex")  { return (`<Property>
         <Name>${key}</Name>prop
         <Value>${properties[key]}</Value>
-      </Property>`)
-      console.log(propsXML)
+      </Property>`)}})
+    
       return propsXML
     }
-    updateFeature(typeName, fid, properties, geometry) {
+    updateFeature(typeName, fid, properties) {
+        
         const xml =
             `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
       <Update typeName="${typeName}" >
         ${this.getProps(properties)}
-        <Property>
-          <Name>${geometry.name}</Name>
-          <Value>
-            <Point xmlns="http://www.opengis.net/gml" srsName="${geometry.srsName}">
-              <pos>${geometry.x} ${geometry.y}</pos>
-            </Point>
-          </Value>
-        </Property>
+      
         <Filter xmlns="http://www.opengis.net/ogc">
           <FeatureId fid="${fid}" />
         </Filter>
