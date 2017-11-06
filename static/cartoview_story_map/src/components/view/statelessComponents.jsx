@@ -30,7 +30,8 @@ import FavoriteIcon from 'material-ui-icons/Favorite';
 import ShareIcon from 'material-ui-icons/Share';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import AddIcon from 'material-ui-icons/Add';
-import Waypoint from 'react-waypoint';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
+import EditIcon from 'material-ui-icons/Edit';
 
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
@@ -90,18 +91,30 @@ $('#contents').scroll(function () {
 export class FeatureListComponent extends React.Component {
     constructor(props) {
         super(props)
-
-
+        this.state = {
+            features: this.props.features ? this.props.features : []
+        }
     }
+    onSortEnd = ({ oldIndex, newIndex }) => {
+        const { openDetails } = this.props
+        if (oldIndex == newIndex) {
 
-    componentDidMount() {
-
-        const { featuresIsLoading, attachmentIsLoading, features } = this.props
-        //    if(!featuresIsLoading && !attachmentIsLoading && features && features.length){
-        //    
-
+            $('.image-container').removeClass("inFocus").addClass("outFocus");
+            $('#id' + newIndex).removeClass("outFocus").addClass("inFocus");
+            openDetails({ detailsOfFeature: this.state.features[newIndex] }, console.log("done"))
+        }
+        console.log("features", this.state.features)
+        this.setState({
+            features: arrayMove(this.state.features, oldIndex, newIndex),
+        });
+    };
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps)
+        this.setState({ features: nextProps.features })
     }
+  
     render() {
+
         const {
             features,
             featuresIsLoading,
@@ -114,55 +127,47 @@ export class FeatureListComponent extends React.Component {
             openDetails,
             addEntry
         } = this.props
-        console.log(this.props)
+
+        const SortableItem = SortableElement(({ value, sortIndex, index }) =>
+            <div className="card-div" >
+                < Card id={"id" + sortIndex} className='image-container'>
+                    <CardHeader
+                        title={`${value.getProperties()[config.titleAttribute]}`}
+                        subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+                    <Img className={classes.bigAvatar} style={{ height: "250px" }} src={[urls.static + 'cartoview_story_map/img/no-img.png'
+                    ]} loader={<Loader />} />
+                    <CardContent>
+                        <Typography component="p">
+                            {config.description ? value.getProperties()[config.description] : ''}
+                        </Typography>
+                    </CardContent>
+                </Card>
+                <Divider />
+                <br />
+            </div>
+        );
+        const SortableList = SortableContainer(({ items }) => {
+            return (
+                <div>
+                    {items.map((value, index) => (
+                        <SortableItem
+                            key={`item-${index}`}
+                            index={index}
+                            sortIndex={index}
+                            value={value}
+                        />
+                    ))}
+                </div>
+            );
+        });
         return (
-            <div style={{ height: "100%" }} >
+            <div>
                 {!featuresIsLoading && !attachmentIsLoading && features && features.length >
                     0 ?
-                    <div id="contents" style={{ height: "100%", overflowY: 'overlay' }} >
-
+                    <div id="contents"  >
                         <Message align="left" message={subheader} type="subheading" />
-
-                        <List style={{ "marginTop": "10%", overflowY: 'overlay' }}  >
-
-                            {features && features.map((feature, index) => {
-                                const attachment = searchFilesById(feature.getId())
-                                return <div key={index} >
-
-
-                                    <div>
-                                        <Card id={"id" + index} ref={this.props.innerRef} className='image-container'
-
-
-                                            onClick={() => {
-                                                $('.image-container').removeClass("inFocus").addClass("outFocus");
-                                                $('#id' + index).removeClass("outFocus").addClass("inFocus");
-
-                                                openDetails({ detailsOfFeature: feature }, console.log("done"))
-                                            }}>
-
-                                            <CardHeader
-
-                                                title={`${feature.getProperties()[config.titleAttribute]}`}
-                                                subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
-
-                                            <Img className={classes.bigAvatar} style={{ height: "250px" }}
-                                                src={[
-                                                    attachment.length > 0 ? attachment[0].file : urls.static + 'cartoview_story_map/img/no-img.png'
-                                                ]}
-                                                loader={<Loader />} />
-                                            <CardContent>
-                                                <Typography component="p">
-                                                    {config.description ? feature.getProperties()[config.description] : ''}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-
-                                    <br />
-                                    <Divider />
-                                </div>
-                            })}
+                        <List style={{ "marginTop": "10%" }}  >
+                            <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>
                     </div> :
                     features && features.length == 0 ?
@@ -177,7 +182,6 @@ FeatureListComponent.propTypes = {
     features: PropTypes.array,
     config: PropTypes.object.isRequired,
     openDetails: PropTypes.func.isRequired,
-
     subheader: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
@@ -267,7 +271,6 @@ export const MobileDrawer = (props) => {
                 </IconButton>
             </div>
             <Divider />
-
             <Paper className={classes.paper}><CartoviewList addEntry={addEntry} {...childrenProps} /></Paper>
         </Drawer>
     )

@@ -95,3 +95,6 @@
 float:"right" !important;
 z-index: 1 !important;
 }
+.card-div{
+  margin-right: 15px;
+}

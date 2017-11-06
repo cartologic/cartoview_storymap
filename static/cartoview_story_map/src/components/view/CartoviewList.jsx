@@ -119,7 +119,7 @@ class CartoviewList extends React.Component {
             <div className={classes.root}>
                 {config.filters && <div className={classes.searchMargin}>
                     {/* <SearchInput openDetails={this.openDetails} search={search} config={config} addStyleZoom={this.addStyleZoom} searchFilesById={searchFilesById} /> */}
-                    <Divider />
+           
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled && !add && <FeatureListComponent {...this.props} subheader="All Features" loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry} message={"No Features Found"} />}
                 {!selectionModeEnabled && !detailsModeEnabled && add && <AddForm  {...this.props} subheader="All Features" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
