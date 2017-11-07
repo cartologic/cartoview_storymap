@@ -2,6 +2,7 @@ import LayerSwitcher from '../vendor/ol3-layerswitcher/src/ol3-layerswitcher'
 import isURL from 'validator/lib/isURL'
 import ol from 'openlayers'
 import Map from 'ol/map';
+import URLS from './URLS'
 export const isWMSLayer = (layer) => {
     return layer.getSource() instanceof ol.source.TileWMS || layer.getSource() instanceof ol
         .source.ImageWMS
@@ -85,9 +86,11 @@ export const addSelectionLayer = (map, featureCollection, styleFunction) => {
     map.addLayer(layer)
 }
 export const getdescribeFeatureType = (typename) => {
-
+    var proxy_urls = new URLS(urls)
     var url = urls.describeFeatureType(typename)
-    return fetch(url).then((response) => { return response.json() }).then((data) => { return data.featureTypes[0].properties })
+    var proxy_url=proxy_urls.getProxiedURL(url)
+   
+    return fetch(proxy_url).then((response) => { return response.json() }).then((data) => { return data.featureTypes[0].properties })
 
 
 }

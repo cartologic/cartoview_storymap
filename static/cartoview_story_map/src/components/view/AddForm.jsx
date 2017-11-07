@@ -67,6 +67,30 @@ class addForm extends React.Component {
 
     }
     WFS = new WFSClient(this.props.urls)
+
+     transactWFS = (action, feature, callback)=> {
+          const [namespace, name] = this.props.config.layer.split(":")
+            var formatGMLOptions = {
+                featureNS: namespace,
+                featureType: name,
+                gmlOptions:this.props.crs
+            };
+
+            console.log(formatGMLOptions)
+            switch (action) {
+                case 'insert':
+                    node = formatWFS.writeTransaction(feature, null, null, formatGMLOptions);
+                    break;
+                case 'update':
+                    node = formatWFS.writeTransaction(null, feature, null, formatGMLOptions);
+                    break;
+                case 'delete':
+                    node = formatWFS.writeTransaction(null, null, feature, formatGMLOptions);
+                    break;
+            }
+
+            var s = new XMLSerializer()
+            var str = s.serializeToString(node)}
     componentDidMount() {
 
     }
