@@ -18,8 +18,10 @@ import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import WFSClient from '../../utils/WFSClient.jsx'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
-
-
+import WFS from 'ol/format/wfs';
+import URLS from '../../containers/URLS'
+import Feature from 'ol/feature';
+import ol from 'openlayers'
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -68,18 +70,19 @@ class addForm extends React.Component {
     }
     WFS = new WFSClient(this.props.urls)
 
-     transactWFS = (action, feature, callback)=> {
+     transactWFS = (action, feature)=> {
+          var formatWFS=new WFS
           const [namespace, name] = this.props.config.layer.split(":")
             var formatGMLOptions = {
                 featureNS: namespace,
                 featureType: name,
                 gmlOptions:this.props.crs
             };
-
+            var node=""
             console.log(formatGMLOptions)
             switch (action) {
                 case 'insert':
-                    node = formatWFS.writeTransaction(feature, null, null, formatGMLOptions);
+                    node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);
                     break;
                 case 'update':
                     node = formatWFS.writeTransaction(null, feature, null, formatGMLOptions);
@@ -90,7 +93,9 @@ class addForm extends React.Component {
             }
 
             var s = new XMLSerializer()
-            var str = s.serializeToString(node)}
+            var str = s.serializeToString(node)
+            return str
+            }
     componentDidMount() {
 
     }
@@ -117,6 +122,24 @@ class addForm extends React.Component {
             }).catch((error) => {
                 throw Error(error)
             })
+        
+
+        //  var feature=new Feature(this.state.formValue)
+        //  feature.setGeometry(new ol.geom.Point(this.props.geometry.x,this.props.geometry.y))
+        //  console.log(feature)
+        //  var xml=this.transactWFS("insert",feature)
+        //  var proxy_urls = new URLS(urls)
+        //  const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+        //  console.log(proxiedURL)
+        //  return fetch(proxiedURL, {
+        //     method: 'POST',
+        //     body: xml,
+        //     credentials: 'include',
+        //     headers: new Headers({
+        //         'Content-Type': 'text/xml',
+        //         "X-CSRFToken": getCRSFToken()
+        //     })
+        // });
         this.props.handleOpen("Feature created Successfully")
         this.props.handleSwitch()
         this.props.back()

@@ -108,7 +108,7 @@ export class FeatureListComponent extends React.Component {
         this.setState({ features: nextProps.features })
     }
     render() {
-
+      console.log(this.props)
         const {
             features,
             featuresIsLoading,
@@ -131,7 +131,10 @@ export class FeatureListComponent extends React.Component {
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                         </div>
                         <div>
-                            <IconButton onMouseDown={() => { this.props.handleEditFeature(value) }}
+                            <IconButton onMouseDown={() => { 
+                                 this.props.editFeature(value) 
+                                 this.props.handleEditFeature(value)
+                                 }}
                                 className={classes.button} aria-label="Delete" color="primary">
                                 <EditIcon />
                             </IconButton>

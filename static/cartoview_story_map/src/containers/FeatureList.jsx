@@ -138,6 +138,46 @@ class FeatureListContainer extends Component {
         this.map.removeLayer(this.state.vectorLayer);
 
     }
+    onFeatureMoveEdit=()=>{
+console.log("edit finished")
+    }
+    editFeature=(feature)=>{
+        console.log("in featre edit",feature)
+        const featureStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [
+                    0.5, 31
+                ],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'pixels',
+
+                src: this.props.urls.static +
+                'cartoview_story_map/greenmarker.png'
+            ,
+               text: new ol.style.Text({
+                text:feature.getProperties().featureIndex.toString(),
+                fill: new ol.style.Fill({ color: '#fff' }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                }),
+                textAlign: 'center',
+                offsetY: -20,
+                font: '18px serif'
+            })})})
+          
+          feature.setStyle(featureStyle)   
+             
+             
+          this.modifyInteractionEdit = new ol.interaction.Modify({
+            features: new ol.Collection([feature]),
+            pixelTolerance: 32,
+            // style: []
+          })
+          
+          this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
+          this.map.addInteraction(this.modifyInteractionEdit)
+    }
     addComment = (data) => {
         const { urls, config } = this.props
         const apiData = { ...data, username: config.username }
@@ -508,8 +548,8 @@ class FeatureListContainer extends Component {
             removeLocation: this.removeLocation,
             showDialog: this.state.showDialog,
             geometry: this.state.geometry,
-            openDialog: this.openDialog
-
+            openDialog: this.openDialog,
+            editFeature:this.editFeature
 
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />
