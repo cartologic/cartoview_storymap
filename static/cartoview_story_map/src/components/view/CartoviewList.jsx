@@ -70,6 +70,10 @@ class CartoviewList extends React.Component {
         } else {
             addStyleToFeature([])
         }
+
+        if(this.state.edit){
+            this.props.backFromEdit()
+        }
     }
     openDetails = (state) => {
         this.setState({ ...state }, () => this.addStyleZoom())

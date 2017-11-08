@@ -82,19 +82,31 @@ class WFSClient {
     
       return propsXML
     }
-    updateFeature(typeName, fid, properties) {
-        
+    updateFeature( typeName, fid, properties, geometry ) {
         const xml =
             `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
       <Update typeName="${typeName}" >
-        ${this.getProps(properties)}
-      
+        ${
+      Object.keys(properties).map(key => 
+        {if(key!=="geometry"&&key!=="featureIndex")  { return (`<Property>
+        <Name>${key}</Name>prop
+        <Value>${properties[key]}</Value>
+      </Property>`)}})
+      }
+        <Property>
+          <Name>${geometry.name}</Name>
+          <Value>
+            <Point xmlns="http://www.opengis.net/gml"  srsName="${geometry.srsName}">
+              <pos>${geometry.x} ${geometry.y}</pos>
+            </Point>
+          </Value>
+        </Property>
         <Filter xmlns="http://www.opengis.net/ogc">
           <FeatureId fid="${fid}" />
         </Filter>
       </Update>
     </Transaction>`;
-        return this.sendXMLRequest(xml)
+        return this.sendXMLRequest( xml )
     }
 }
 export default WFSClient;

@@ -18,10 +18,10 @@ import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import WFSClient from '../../utils/WFSClient.jsx'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
-import WFS from 'ol/format/wfs';
 import URLS from '../../containers/URLS'
 import Feature from 'ol/feature';
 import ol from 'openlayers'
+import {transactWFS} from '../../containers/staticMethods'
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -70,35 +70,6 @@ class addForm extends React.Component {
     }
     WFS = new WFSClient(this.props.urls)
 
-    transactWFS = (action, feature) => {
-        var formatWFS = new WFS
-        const [namespace, name] = this.props.config.layer.split(":")
-        var formatGMLOptions = {
-            featureNS: namespace,
-            featureType: name,
-            gmlOptions: this.props.crs,
-            srsName: "EPSG:" + this.props.crs,
-
-        };
-        var node = ""
-        console.log(formatGMLOptions)
-        switch (action) {
-            case 'insert':
-                node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);
-                break;
-            case 'update':
-                node = formatWFS.writeTransaction(null, [feature], null, formatGMLOptions);
-                break;
-            case 'delete':
-                node = formatWFS.writeTransaction(null, null, [feature], formatGMLOptions);
-                break;
-        }
-
-        var s = new XMLSerializer()
-        var str = s.serializeToString(node)
-        console.log(str)
-        return str
-    }
     componentDidMount() {
 
     }
@@ -135,7 +106,7 @@ class addForm extends React.Component {
         console.log(this.props.mapProjection, this.props.crs)
 
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
-        var xml = this.transactWFS("insert", this.props.newFeature)
+        var xml = transactWFS("insert", this.props.newFeature,this.props.config.layer,this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
         console.log(proxiedURL)

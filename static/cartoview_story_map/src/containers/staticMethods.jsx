@@ -2,7 +2,9 @@ import LayerSwitcher from '../vendor/ol3-layerswitcher/src/ol3-layerswitcher'
 import isURL from 'validator/lib/isURL'
 import ol from 'openlayers'
 import Map from 'ol/map';
-import URLS from './URLS'
+import URLS from './URLS';
+import WFS from 'ol/format/wfs';
+
 export const isWMSLayer = (layer) => {
     return layer.getSource() instanceof ol.source.TileWMS || layer.getSource() instanceof ol
         .source.ImageWMS
@@ -94,6 +96,36 @@ export const getdescribeFeatureType = (typename) => {
     return fetch(proxy_url).then((response) => { return response.json() }).then((data) => { return data.featureTypes[0].properties })
 
 
+}
+export const transactWFS = (action, feature, layerName, crs) => {
+    var formatWFS = new WFS
+
+    const [namespace, name] = layerName.split(":")
+    var formatGMLOptions = {
+        featureNS: "http://www.opengis.net/ogc",
+        featurePrefix: namespace,
+        featureType: name,
+        gmlOptions: {
+            srsName: "EPSG:" + crs
+        },
+
+    };
+    var node = ""
+    switch (action) {
+        case 'insert':
+            node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);
+            break;
+        case 'update':
+            node = formatWFS.writeTransaction(null, [feature], null, formatGMLOptions);
+            break;
+        case 'delete':
+            node = formatWFS.writeTransaction(null, null, [feature], formatGMLOptions);
+            break;
+    }
+
+    var s = new XMLSerializer()
+    var str = s.serializeToString(node)
+    return str
 }
 export const getLayers = (layers) => {
     var children = []

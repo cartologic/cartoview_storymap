@@ -88,7 +88,8 @@ class FeatureListContainer extends Component {
     refreshMap=(feature)=>{
         console.log("refresh")
         this.featureCollection.push(feature)
-        // this.map.rerender()
+        this.map.removeInteraction(this.modifyInteraction)
+       
     }
     getLocation = () => {
 
@@ -147,10 +148,29 @@ class FeatureListContainer extends Component {
     onFeatureMoveEdit = (event) => {
 
         console.log("edit finished", event.mapBrowserEvent.coordinate)
+        const crs = 'EPSG:' + this.state.crs
+                
+                var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
+                    this.map.getView().getProjection())
+        
+                const geometry = {
+                    name: 'the_geom',
+                    srsName: crs,
+                    x: center[0],
+                    y: center[1]
+                }
+        
+        
+             
+                this.setState({ geometry, mapProjection: this.map.getView().getProjection() })
+        
     }
+    
     editFeature = (feature) => {
+        this.editedFeature=feature
+        this.setState({removedFeature:feature})
         const featureStyle = new ol.style.Style({
-            image: new ol.style.Icon({
+              image: new ol.style.Icon({
                 anchor: [
                     0.5, 31
                 ],
@@ -159,30 +179,40 @@ class FeatureListContainer extends Component {
 
                 src: this.props.urls.static +
                 'cartoview_story_map/greenmarker.png'
-                ,
-                text: new ol.style.Text({
-                    text: feature.getProperties().featureIndex.toString(),
-                    fill: new ol.style.Fill({ color: '#fff' }),
-                    stroke: new ol.style.Stroke({
-                        color: '#fff',
-                        width: 2
-                    }),
-                    textAlign: 'center',
-                    offsetY: -20,
-                    font: '18px serif'
-                })
-            })
+            }),
+            text: new ol.style.Text({
+                text: '+',
+                fill: new ol.style.Fill({ color: '#fff' }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 2
+                }),
+                textAlign: 'center',
+                offsetY: -20,
+                font: '18px serif'
+            }),
         })
+        this.vectorLayerEdit = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [feature]
+            }),
+            style: featureStyle,
 
-        feature.setStyle(featureStyle)
-        this.selectionLayer.getSource().addFeature(feature)
+        })
+       this.setState({vectorLayerEdit:this.vectorLayerEdit})
+        // feature.setStyle(featureStyle)
+        // this.selectionLayer.getSource().addFeature(feature)
 
         this.modifyInteractionEdit = new ol.interaction.Modify({
             features: new ol.Collection([feature]),
             pixelTolerance: 32,
-            // style: []
+             style: []
         })
-
+        console.log(feature.getProperties().featureIndex)
+        this.setState({featureCollection:this.featureCollection})
+        this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
+        this.map.addLayer(this.vectorLayerEdit)
+        
         this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
         this.map.addInteraction(this.modifyInteractionEdit)
     }
@@ -467,6 +497,12 @@ class FeatureListContainer extends Component {
 
         })
     }
+    backFromEdit=()=>{
+        this.featureCollection.insertAt(this.state.removedFeature.featureIndex-1, this.state.removedFeature)
+
+       
+        this.map.removeLayer(this.state.vectorLayerEdit)
+    }
     backToAllFeatures = () => {
         this.setState({
             selectionModeEnabled: false,
@@ -558,7 +594,9 @@ class FeatureListContainer extends Component {
             editFeature: this.editFeature,
             newFeature: this.feature,
             refreshMap:this.refreshMap,
-
+            editedFeature:this.editedFeature,
+            geometry:this.state.geometry,
+            backFromEdit:this.backFromEdit
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />
     }
