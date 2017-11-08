@@ -70,32 +70,35 @@ class addForm extends React.Component {
     }
     WFS = new WFSClient(this.props.urls)
 
-     transactWFS = (action, feature)=> {
-          var formatWFS=new WFS
-          const [namespace, name] = this.props.config.layer.split(":")
-            var formatGMLOptions = {
-                featureNS: namespace,
-                featureType: name,
-                gmlOptions:this.props.crs
-            };
-            var node=""
-            console.log(formatGMLOptions)
-            switch (action) {
-                case 'insert':
-                    node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);
-                    break;
-                case 'update':
-                    node = formatWFS.writeTransaction(null, feature, null, formatGMLOptions);
-                    break;
-                case 'delete':
-                    node = formatWFS.writeTransaction(null, null, feature, formatGMLOptions);
-                    break;
-            }
+    transactWFS = (action, feature) => {
+        var formatWFS = new WFS
+        const [namespace, name] = this.props.config.layer.split(":")
+        var formatGMLOptions = {
+            featureNS: namespace,
+            featureType: name,
+            gmlOptions: this.props.crs,
+            srsName: "EPSG:" + this.props.crs,
 
-            var s = new XMLSerializer()
-            var str = s.serializeToString(node)
-            return str
-            }
+        };
+        var node = ""
+        console.log(formatGMLOptions)
+        switch (action) {
+            case 'insert':
+                node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);
+                break;
+            case 'update':
+                node = formatWFS.writeTransaction(null, [feature], null, formatGMLOptions);
+                break;
+            case 'delete':
+                node = formatWFS.writeTransaction(null, null, [feature], formatGMLOptions);
+                break;
+        }
+
+        var s = new XMLSerializer()
+        var str = s.serializeToString(node)
+        console.log(str)
+        return str
+    }
     componentDidMount() {
 
     }
@@ -116,33 +119,48 @@ class addForm extends React.Component {
     }
     save = () => {
 
-        this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
-            res.text()).then((res) => {
-                this.setState({ success: true }, this.props.back())
-            }).catch((error) => {
-                throw Error(error)
-            })
-        
-
-        //  var feature=new Feature(this.state.formValue)
-        //  feature.setGeometry(new ol.geom.Point(this.props.geometry.x,this.props.geometry.y))
-        //  console.log(feature)
-        //  var xml=this.transactWFS("insert",feature)
-        //  var proxy_urls = new URLS(urls)
-        //  const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-        //  console.log(proxiedURL)
-        //  return fetch(proxiedURL, {
-        //     method: 'POST',
-        //     body: xml,
-        //     credentials: 'include',
-        //     headers: new Headers({
-        //         'Content-Type': 'text/xml',
-        //         "X-CSRFToken": getCRSFToken()
+        // this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
+        //     res.text()).then((res) => {
+        //         this.setState({ success: true }, this.props.back())
+        //     }).catch((error) => {
+        //         throw Error(error)
         //     })
-        // });
-        this.props.handleOpen("Feature created Successfully")
-        this.props.handleSwitch()
-        this.props.back()
+
+
+        var feature = this.props.newFeature
+        Object.keys(this.state.formValue).map(property => {
+            feature.set(property, this.state.formValue[property])
+        })
+        console.log(this.props.mapProjection)
+        console.log(this.props.mapProjection, this.props.crs)
+
+        feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
+        var xml = this.transactWFS("insert", this.props.newFeature)
+        var proxy_urls = new URLS(urls)
+        const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+        console.log(proxiedURL)
+        return fetch(proxiedURL, {
+            method: 'POST',
+            body: xml,
+            credentials: 'include',
+            headers: new Headers({
+                'Content-Type': 'text/xml',
+                "X-CSRFToken": getCRSFToken()
+            })
+        }).then((res) => {
+                    console.log(res)
+                    this.setState({ success: true })
+                  
+                    this.props.handleOpen("Feature created Successfully")
+                    this.props.handleSwitch()
+                    this.props.back()
+                    feature.set("featureIndex",++this.props.features.length)
+                    this.props.refreshMap(feature)
+                    // return res.json()
+                }).catch((error) => {
+                    throw Error(error)
+                })
+    
     }
 
 

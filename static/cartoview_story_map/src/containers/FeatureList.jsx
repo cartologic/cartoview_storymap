@@ -27,6 +27,11 @@ import { wfsQueryBuilder } from "../helpers/helpers.jsx"
 class FeatureListContainer extends Component {
     constructor(props) {
         super(props)
+        this.feature = new ol.Feature({
+            the_geom: new ol.geom.Point([0, 0]),
+            geometryName: 'the_geom'
+        })
+        this.feature.setGeometryName("the_geom")
         this.state = {
             mapIsLoading: false,
             featuresIsLoading: false,
@@ -55,15 +60,13 @@ class FeatureListContainer extends Component {
         this.urls = new URLS(this.props.urls)
         this.map = getMap()
         this.featureCollection = new ol.Collection()
-        addSelectionLayer(this.map, this.featureCollection, styleFunction)
+        this.selectionLayer = addSelectionLayer(this.map, this.featureCollection, styleFunction)
 
     }
     openDialog = (bool) => {
         this.setState({ showDialog: bool })
     }
     onFeatureMove = (event) => {
-
-
 
         const crs = 'EPSG:' + this.state.crs
 
@@ -78,16 +81,19 @@ class FeatureListContainer extends Component {
         }
 
 
+     
+        this.setState({ geometry, showDialog: true, mapProjection: this.map.getView().getProjection() })
+    }
 
-        this.setState({ geometry, showDialog: true })
+    refreshMap=(feature)=>{
+        console.log("refresh")
+        this.featureCollection.push(feature)
+        // this.map.rerender()
     }
     getLocation = () => {
 
 
-        this.feature = new ol.Feature({
-            geometry: new ol.geom.Point([0, 0]),
-            geometryName: 'the_geom'
-        })
+
         const featureStyle = new ol.style.Style({
             image: new ol.style.Icon({
                 anchor: [
@@ -138,11 +144,11 @@ class FeatureListContainer extends Component {
         this.map.removeLayer(this.state.vectorLayer);
 
     }
-    onFeatureMoveEdit=()=>{
-console.log("edit finished")
+    onFeatureMoveEdit = (event) => {
+
+        console.log("edit finished", event.mapBrowserEvent.coordinate)
     }
-    editFeature=(feature)=>{
-        console.log("in featre edit",feature)
+    editFeature = (feature) => {
         const featureStyle = new ol.style.Style({
             image: new ol.style.Icon({
                 anchor: [
@@ -153,30 +159,32 @@ console.log("edit finished")
 
                 src: this.props.urls.static +
                 'cartoview_story_map/greenmarker.png'
-            ,
-               text: new ol.style.Text({
-                text:feature.getProperties().featureIndex.toString(),
-                fill: new ol.style.Fill({ color: '#fff' }),
-                stroke: new ol.style.Stroke({
-                    color: '#fff',
-                    width: 2
-                }),
-                textAlign: 'center',
-                offsetY: -20,
-                font: '18px serif'
-            })})})
-          
-          feature.setStyle(featureStyle)   
-             
-             
-          this.modifyInteractionEdit = new ol.interaction.Modify({
+                ,
+                text: new ol.style.Text({
+                    text: feature.getProperties().featureIndex.toString(),
+                    fill: new ol.style.Fill({ color: '#fff' }),
+                    stroke: new ol.style.Stroke({
+                        color: '#fff',
+                        width: 2
+                    }),
+                    textAlign: 'center',
+                    offsetY: -20,
+                    font: '18px serif'
+                })
+            })
+        })
+
+        feature.setStyle(featureStyle)
+        this.selectionLayer.getSource().addFeature(feature)
+
+        this.modifyInteractionEdit = new ol.interaction.Modify({
             features: new ol.Collection([feature]),
             pixelTolerance: 32,
             // style: []
-          })
-          
-          this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
-          this.map.addInteraction(this.modifyInteractionEdit)
+        })
+
+        this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
+        this.map.addInteraction(this.modifyInteractionEdit)
     }
     addComment = (data) => {
         const { urls, config } = this.props
@@ -418,9 +426,9 @@ console.log("edit finished")
     }
     zoomToFeature = (feature, done = () => { }) => {
         var duration = 1000;
-
+        console.log(feature, feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
-
+        console.log(this.feature.getGeometry())
         var view = this.map.getView()
         var zoom = view.getZoom();
 
@@ -546,10 +554,10 @@ console.log("edit finished")
             SaveImageBase64: this.SaveImageBase64,
             getLocation: this.getLocation,
             removeLocation: this.removeLocation,
-            showDialog: this.state.showDialog,
-            geometry: this.state.geometry,
             openDialog: this.openDialog,
-            editFeature:this.editFeature
+            editFeature: this.editFeature,
+            newFeature: this.feature,
+            refreshMap:this.refreshMap,
 
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />

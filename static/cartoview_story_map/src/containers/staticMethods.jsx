@@ -84,12 +84,13 @@ export const addSelectionLayer = (map, featureCollection, styleFunction) => {
         // map: map
     })
     map.addLayer(layer)
+    return layer
 }
 export const getdescribeFeatureType = (typename) => {
     var proxy_urls = new URLS(urls)
     var url = urls.describeFeatureType(typename)
-    var proxy_url=proxy_urls.getProxiedURL(url)
-   
+    var proxy_url = proxy_urls.getProxiedURL(url)
+
     return fetch(proxy_url).then((response) => { return response.json() }).then((data) => { return data.featureTypes[0].properties })
 
 

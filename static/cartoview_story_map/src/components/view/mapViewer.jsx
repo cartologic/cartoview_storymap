@@ -50,18 +50,20 @@ class MapViewer extends React.Component {
         this.map = this.props.map
     }
     onFeatureMove = (event) => {
-        this.props.onFeatureMove(this.feature.getGeometry().getCoordinates())
+        const feature = this.feature
+        console.log(feature)
+        this.props.onFeatureMove(feature.getGeometry().getCoordinates(), feature)
 
-            const center = ol.proj.transform(event, 'EPSG:900913',
-                'EPSG:4326')
-            this.setState({
-                xyValue: {
-                    x: center[0],
-                    y: center[1]
-                }
-            })
+        const center = ol.proj.transform(event, 'EPSG:900913',
+            'EPSG:4326')
+        this.setState({
+            xyValue: {
+                x: center[0],
+                y: center[1]
             }
-    update(url,proxy) {
+        })
+    }
+    update(url, proxy) {
         if (url) {
             fetch(url, {
                 method: "GET",
@@ -74,7 +76,7 @@ class MapViewer extends React.Component {
                 if (config) {
                     MapConfigService.load(
                         MapConfigTransformService.transform(
-                            config), this.map,proxy)
+                            config), this.map, proxy)
                     this.feature.setGeometry(new ol.geom.Point(
                         this.map.getView().getCenter()
                     ))

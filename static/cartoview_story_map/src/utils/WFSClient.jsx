@@ -65,7 +65,7 @@ class WFSClient {
               ${Object.keys(properties).map(key => properties[key] == null ? "" : `<${key}>${properties[key]}</${key}>`).join("")}
               <${geometry.name}>
                 <Point xmlns="http://www.opengis.net/gml" srsName="${geometry.srsName}">
-                  <pos>${geometry.x} ${geometry.y}</pos>
+                  <pos srsDimension="2">${geometry.x} ${geometry.y}</pos>
                 </Point>
               </${geometry.name}>
             </${name}>
