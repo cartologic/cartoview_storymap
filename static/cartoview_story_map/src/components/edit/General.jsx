@@ -1,30 +1,34 @@
 import React, { Component } from 'react'
 import {
+    getAccessOptions,
+    getAccessTemplate,
     getKeywordsOptions,
     getKeywordsTemplate
 } from './AutoCompleteInput'
 
 import PropTypes from 'prop-types'
 import t from 'tcomb-form'
+
 const Form = t.form.Form
+const selectAccessItem = t.struct( {
+    value: t.String,
+    label: t.String,
+    email: t.String
+} )
 const selectKeywordItem = t.struct( {
     value: t.String,
     label: t.String
-} )
-const accessOptions = t.enums( {
-    public: 'Public',
-    private: 'Private'
-} )
-const mapConfig = t.struct( {
-    title: t.String,
-    abstract: t.String,
-    access: accessOptions,
-    keywords: t.list( t.maybe( selectKeywordItem ) )
 } )
 const options = {
     fields: {
         title: {
             label: "App Title"
+        },
+        access: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions
+            } )
         },
         keywords: {
             factory: t.form.Textbox,
@@ -49,14 +53,20 @@ export default class General extends Component {
             },
         }
     }
-    save() {
-        var basicConfig = this.form.getValue()
+    save( ) {
+        var basicConfig = this.form.getValue( )
         if ( basicConfig ) {
             this.props.onComplete( basicConfig )
         }
     }
-    render() {
+    render( ) {
         let { onPrevious } = this.props
+        let mapConfig = t.struct( {
+            title: t.String,
+            abstract: t.String,
+            access: t.list( selectAccessItem ),
+            keywords: t.list( t.maybe( selectKeywordItem ) )
+        } )
         return (
             <div className="row">
                 <div className="row">
@@ -65,21 +75,13 @@ export default class General extends Component {
                     </div>
                     <div className="col-xs-7 col-md-8">
                         <button
-                            style={{
-                                display: "inline-block",
-                                margin: "0px 3px 0px 3px"
-                            }}
-                            className="btn btn-primary btn-sm pull-right"
+                            className="btn navigation-buttons btn-primary btn-sm pull-right"
                             onClick={this.save.bind(this)}>{"next "}
                             <i className="fa fa-arrow-right"></i>
                         </button>
 
                         <button
-                            style={{
-                                display: "inline-block",
-                                margin: "0px 3px 0px 3px"
-                            }}
-                            className="btn btn-primary btn-sm pull-right"
+                            className="btn navigation-buttons btn-primary btn-sm pull-right"
                             onClick={() => onPrevious()}>
                             <i className="fa fa-arrow-left"></i>{" Previous"}</button>
                     </div>

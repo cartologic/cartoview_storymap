@@ -21,7 +21,7 @@ export const getAccessTemplate = ( options ) => {
         required={true}
         deleteRemoves={true}
         resetValue={null}
-        placeholder={"Select User Who Can Enter Data"}/>
+        placeholder={"Select User Who Can Access The Layer"}/>
         </div>
     }
 

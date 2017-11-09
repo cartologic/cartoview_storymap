@@ -56,10 +56,13 @@ class ContentGrid extends Component {
         add: false,
         switch: true,
         success: false,
+        access:true
     }
+    
     componentDidMount() {
         const { map } = this.props
         map.setTarget(this.mapDiv)
+        this.checkPermissions(loggedUser)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -86,6 +89,18 @@ class ContentGrid extends Component {
     handleScroll = () => {
 
     }
+    checkPermissions=(name)=>{
+        console.log(props.access)
+            props.access.map((user)=>{
+            console.log(user.value,name)
+            if(user.value==name){
+                console.log("true")
+               this.setState({access:true})
+            }
+        
+        })
+       
+    }
     render() {
 
         const { classes, childrenProps } = this.props
@@ -94,7 +109,7 @@ class ContentGrid extends Component {
                 <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{ position: "relative" }}>
                     <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classes.mapPanel}>
                     </div>
-                    {loggedUser == owner &&
+                    {this.state.access&&
                         <div>
                             {this.state.switch &&
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {

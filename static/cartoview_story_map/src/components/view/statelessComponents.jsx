@@ -90,8 +90,10 @@ export class FeatureListComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            features: this.props.features ? this.props.features : []
+            features: this.props.features ? this.props.features : [],
+            access:false
         }
+       
     }
     onSortEnd = ({ oldIndex, newIndex }) => {
         const { openDetails } = this.props
@@ -104,6 +106,16 @@ export class FeatureListComponent extends React.Component {
             features: arrayMove(this.state.features, oldIndex, newIndex),
         });
     };
+     checkPermissions=(name)=>{
+            props.access.map((user)=>{
+            if(user.value==name){
+               this.setState({access:true})
+            }
+        
+        })}
+    componentDidMount(){
+         this.checkPermissions(loggedUser)
+    }
     componentWillReceiveProps(nextProps) {
         this.setState({ features: nextProps.features })
     }
@@ -131,13 +143,13 @@ export class FeatureListComponent extends React.Component {
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                         </div>
                         <div>
-                            <IconButton onMouseDown={() => { 
+                           { this.state.access&&<IconButton onMouseDown={() => { 
                                  this.props.editFeature(value) 
                                  this.props.handleEditFeature(value)
                                  }}
                                 className={classes.button} aria-label="Delete" color="primary">
                                 <EditIcon />
-                            </IconButton>
+                            </IconButton>}
                         </div>
                     </div>
                     <Img className={classes.bigAvatar} style={{ height: "250px" }} src={[urls.static + 'cartoview_story_map/img/no-img.png'
