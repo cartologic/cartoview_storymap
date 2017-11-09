@@ -32,7 +32,17 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import AddIcon from 'material-ui-icons/Add';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import EditIcon from 'material-ui-icons/Edit';
-
+import DeleteIcon from 'material-ui-icons/Delete';
+import URLS from '../../containers/URLS'
+import { getCRSFToken } from '../../helpers/helpers.jsx'
+import Snackbar from 'material-ui/Snackbar';
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from 'material-ui/Dialog';
+import {transactWFS} from '../../containers/staticMethods'
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
     return (
@@ -91,9 +101,40 @@ export class FeatureListComponent extends React.Component {
         super(props)
         this.state = {
             features: this.props.features ? this.props.features : [],
-            access:false
+            access:false,
+            crs:"",
+            openDeleteDialoge:false,
+            deletedFeature:{},
+            openSnackBar:false
+
         }
        
+    }
+    
+     deleteDialogeClickOpen = (feature) => {
+         this.setState({deletedFeature:feature,openDeleteDialoge: true })
+  };
+
+ deleteDialogeRequestClose = () => {
+    this.setState({ openDeleteDialoge: false });
+  };
+    deleteFeature=()=>{
+        var xml = transactWFS("delete",this.state.deletedFeature,this.props.config.layer,this.props.crs)
+        var proxy_urls = new URLS(urls)
+        const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+        console.log(proxiedURL)
+        return fetch(proxiedURL, {
+            method: 'POST',
+            body: xml,
+            credentials: 'include',
+            headers: new Headers({
+                'Content-Type': 'text/xml',
+                "X-CSRFToken": getCRSFToken()
+            })
+        }).then((res) => {
+           this.setState({ openDeleteDialoge: false,openSnackBar:true})
+        })
+    
     }
     onSortEnd = ({ oldIndex, newIndex }) => {
         const { openDetails } = this.props
@@ -113,13 +154,20 @@ export class FeatureListComponent extends React.Component {
             }
         
         })}
+        handleCloseSnackBar=()=>{
+            this.setState({openSnackBar:false})
+        }
     componentDidMount(){
          this.checkPermissions(loggedUser)
     }
     componentWillReceiveProps(nextProps) {
-        this.setState({ features: nextProps.features })
+       
+        this.setState({ features: nextProps.features,crs:nextProps.crs })
     }
     render() {
+
+
+        const vertical = 'bottom', horizontal = 'center'
       console.log(this.props)
         const {
             features,
@@ -138,19 +186,27 @@ export class FeatureListComponent extends React.Component {
             <div className="card-div" >
                 < Card id={"id" + sortIndex} className='image-container'>
                     <div style={{ display: "flex" }}>
-                        <div style={{ "flexGrow": "2" }}> <CardHeader
+                        <div style={{ "flexGrow": "1" }}> <CardHeader
                             title={`${value.getProperties()[config.titleAttribute]}`}
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                         </div>
-                        <div>
-                           { this.state.access&&<IconButton onMouseDown={() => { 
+                         { this.state.access&& <div>
+                         <IconButton onMouseDown={() => { 
                                  this.props.editFeature(value) 
                                  this.props.handleEditFeature(value)
                                  }}
-                                className={classes.button} aria-label="Delete" color="primary">
+                                className={classes.button} aria-label="edit" color="primary">
                                 <EditIcon />
-                            </IconButton>}
-                        </div>
+                            </IconButton>
+                            
+                            <IconButton onMouseDown={()=>
+                            {console.log("clicekd")
+                            this.deleteDialogeClickOpen(value)}}
+                                className={classes.button} aria-label="edit" color="primary">
+                                <DeleteIcon />
+                            </IconButton>
+                            
+                        </div>}
                     </div>
                     <Img className={classes.bigAvatar} style={{ height: "250px" }} src={[urls.static + 'cartoview_story_map/img/no-img.png'
                     ]} loader={<Loader />} />
@@ -183,9 +239,33 @@ export class FeatureListComponent extends React.Component {
         });
         return (
             <div>
+            <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
+          <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
+          <DialogContent>
+          
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.deleteDialogeRequestClose} color="primary" autoFocus>
+              Cancel
+            </Button>
+            <Button onClick={this.deleteFeature} color="primary" >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+         <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={this.state.openSnackBar}
+                    onRequestClose={this.handleCloseSnackBar}
+                    SnackbarContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">"Feature Deleted Successfully"</span>}
+                />
                 {!featuresIsLoading && !attachmentIsLoading && features && features.length >
                     0 ?
                     <div id="contents"  >
+                        
                         <Message align="left" message={subheader} type="subheading" />
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
@@ -194,6 +274,9 @@ export class FeatureListComponent extends React.Component {
                     features && features.length == 0 ?
                         <Message message={message} type="body2" /> :
                         <Loader />}
+
+
+
             </div>
         )
     }

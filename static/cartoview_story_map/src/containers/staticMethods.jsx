@@ -102,7 +102,7 @@ export const transactWFS = (action, feature, layerName, crs) => {
 
     const [namespace, name] = layerName.split(":")
     var formatGMLOptions = {
-        featureNS: "http://www.opengis.net/ogc",
+        featureNS: "http://www.geonode.org/",
         featurePrefix: namespace,
         featureType: name,
         gmlOptions: {

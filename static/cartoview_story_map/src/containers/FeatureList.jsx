@@ -596,7 +596,8 @@ class FeatureListContainer extends Component {
             refreshMap:this.refreshMap,
             editedFeature:this.editedFeature,
             geometry:this.state.geometry,
-            backFromEdit:this.backFromEdit
+            backFromEdit:this.backFromEdit,
+            
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />
     }
