@@ -132,6 +132,7 @@ export class FeatureListComponent extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
+        this.props.removeFeatureMarker(this.state.deletedFeature)
            this.setState({ openDeleteDialoge: false,openSnackBar:true})
         })
     
@@ -168,7 +169,7 @@ export class FeatureListComponent extends React.Component {
 
 
         const vertical = 'bottom', horizontal = 'center'
-      console.log(this.props)
+        console.log("statless",this.props)
         const {
             features,
             featuresIsLoading,

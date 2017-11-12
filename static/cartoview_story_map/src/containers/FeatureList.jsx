@@ -1,5 +1,6 @@
 import 'openlayers/dist/ol.css'
 import '../app.css'
+import update from 'react-addons-update'
 import React, { Component } from 'react'
 import {
     addSelectionLayer,
@@ -216,6 +217,13 @@ class FeatureListContainer extends Component {
         this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
         this.map.addInteraction(this.modifyInteractionEdit)
     }
+    removeFeatureMarker=(feature)=>{
+        this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
+
+        this.setState({
+            features: update(this.state.features, {$splice: [[feature.getProperties().featureIndex-1, 1]]})
+          },console.log("after splice",this.state.features))
+    }
     addComment = (data) => {
         const { urls, config } = this.props
         const apiData = { ...data, username: config.username }
@@ -357,6 +365,7 @@ class FeatureListContainer extends Component {
                 this.setState({ features })
             })
     }
+
     search = (text) => {
         /* 
         Openlayer build request to avoid errors
@@ -597,6 +606,7 @@ class FeatureListContainer extends Component {
             editedFeature:this.editedFeature,
             geometry:this.state.geometry,
             backFromEdit:this.backFromEdit,
+            removeFeatureMarker:this.removeFeatureMarker
             
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />

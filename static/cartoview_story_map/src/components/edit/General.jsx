@@ -48,7 +48,7 @@ export default class General extends Component {
                 title: title || selectedResource.title,
                 abstract: abstract || selectedResource.abstract,
                 access: config && config.config && config.config.access ?
-                    config.config.access : config ? config.access : null,
+                    config.config.access : config ? config.access : "",
                 keywords: keywords ? keywords : null,
             },
         }

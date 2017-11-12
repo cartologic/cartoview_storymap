@@ -21,6 +21,7 @@
     "react": "^15.5.4",
     "react-addons-css-transition-group": "^15.5.2",
     "react-addons-transition-group": "^15.5.2",
+    "react-addons-update": "^15.6.2",
     "react-autosuggest": "^9.3.2",
     "react-dom": "^15.5.4",
     "react-dropzone": "^4.2.1",
