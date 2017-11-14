@@ -40,7 +40,7 @@
             {% endif %}
             
             const urls={
-                mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
+
                 proxy: PROXY_URL,
                 appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
                 geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
@@ -78,13 +78,10 @@
     {% endif %}
 
     const props = {{ instance.config | safe }}
-    var center_x={{instance.map.center_x}}
-    var center_y={{instance.map.center_y}}
-    var zoom={{instance.map.zoom}}
-    var loggedUser="{{request.user.username}}"
-    var owner="{{instance.owner.username}}"
-
+    const loggedUser="{{request.user.username}}"
+    const owner="{{instance.owner.username}}"
     props.formTitle="{{instance.title}}"
+    props.layername="geonode:"+"{{instance.title}}"
     props.formAbstract="{{instance.abstract}}"
     props.username="{{request.user.username}}"
   </script>

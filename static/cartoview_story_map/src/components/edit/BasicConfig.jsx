@@ -142,3 +142,4 @@ export default class BasicConfig extends Component {
 					type={mapConfig}
 					options={options}/>
 			</div>
+		)}}

@@ -43,6 +43,7 @@ import Dialog, {
   DialogTitle,
 } from 'material-ui/Dialog';
 import {transactWFS} from '../../containers/staticMethods'
+
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
     return (
@@ -119,7 +120,7 @@ export class FeatureListComponent extends React.Component {
     this.setState({ openDeleteDialoge: false });
   };
     deleteFeature=()=>{
-        var xml = transactWFS("delete",this.state.deletedFeature,this.props.config.layer,this.props.crs)
+        var xml = transactWFS("delete",this.state.deletedFeature,props.layername,this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
         console.log(proxiedURL)
@@ -137,19 +138,76 @@ export class FeatureListComponent extends React.Component {
         })
     
     }
+    swapFeature=(f1,f2,i1,i2)=>{
+        console.log(i1,i2)
+        f1.set("order",i2+1)
+        f2.set("order",i1+1)
+        f1.unset("featureIndex")      
+        f1.unset('geometry')
+        f2.unset("featureIndex")      
+        f2.unset('geometry')
+    
+      var xml1= transactWFS("update", f1,props.layername,this.props.crs)
+      var xml2 = transactWFS("update", f2,props.layername,this.props.crs)
+      var proxy_urls = new URLS(urls)
+      const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+     
+      return fetch(proxiedURL, {
+          method: 'POST',
+          body: xml1,
+          credentials: 'include',
+          headers: new Headers({
+              'Content-Type': 'text/xml',
+              "X-CSRFToken": getCRSFToken()
+          })
+      }).then((res) => {
+                                    
+                            return fetch(proxiedURL, {
+                                method: 'POST',
+                                body: xml2,
+                                credentials: 'include',
+                                headers: new Headers({
+                                    'Content-Type': 'text/xml',
+                                    "X-CSRFToken": getCRSFToken()
+                                })
+                            }).then((res) => {
+                                        
+                                    
+                    
+                            
+                                    }).catch((error) => {
+                                        throw Error(error)
+                                    })
+
+
+              }).catch((error) => {
+                  throw Error(error)
+              })
+
+
+
+    }
     onSortEnd = ({ oldIndex, newIndex }) => {
+
+
+       
         const { openDetails } = this.props
+      
+        
         if (oldIndex == newIndex) {
             $('.image-container').removeClass("inFocus").addClass("outFocus");
             $('#id' + newIndex).removeClass("outFocus").addClass("inFocus");
             openDetails({ detailsOfFeature: this.state.features[newIndex] })
         }
+        else{    var firstFeature=this.state.features[oldIndex]
+                 var secondFeature=this.state.features[newIndex]
+            this.swapFeature(firstFeature,secondFeature,oldIndex,newIndex)}
         this.setState({
             features: arrayMove(this.state.features, oldIndex, newIndex),
         });
     };
      checkPermissions=(name)=>{
-            props.access.map((user)=>{
+            props.access.access.map((user)=>{
             if(user.value==name){
                this.setState({access:true})
             }
@@ -165,6 +223,10 @@ export class FeatureListComponent extends React.Component {
        
         this.setState({ features: nextProps.features,crs:nextProps.crs })
     }
+    addDefaultSrc=(ev)=>{
+   
+        ev.target.src = urls.static + 'cartoview_story_map/img/no-img.png'
+      }
     render() {
 
 
@@ -188,7 +250,7 @@ export class FeatureListComponent extends React.Component {
                 < Card id={"id" + sortIndex} className='image-container'>
                     <div style={{ display: "flex" }}>
                         <div style={{ "flexGrow": "1" }}> <CardHeader
-                            title={`${value.getProperties()[config.titleAttribute]}`}
+                            title={`${value.getProperties()['title']}`}
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                         </div>
                          { this.state.access&& <div>
@@ -209,11 +271,14 @@ export class FeatureListComponent extends React.Component {
                             
                         </div>}
                     </div>
-                    <Img className={classes.bigAvatar} style={{ height: "250px" }} src={[urls.static + 'cartoview_story_map/img/no-img.png'
-                    ]} loader={<Loader />} />
+                    <img   className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ?value.getProperties()['imageurl'] :urls.static + 'cartoview_story_map/img/no-img.png'
+                    ]} loader={<Loader />}  
+                    
+                    onError={this.addDefaultSrc}
+                    />
                     <CardContent>
                         <Typography component="p">
-                            {config.description ? value.getProperties()[config.description] : ''}
+                            {value.getProperties()['description']}
                         </Typography>
 
                     </CardContent>

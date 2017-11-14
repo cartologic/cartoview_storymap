@@ -102,11 +102,10 @@ class addForm extends React.Component {
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
-        console.log(this.props.mapProjection)
-        console.log(this.props.mapProjection, this.props.crs)
+             feature.set("order",this.props.features.length+1)
 
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
-        var xml = transactWFS("insert", this.props.newFeature,this.props.config.layer,this.props.crs)
+        var xml = transactWFS("insert", this.props.newFeature,props.layername,this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
         console.log(proxiedURL)
@@ -159,7 +158,7 @@ class addForm extends React.Component {
                     {
                         featureTypes && featureTypes.map((feature, i) => {
 
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime"&&feature.name!="order") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}

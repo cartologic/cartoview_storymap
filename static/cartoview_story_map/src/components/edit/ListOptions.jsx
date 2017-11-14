@@ -16,7 +16,7 @@ const Color = t.enums({
   redmarker:'Red'
 });
 const formConfig = t.struct({
-    layer: t.String,
+  
     titleAttribute: t.String,
     subtitleAttribute: t.maybe(t.String),
     filters: t.maybe(t.String),

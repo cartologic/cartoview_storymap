@@ -61,7 +61,9 @@ class ContentGrid extends Component {
     
     componentDidMount() {
         const { map } = this.props
+       
         map.setTarget(this.mapDiv)
+        map.getView().fit(props.extent,map.getSize())
         this.checkPermissions(loggedUser)
     }
 
@@ -91,7 +93,7 @@ class ContentGrid extends Component {
     }
     checkPermissions=(name)=>{
         console.log(props.access)
-            props.access.map((user)=>{
+            props.access.access.map((user)=>{
             console.log(user.value,name)
             if(user.value==name){
                 console.log("true")

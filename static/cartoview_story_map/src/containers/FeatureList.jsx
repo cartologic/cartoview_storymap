@@ -29,7 +29,7 @@ class FeatureListContainer extends Component {
     constructor(props) {
         super(props)
         this.feature = new ol.Feature({
-            the_geom: new ol.geom.Point([0, 0]),
+            geom: new ol.geom.Point([0, 0]),
             geometryName: 'the_geom'
         })
         this.feature.setGeometryName("the_geom")
@@ -53,7 +53,8 @@ class FeatureListContainer extends Component {
             filterType: null,
             ImageBase64: null,
             xyValue: null,
-            showDialog: false
+            showDialog: false,
+            crs:"3857"
 
 
         }
@@ -88,8 +89,10 @@ class FeatureListContainer extends Component {
 
     refreshMap=(feature)=>{
         console.log("refresh")
+        this.map.removeInteraction(this.modifyInteractionEdit)
         this.featureCollection.push(feature)
-        this.map.removeInteraction(this.modifyInteraction)
+        console.log("------->",this.map)
+        
        
     }
     getLocation = () => {
@@ -260,10 +263,10 @@ class FeatureListContainer extends Component {
         if (config.filters) {
             this.getFilterType()
         }
-        this.loadMap(urls.mapJsonUrl, urls.proxy)
+        // this.loadMap(urls.mapJsonUrl, urls.proxy)
         this.getFeatures(0)
-        this.loadAttachments(urls.attachmentUploadUrl(layerName(config.layer)))
-        this.loadComments(urls.commentsUploadUrl(layerName(config.layer)))
+        // this.loadAttachments(urls.attachmentUploadUrl(layerName(config.layer)))
+        // this.loadComments(urls.commentsUploadUrl(layerName(config.layer)))
     }
     searchFilesById = (id) => {
         const { attachments } = this.state
@@ -309,7 +312,8 @@ class FeatureListContainer extends Component {
         let promise = new Promise((resolve, reject) => {
             if (proj4.defs('EPSG:' + crs)) {
                 resolve(crs)
-            } else {
+            } 
+            else {
                 fetch("https://epsg.io/?format=json&q=" + crs).then(
                     response => response.json()).then(
                     projres => {
@@ -330,10 +334,10 @@ class FeatureListContainer extends Component {
             service: 'wfs',
             version: '2.0.0',
             request: 'GetFeature',
-            typeNames: config.layer,
+            typeNames: props.layername,
             outputFormat: 'json',
             srsName: this.map.getView().getProjection().getCode(),
-
+            sortBy:'order',
             startIndex
         })
         fetch(this.urls.getProxiedURL(requestUrl)).then((response) =>
@@ -606,7 +610,8 @@ class FeatureListContainer extends Component {
             editedFeature:this.editedFeature,
             geometry:this.state.geometry,
             backFromEdit:this.backFromEdit,
-            removeFeatureMarker:this.removeFeatureMarker
+            removeFeatureMarker:this.removeFeatureMarker,
+            crs:this.state.crs?this.state.crs:"3857"
             
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />

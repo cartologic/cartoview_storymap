@@ -92,67 +92,66 @@ class EditForm extends React.Component {
     }
     save = () => {
 
-        // var feature =this.props.editedFeature?this.props.editedFeature:this.props.featureEdit
-        // console.log(feature,feature.getGeometry())
-        // Object.keys(this.state.formValue).map(property => {
-        //     console.log("property",property, this.state.formValue[property])
-        //     if(property!='geometry'&&property!='featureIndex')
-        //    { feature.set(property, this.state.formValue[property])}
-        // })
-        // var geometry=this.props.featureEdit.getGeometry()
-        // console.log(feature.getGeometry())
-        //  feature.unset("geometry")
-        //  feature.unset("featureIndex")
-      
-        // // feature.setGeometry(geometry)
-        // // feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
-        // console.log(this.props.config.layer)
-        // var xml = transactWFS("update", feature,this.props.config.layer,this.props.crs)
-        // console.log(xml)
-        // var proxy_urls = new URLS(urls)
-        // const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+        var feature =this.props.editedFeature?this.props.editedFeature:this.props.featureEdit
        
-        // return fetch(proxiedURL, {
-        //     method: 'POST',
-        //     body: xml,
-        //     credentials: 'include',
-        //     headers: new Headers({
-        //         'Content-Type': 'text/xml',
-        //         "X-CSRFToken": getCRSFToken()
-        //     })
-        // }).then((res) => {
-                    
-        //             this.setState({ success: true })
-        //             this.props.handleOpen("Feature updated Successfully")
-        //             this.props.handleSwitch()
-        //             this.props.back()
-        //             // feature.set("featureIndex",++this.props.features.length)
-        //             this.props.refreshMap(feature)
-        //             // return res.json()
-        //         }).catch((error) => {
-        //             throw Error(error)
-        //         })
-        var coordinate= this.props.featureEdit.getGeometry().getCoordinates();
-        const geometry = this.props.geometry?this.props.geometry:{
-            name: 'the_geom',
-            srsName: "EPSG:"+this.props.crs,
-            x: coordinate[0],
-            y: coordinate[1]
-        }
-            
-        this.WFS.updateFeature(this.props.config.layer, this.state.id, this.state.formValue,geometry).then(res =>
-            res.text()).then((res) => {
-                this.setState({ success: true })
-                this.setState({ success: true })
-                
-                  this.props.handleOpen("Feature created Successfully")
-                  this.props.handleSwitch()
-                  this.props.back()
-                //   feature.set("featureIndex",++this.props.features.length)
-                //   this.props.refreshMap(feature)
-            }).catch((error) => {
-                throw Error(error)
+        var coordinate= feature.getGeometry().getCoordinates();
+    
+         Object.keys(this.state.formValue).map(property => {
+            console.log("property",property, this.state.formValue[property])
+            if(property!='geometry'&&property!='featureIndex')
+           { feature.set(property, this.state.formValue[property])}
+        })
+          feature.unset("featureIndex")      
+          feature.unset('geometry')
+ 
+      
+        var xml = transactWFS("update", feature,props.layername,this.props.crs)
+ 
+        var proxy_urls = new URLS(urls)
+        const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+       
+        return fetch(proxiedURL, {
+            method: 'POST',
+            body: xml,
+            credentials: 'include',
+            headers: new Headers({
+                'Content-Type': 'text/xml',
+                "X-CSRFToken": getCRSFToken()
             })
+        }).then((res) => {
+                    
+                    this.setState({ success: true })
+                    this.props.handleOpen("Feature updated Successfully")
+                    this.props.handleSwitch()
+                    this.props.back()
+                    // feature.set("featureIndex",++this.props.features.length)
+                    this.props.refreshMap(feature)
+                    // return res.json()
+                }).catch((error) => {
+                    throw Error(error)
+                })
+        //-----------------------------------------------------------------------------
+        // var coordinate= this.props.featureEdit.getGeometry().getCoordinates();
+        // const geometry = this.props.geometry?this.props.geometry:{
+        //     name: 'the_geom',
+        //     srsName: "EPSG:"+this.props.crs,
+        //     x: coordinate[0],
+        //     y: coordinate[1]
+        // }
+        //     console.log(this.props.crs)
+        // this.WFS.updateFeature(props.layername, this.state.id, this.state.formValue,geometry).then(res =>
+        //     res.text()).then((res) => {
+        //         this.setState({ success: true })
+        //         this.setState({ success: true })
+                
+        //           this.props.handleOpen("Feature created Successfully")
+        //           this.props.handleSwitch()
+        //           this.props.back()
+        //         //   feature.set("featureIndex",++this.props.features.length)
+        //         //   this.props.refreshMap(feature)
+        //     }).catch((error) => {
+        //         throw Error(error)
+        //     })
     }
 
 
@@ -180,7 +179,7 @@ class EditForm extends React.Component {
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime"&&feature.name!="order") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}

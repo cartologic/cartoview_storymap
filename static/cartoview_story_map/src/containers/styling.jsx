@@ -3,8 +3,8 @@ import ol from 'openlayers'
 export const styleFunction = (feature) => {
 
 
-    const text = props.DisplayNumbersOnMarkers ? new ol.style.Text({
-        text: feature.getProperties().featureIndex.toString(),
+    const text = props.config.DisplayNumbersOnMarkers ? new ol.style.Text({
+        text: feature.getProperties().order.toString(),
         offsetY: -30,
         scale: 1,
         fill: new ol.style.Fill({
@@ -16,7 +16,7 @@ export const styleFunction = (feature) => {
         anchor: [0.5, 45],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: urls.static + 'cartoview_story_map/' + props.color + '.png'
+        src: urls.static + 'cartoview_story_map/' + props.config.color + '.png'
     }))
 
     const styles = {
