@@ -84,8 +84,7 @@ class FeatureListContainer extends Component {
     }
 
     refreshMap=(feature)=>{
-      
-        this.map.removeInteraction(this.modifyInteractionEdit)
+
         this.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
         this.state.features.push(feature)
@@ -93,10 +92,15 @@ class FeatureListContainer extends Component {
        
     }
     refreshMapEdit=(feature)=>{
-        
+        console.log("referrrrrrrrrrsh")
           this.map.removeInteraction(this.modifyInteractionEdit)
-          this.map.removeInteraction(this.modifyInteraction)
-          this.featureCollection.push(feature)
+          this.featureCollection.removeAt(feature.getProperties()['order']-1)
+        //   this.featureCollection.push(feature)
+          
+          
+          this.state.features[feature.getProperties()['order']-1]=feature
+          
+        //   console.log(feature)
         //   this.getLocation()
          
       }
@@ -193,7 +197,7 @@ class FeatureListContainer extends Component {
                 'cartoview_story_map/greenmarker.png'
             }),
             text: new ol.style.Text({
-                text: '+',
+                text: '',
                 fill: new ol.style.Fill({ color: '#fff' }),
                 stroke: new ol.style.Stroke({
                     color: '#fff',

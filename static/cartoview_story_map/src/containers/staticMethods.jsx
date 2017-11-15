@@ -101,7 +101,7 @@ export const getdescribeFeatureType = (typename=props.layername) => {
 }
 export const transactWFS = (action, feature, layerName, crs) => {
     var formatWFS = new WFS
-   
+   console.log(feature)
     const [namespace, name] = layerName.split(":")
     var formatGMLOptions = {
         featureNS: "http://www.geonode.org/",

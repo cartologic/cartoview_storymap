@@ -68,7 +68,7 @@ class EditForm extends React.Component {
         this.state = {
             formValue: this.props.editedFeature ? this.props.editedFeature.getProperties() : this.props.featureEdit.getProperties(),
             success: false,
-            loading:false,
+            loading: false,
             id: this.props.featureEdit.getProperties()['featureIndex'],
             geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 }
         }
@@ -92,67 +92,79 @@ class EditForm extends React.Component {
 
     }
     save = () => {
-        this.setState({loading:true})
-        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
-
-        var coordinate = feature.getGeometry().getCoordinates();
-
-        Object.keys(this.state.formValue).map(property => {
-
-            if (property != 'geometry' && property != 'featureIndex') { feature.set(property, this.state.formValue[property]) }
-        })
-        feature.unset("featureIndex")
-        feature.unset('geometry')
-
-
-        var xml = transactWFS("update", feature, props.layername, this.props.crs)
-
-        var proxy_urls = new URLS(urls)
-        const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-
-        return fetch(proxiedURL, {
-            method: 'POST',
-            body: xml,
-            credentials: 'include',
-            headers: new Headers({
-                'Content-Type': 'text/xml',
-                "X-CSRFToken": getCRSFToken()
-            })
-        }).then((res) => {
-
-            this.setState({ success: true })
-            this.props.handleOpen("Feature updated Successfully")
-            this.props.handleSwitch()
-            this.props.back()
-            this.setState({loading:false})
-            // feature.set("featureIndex",++this.props.features.length)
-            this.props.refreshMapEdit(feature)
-            // return res.json()
-        }).catch((error) => {
-            throw Error(error)
-        })
-        //-----------------------------------------------------------------------------
-        // var coordinate= this.props.featureEdit.getGeometry().getCoordinates();
-        // const geometry = this.props.geometry?this.props.geometry:{
-        //     name: 'the_geom',
-        //     srsName: "EPSG:"+this.props.crs,
-        //     x: coordinate[0],
-        //     y: coordinate[1]
-        // }
-        //     console.log(this.props.crs)
-        // this.WFS.updateFeature(props.layername, this.state.id, this.state.formValue,geometry).then(res =>
-        //     res.text()).then((res) => {
-        //         this.setState({ success: true })
-        //         this.setState({ success: true })
-
-        //           this.props.handleOpen("Feature created Successfully")
-        //           this.props.handleSwitch()
-        //           this.props.back()
-        //         //   feature.set("featureIndex",++this.props.features.length)
-        //         //   this.props.refreshMap(feature)
-        //     }).catch((error) => {
-        //         throw Error(error)
+         this.setState({ loading: true })
+        // var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+        // var coordinate = feature.getGeometry().getCoordinates();
+        // feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
+        // feature.setGeometryName("the_geom")
+        // console.log(coordinate)
+        // var newFeature = new ol.Feature({
+        //     geom: new ol.geom.Point([coordinate[0], coordinate[1]]),
+        //     geometryName: 'the_geom'
+        // })
+        // Object.keys(this.state.formValue).map(property => {
+        //     if (property != 'geometry' && property != 'featureIndex') {
+        //         feature.set(property, this.state.formValue[property])
+        //         newFeature.set(property, this.state.formValue[property])
+        //     }
+        // })
+        
+        // console.log(this.props.mapProjection, "EPSG:" + this.props.crs)
+      
+        // feature.unset("featureIndex")
+        // //feature.unset('geometry')
+        // var xml = transactWFS("update", feature, props.layername, this.props.crs)
+        // var proxy_urls = new URLS(urls)
+        // const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+        // return fetch(proxiedURL, {
+        //     method: 'POST',
+        //     body: xml,
+        //     credentials: 'include',
+        //     headers: new Headers({
+        //         'Content-Type': 'text/xml',
+        //         "X-CSRFToken": getCRSFToken()
         //     })
+        // }).then((res) => {
+        //     this.setState({ success: true })
+        //     this.props.handleOpen("Feature updated Successfully")
+        //     this.props.handleSwitch()
+        //     this.props.back()
+        //     this.setState({ loading: false })
+        //     // feature.set("featureIndex",++this.props.features.length)
+        //     this.props.refreshMapEdit(feature)
+        //     // return res.json()
+        // }).catch((error) => {
+        //     throw Error(error)
+        // })
+        //-----------------------------------------------------------------------------
+        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+        var coordinate = feature.getGeometry().getCoordinates();
+        const geometry = this.props.geometry?this.props.geometry:{
+            name: 'the_geom',
+            srsName: "EPSG:"+this.props.crs,
+            x: coordinate[0],
+            y: coordinate[1]
+        }
+            console.log(this.props.crs,this.props.geometry,feature.getId())
+            Object.keys(this.state.formValue).map(property => {
+                    if (property != 'geometry' && property != 'featureIndex') {
+                        feature.set(property, this.state.formValue[property])
+                       
+                    }
+                })
+            this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue,geometry).then(res =>
+            res.text()).then((res) => {
+                this.setState({ success: true })
+         
+            
+                
+                  this.props.handleOpen("Feature edited Successfully")
+                  this.props.handleSwitch()
+                  this.props.refreshMapEdit(feature)
+                  this.props.back()
+            }).catch((error) => {
+                throw Error(error)
+            })
     }
 
 
@@ -212,9 +224,9 @@ class EditForm extends React.Component {
                         })
                     }
                     <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
-                    { this.state.loading?'saving':'save'}
-                            { this.state.loading&&<CircularProgress size={20}/>}
-                 </Button>
+                        {this.state.loading ? 'saving' : 'save'}
+                        {this.state.loading && <CircularProgress size={20} />}
+                    </Button>
                 </div>
                 <div className={classes.textCenter}>
 

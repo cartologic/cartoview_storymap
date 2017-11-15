@@ -83,6 +83,7 @@ class WFSClient {
       return propsXML
     }
     updateFeature( typeName, fid, properties, geometry ) {
+        const [namespace, name] = typeName.split(":");
         const xml =
             `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
       <Update typeName="${typeName}" >
