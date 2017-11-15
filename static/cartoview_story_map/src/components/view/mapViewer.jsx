@@ -51,7 +51,7 @@ class MapViewer extends React.Component {
     }
     onFeatureMove = (event) => {
         const feature = this.feature
-        console.log(feature)
+
         this.props.onFeatureMove(feature.getGeometry().getCoordinates(), feature)
 
         const center = ol.proj.transform(event, 'EPSG:900913',

@@ -28,11 +28,7 @@ import { wfsQueryBuilder } from "../helpers/helpers.jsx"
 class FeatureListContainer extends Component {
     constructor(props) {
         super(props)
-        this.feature = new ol.Feature({
-            geom: new ol.geom.Point([0, 0]),
-            geometryName: 'the_geom'
-        })
-        this.feature.setGeometryName("the_geom")
+       
         this.state = {
             mapIsLoading: false,
             featuresIsLoading: false,
@@ -88,16 +84,29 @@ class FeatureListContainer extends Component {
     }
 
     refreshMap=(feature)=>{
-        console.log("refresh")
+      
         this.map.removeInteraction(this.modifyInteractionEdit)
+        this.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
-        console.log("------->",this.map)
-        
+        this.state.features.push(feature)
+        // this.getLocation()
        
     }
+    refreshMapEdit=(feature)=>{
+        
+          this.map.removeInteraction(this.modifyInteractionEdit)
+          this.map.removeInteraction(this.modifyInteraction)
+          this.featureCollection.push(feature)
+        //   this.getLocation()
+         
+      }
     getLocation = () => {
 
-
+        this.feature = new ol.Feature({
+            geom: new ol.geom.Point([0, 0]),
+            geometryName: 'the_geom'
+        })
+        this.feature.setGeometryName("the_geom")
 
         const featureStyle = new ol.style.Style({
             image: new ol.style.Icon({
@@ -151,7 +160,6 @@ class FeatureListContainer extends Component {
     }
     onFeatureMoveEdit = (event) => {
 
-        console.log("edit finished", event.mapBrowserEvent.coordinate)
         const crs = 'EPSG:' + this.state.crs
                 
                 var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
@@ -212,7 +220,7 @@ class FeatureListContainer extends Component {
             pixelTolerance: 32,
              style: []
         })
-        console.log(feature.getProperties().featureIndex)
+        // console.log(feature.getProperties().featureIndex)
         this.setState({featureCollection:this.featureCollection})
         this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
         this.map.addLayer(this.vectorLayerEdit)
@@ -225,7 +233,7 @@ class FeatureListContainer extends Component {
 
         this.setState({
             features: update(this.state.features, {$splice: [[feature.getProperties().featureIndex-1, 1]]})
-          },console.log("after splice",this.state.features))
+           })
     }
     addComment = (data) => {
         const { urls, config } = this.props
@@ -317,9 +325,10 @@ class FeatureListContainer extends Component {
                 fetch("https://epsg.io/?format=json&q=" + crs).then(
                     response => response.json()).then(
                     projres => {
+                        if( projres.results[0]){
                         proj4.defs('EPSG:' + crs, projres.results[
                             0].proj4)
-                        resolve(crs)
+                        resolve(crs)}
                     })
             }
         })
@@ -468,10 +477,11 @@ class FeatureListContainer extends Component {
         }).then((response) => response.json())
     }
     zoomToFeature = (feature, done = () => { }) => {
+        if(props.config.zoomOnClick){
         var duration = 1000;
-        console.log(feature, feature.getGeometry())
+        // console.log(feature, feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
-        console.log(this.feature.getGeometry())
+        // console.log(this.feature.getGeometry())
         var view = this.map.getView()
         var zoom = view.getZoom();
 
@@ -504,7 +514,7 @@ class FeatureListContainer extends Component {
         if (config && config.zoomOnSelect) {
 
         }
-    }
+    }}
     singleClickListner = () => {
         this.map.on('singleclick', (e) => {
 
@@ -607,6 +617,7 @@ class FeatureListContainer extends Component {
             editFeature: this.editFeature,
             newFeature: this.feature,
             refreshMap:this.refreshMap,
+            refreshMapEdit:this.refreshMapEdit,
             editedFeature:this.editedFeature,
             geometry:this.state.geometry,
             backFromEdit:this.backFromEdit,

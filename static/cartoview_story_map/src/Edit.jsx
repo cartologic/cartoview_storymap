@@ -13,52 +13,53 @@ import permissions from './components/edit/permissions.jsx'
 import { getCRSFToken } from './helpers/helpers.jsx'
 
 export default class Edit extends Component {
-    constructor( props ) {
-        super( props )
-        const { config,extent,access } = this.props
+    constructor(props) {
+        super(props)
+        const { config, extent, access } = this.props
         this.state = {
             step: 0,
-            access: this.props.access? this.props.access : null,           
+            access:config && this.props.config.config.access ? this.props.config.config.access : null,
             config: config ? config.config : null,
             id: config ? config.id : null,
-            extent: this.props.extent ? this.props.extent:null,
-
+            extent: config &&this.props.config.config.extent ? this.props.config.config.extent : null,
+            general: config && this.props.config.config.config ? this.props.config.config.config : null
         }
+console.log("tss",this.props.config)
     }
-    goToStep( step ) {
-        this.setState( { step } )
+    goToStep(step) {
+        this.setState({ step })
     }
     onPrevious() {
         let { step } = this.state
-        this.goToStep( step -= 1 )
+        this.goToStep(step -= 1)
     }
-    save = ( instanceConfig ) => {
-        console.log("configggg",this.state.config.config.title)
-        this.state.config['extent']=this.state.extent
-        this.state.config['access']=this.state.access
-        var config={title:this.state.config.config.title,config:this.state.config,extent:this.state.extent,access:this.state.access}
+    save = (instanceConfig) => {
+
+        this.state.config['extent'] = this.state.extent
+        this.state.config['access'] = this.state.access
+        var config = { abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access }
         const { urls } = this.props
         const { id } = this.state
-        const url = id ? urls.editURL( id ) : urls.newURL
-        this.setState( {
+        const url = id ? urls.editURL(id) : urls.newURL
+        this.setState({
             config: instanceConfig
-        } )
-        fetch( url, {
+        })
+        fetch(url, {
             method: 'POST',
             credentials: "same-origin",
-            headers: new Headers( { "Content-Type": "application/json; charset=UTF-8", "X-CSRFToken": getCRSFToken() } ),
-            body: JSON.stringify( config )
-        } ).then( ( response ) => response.json() ).then( result => {
-            if ( result.success === true ) {
-                this.setState( {
+            headers: new Headers({ "Content-Type": "application/json; charset=UTF-8", "X-CSRFToken": getCRSFToken() }),
+            body: JSON.stringify(config)
+        }).then((response) => response.json()).then(result => {
+            if (result.success === true) {
+                this.setState({
                     success: true,
                     id: result.id
 
-                } )
+                })
 
                 window.location.href = urls.viewURL(result.id)
             }
-        } )
+        })
     }
     render() {
         let { urls, username, keywords } = this.props
@@ -73,26 +74,23 @@ export default class Edit extends Component {
             extent
         } = this.state
         const steps = [
-            {   
+            {
                 label: "Select Map",
                 component: MapViewer,
                 props: {
                     resourcesUrl: urls.resources_url,
                     username: username,
-                    extent:config,
+                    extent: extent,
                     onComplete: (extent) => {
-                        
+
                         var { step, config } = this.state
-                        this.setState( { extent } )
-                        
-                           
-                       
-                        this.goToStep( ++step )
+                        this.setState({ extent })
+                        this.goToStep(++step)
                     }
                 },
-			
-             
-            },{
+
+
+            }, {
                 label: "Permissions",
                 component: permissions,
                 props: {
@@ -101,55 +99,56 @@ export default class Edit extends Component {
                     urls,
                     success,
                     id: id,
-                    access:this.state.access?this.state.access:null,
-                    onComplete: ( access) => {
-                       console.log(access,"access")
-                        this.setState({access},this.goToStep( ++step ))
-                       
-                       
+                    access: this.state.access ? this.state.access : null,
+                    onComplete: (access) => {
+                        console.log(access, "access")
+                        this.setState({ access }, this.goToStep(++step))
+
+
                     },
                     onPrevious: () => {
                         this.onPrevious()
                     }
                 }
-			},
-            
-            {  label: "General ",
+            },
+
+            {
+                label: "General ",
                 component: General,
                 props: {
                     keywords: config && config.keywords ? config.keywords : keywords,
                     urls,
                     abstract,
                     title,
-                  
-                    config,
-                    onComplete: ( basicConfig ) => {
-                        console.log("general",basicConfig)
+                    general: this.props.config &&this.props.config.config.config ? this.props.config.config.config : null,
+                    
+                    onComplete: (basicConfig) => {
+                        console.log("general", basicConfig)
                         let { step, config } = this.state
-                        this.setState( {
+                        this.setState({
                             config: {
                                 ...basicConfig,
-                                
+
                             }
-                        },()=>this.save( this.state.config ) )
-                        
+                        }, () => this.save(this.state.config))
+
                     },
                     onPrevious: () => {
                         this.onPrevious()
                     }
                 }
-			}, 
-		]
+            },
+        ]
         return (
             <div className="wrapping">
-				<Navigator
-					steps={steps}
-					step={step}
-					onStepSelected={(step) => this.goToStep(step)} />
-				<div className="col-xs-12 col-sm-12 col-md-9 col-lg-9 right-panel">
-					{steps.map((s, index) => index == step && <s.component key={index} {...s.props} />)}
-				</div>
-			</div>
+                <Navigator
+                    steps={steps}
+                    step={step}
+                    onStepSelected={(step) => this.goToStep(step)} />
+                <div className="col-xs-12 col-sm-12 col-md-9 col-lg-9 right-panel">
+                    {steps.map((s, index) => index == step && <s.component key={index} {...s.props} />)}
+                </div>
+            </div>
         )
     }
 }

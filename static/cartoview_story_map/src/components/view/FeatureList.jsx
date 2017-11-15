@@ -35,8 +35,9 @@ class FeatureList extends Component {
         this.setState({ open: true, addEntry: true })
     }
 handleSwitch(){
-this.setstate({switch:true})
-this.props.childrenProps.removeLocation()
+    this.props.childrenProps.removeLocation()
+    this.setState({switch:true})
+
 }
     render() {
         let { classes, map, childrenProps } = this.props

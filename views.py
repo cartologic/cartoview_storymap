@@ -4,12 +4,18 @@ from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
 from django.shortcuts import HttpResponse
 from django.shortcuts import redirect
-# from geonode.contrib.createlayer.utils import create_layer
+from geonode.geoserver.helpers import ogc_server_settings, get_store, get_sld_for
 from . import APP_NAME
 from django.template.defaultfilters import slugify
 from django.shortcuts import HttpResponse, render
 from .utils import create_layer
+from geoserver.catalog import Catalog, FailedRequestError
 
+username, password = ogc_server_settings.credentials
+gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
+geonode_workspace = gs_catalog.get_workspace("geonode")
+
+print(username,geonode_workspace.__dict__)
 def save(request, instance_id=None, app_name=APP_NAME):
     res_json = dict(success=False)
     data = json.loads(request.body)
@@ -20,7 +26,7 @@ def save(request, instance_id=None, app_name=APP_NAME):
 
     # config.update(access=access, keywords=keywords)
     config = json.dumps(data.get('config', None))
-    # abstract = data.get('abstract', "")
+    abstract = data.get('abstract', "")
 
     if instance_id is None:
         instance_obj = AppInstance()
@@ -28,11 +34,11 @@ def save(request, instance_id=None, app_name=APP_NAME):
         instance_obj.owner = request.user
         # name = form.cleaned_data['name']
         name = title+'_'+app_name
-        title = title+'_'+app_name
+        layer_title = title+'_'+app_name
         geometry_type = "Point"
         attributes = json.dumps({"title":"string","description":"string","title":"string","imageUrl":"string","order":"integer"})
         # permissions = form.cleaned_data["permissions"]
-        layer = create_layer(name, title, request.user.username, geometry_type,attributes)
+        layer = create_layer(name, layer_title, request.user.username, geometry_type,attributes)
         # layer.set_permissions(json.loads(permissions))
         # return redirect(layer)
 
@@ -46,7 +52,7 @@ def save(request, instance_id=None, app_name=APP_NAME):
 
     instance_obj.title = title
     instance_obj.config = config
-    # instance_obj.abstract = abstract
+    instance_obj.abstract = abstract
     # instance_obj.map_id = map_id
     
     instance_obj.save()
@@ -91,6 +97,7 @@ def view_app(
         APP_NAME,
         context={}):
     print("id",instance_id)
+    print(username,geonode_workspace.__dict__)
     # instance = _resolve_appinstance(
     #     request, instance_id, 'base.view_resourcebase', _PERMISSION_MSG_VIEW)
     instance = AppInstance.objects.get(pk=instance_id)
@@ -113,5 +120,6 @@ def edit(request, instance_id, template="%s/edit.html" % APP_NAME, context={}):
     if request.method == 'POST':
         return save(request, instance_id)
     instance = AppInstance.objects.get(pk=instance_id)
-    context.update(instance=instance,id=instance_id,app=APP_NAME)
+    
+    context.update(instance=instance,id=instance_id,app=APP_NAME,config=json.dumps(instance.config))
     return render(request, template, context)

@@ -21,7 +21,8 @@ import { getCRSFToken } from '../../helpers/helpers.jsx'
 import URLS from '../../containers/URLS'
 import Feature from 'ol/feature';
 import ol from 'openlayers'
-import {transactWFS} from '../../containers/staticMethods'
+import { CircularProgress } from 'material-ui/Progress'
+import { transactWFS } from '../../containers/staticMethods'
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -64,7 +65,8 @@ class addForm extends React.Component {
         super(props)
         this.state = {
             formValue: {},
-            success: false
+            success: false,
+            loading:false
         }
 
     }
@@ -97,18 +99,18 @@ class addForm extends React.Component {
         //         throw Error(error)
         //     })
 
-
+        this.setState({loading:true})
         var feature = this.props.newFeature
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
-             feature.set("order",this.props.features.length+1)
+        feature.set("order", this.props.features.length + 1)
 
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
-        var xml = transactWFS("insert", this.props.newFeature,props.layername,this.props.crs)
+        var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-        console.log(proxiedURL)
+
         return fetch(proxiedURL, {
             method: 'POST',
             body: xml,
@@ -118,19 +120,20 @@ class addForm extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-                    console.log(res)
-                    this.setState({ success: true })
-                  
-                    this.props.handleOpen("Feature created Successfully")
-                    this.props.handleSwitch()
-                    this.props.back()
-                    feature.set("featureIndex",++this.props.features.length)
-                    this.props.refreshMap(feature)
-                    // return res.json()
-                }).catch((error) => {
-                    throw Error(error)
-                })
-    
+
+            this.setState({ success: true })
+            this.props.handleSwitch()
+            this.props.handleOpen("Feature created Successfully")
+            this.props.back()
+            this.setState({loading:false})
+           
+            feature.set("featureIndex", ++this.props.features.length)
+            this.props.refreshMap(feature)
+            // return res.json()
+        }).catch((error) => {
+            throw Error(error)
+        })
+
     }
 
 
@@ -158,7 +161,7 @@ class addForm extends React.Component {
                     {
                         featureTypes && featureTypes.map((feature, i) => {
 
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime"&&feature.name!="order") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
@@ -188,8 +191,10 @@ class addForm extends React.Component {
                             }
                         })
                     }
-                    <Button raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
-                        Save
+                    <Button  disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+                      
+                            { this.state.loading?'saving':'save'}
+                            { this.state.loading&&<CircularProgress size={20}/>}
                  </Button>
                 </div>
                 <div className={classes.textCenter}>

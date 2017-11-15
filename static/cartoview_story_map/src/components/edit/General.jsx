@@ -18,6 +18,7 @@ const Color = t.enums({
 const formConfig = t.struct({
     // layer: t.String,
     title: t.String,
+    abstract: t.String,
     // subtitleAttribute: t.maybe(t.String),
     // filters: t.maybe(t.String),
     // description:t.maybe(t.String),
@@ -39,29 +40,21 @@ export default class General extends Component {
     constructor(props) {
         super(props)
         const { config } = this.props
+     
         this.state = {
 
             value: {
-                layer: getPropertyFromConfig(config, 'layer', null),
-                title: getPropertyFromConfig(config,
-                    'title', null),
-                subtitleAttribute: getPropertyFromConfig(config,
-                    'subtitleAttribute', null),
-                // pagination: getPropertyFromConfig(config,
-                //     'pagination', "10"),
-                filters: getPropertyFromConfig(config, 'filters', null),
-                description: getPropertyFromConfig(config, 'description', null),
-                DisplayNumbersOnMarkers: getPropertyFromConfig(config,
-                    'DisplayNumbersOnMarkers', true),
-                color: getPropertyFromConfig(config,
-                    'color', true),
-                    zoomOnClick: getPropertyFromConfig(config,
-                    'zoomOnClick', true),
+                title: this.props.general&&this.props.general.title?this.props.general.title:null,
+                abstract: this.props.general&&this.props.general.abstract?this.props.general.abstract:null,
+                DisplayNumbersOnMarkers:this.props.general&& this.props.general.DisplayNumbersOnMarkers?this.props.general.DisplayNumbersOnMarkers:null,
+                color: this.props.general&&this.props.general.color?this.props.general.color:null,
+                zoomOnClick: this.props.general&&this.props.general.zoomOnClick?this.props.general.zoomOnClick:null,
             },
             attributeOptions: [],
             attributes: [],
             loading: false
         }
+     
     }
 
 
@@ -162,7 +155,7 @@ export default class General extends Component {
 					marginTop: "3%"
 				}}>
 					<div className="col-xs-5 col-md-4">
-						<h4>{'NavigationTools '}</h4>
+						<h4>{'General '}</h4>
 					</div>
 					<div className="col-xs-7 col-md-8">
 						<a

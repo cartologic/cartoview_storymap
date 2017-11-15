@@ -25,13 +25,9 @@ class Viewer {
                 console.log("res",res)
                 this.config = {
                     config: res.config,
-                    title: res.title,
-                    abstract: res.abstract,
-                    keywords: res.keywords,
-                    map: res.map,
-                    id:res.id
+                  
                 }
-                this.currentlayer=res.config.layer
+              
                 render(
                     <Edit urls={this.urls} config={this.config} username={this.username}/>,
                     document.getElementById( this.domId ) )

@@ -75,7 +75,7 @@ export const checkURL = (value) => {
     return false
 }
 export const addSelectionLayer = (map, featureCollection, styleFunction) => {
-console.log("feature coll",featureCollection)
+  
     const layer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: featureCollection }),
         style: styleFunction,
@@ -90,7 +90,7 @@ console.log("feature coll",featureCollection)
     map.addLayer(layer)
     return layer
 }
-export const getdescribeFeatureType = (typename='geonode:'+props.formTitle) => {
+export const getdescribeFeatureType = (typename=props.layername) => {
     var proxy_urls = new URLS(urls)
     var url = urls.describeFeatureType(typename)
     var proxy_url = proxy_urls.getProxiedURL(url)
@@ -101,7 +101,7 @@ export const getdescribeFeatureType = (typename='geonode:'+props.formTitle) => {
 }
 export const transactWFS = (action, feature, layerName, crs) => {
     var formatWFS = new WFS
-     console.log("--------------",action, feature, layerName, crs)
+   
     const [namespace, name] = layerName.split(":")
     var formatGMLOptions = {
         featureNS: "http://www.geonode.org/",

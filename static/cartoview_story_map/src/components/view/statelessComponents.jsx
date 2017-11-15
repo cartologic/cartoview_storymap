@@ -36,13 +36,14 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import URLS from '../../containers/URLS'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
 import Snackbar from 'material-ui/Snackbar';
+
 import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
 } from 'material-ui/Dialog';
-import {transactWFS} from '../../containers/staticMethods'
+import { transactWFS } from '../../containers/staticMethods'
 
 export const Loader = (props) => {
     const style = { textAlign: 'center' }
@@ -75,7 +76,7 @@ export const Item = (props) => {
                 src={[
                     attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
                 ]}
-                loader={<Loader />} />
+              />
             <CardContent>
                 <Typography component="p">
                     {config.description ? feature.getProperties()[config.description] : ''}
@@ -102,28 +103,31 @@ export class FeatureListComponent extends React.Component {
         super(props)
         this.state = {
             features: this.props.features ? this.props.features : [],
-            access:false,
-            crs:"",
-            openDeleteDialoge:false,
-            deletedFeature:{},
-            openSnackBar:false
+            access: false,
+            crs: "",
+            openDeleteDialoge: false,
+            deletedFeature: {},
+            openSnackBar: false,
+            loading:false
 
         }
-       
-    }
-    
-     deleteDialogeClickOpen = (feature) => {
-         this.setState({deletedFeature:feature,openDeleteDialoge: true })
-  };
 
- deleteDialogeRequestClose = () => {
-    this.setState({ openDeleteDialoge: false });
-  };
-    deleteFeature=()=>{
-        var xml = transactWFS("delete",this.state.deletedFeature,props.layername,this.props.crs)
+    }
+
+    deleteDialogeClickOpen = (feature) => {
+
+        this.setState({ deletedFeature: feature, openDeleteDialoge: true })
+    };
+
+    deleteDialogeRequestClose = () => {
+        this.setState({ openDeleteDialoge: false });
+    };
+    deleteFeature = () => {
+        this.setState({loading:true})
+        var xml = transactWFS("delete", this.state.deletedFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-        console.log(proxiedURL)
+
         return fetch(proxiedURL, {
             method: 'POST',
             body: xml,
@@ -133,56 +137,56 @@ export class FeatureListComponent extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-        this.props.removeFeatureMarker(this.state.deletedFeature)
-           this.setState({ openDeleteDialoge: false,openSnackBar:true})
+            this.props.removeFeatureMarker(this.state.deletedFeature)
+            this.setState({ openDeleteDialoge: false, openSnackBar: true })
         })
-    
+
     }
-    swapFeature=(f1,f2,i1,i2)=>{
-        console.log(i1,i2)
-        f1.set("order",i2+1)
-        f2.set("order",i1+1)
-        f1.unset("featureIndex")      
+    swapFeature = (f1, f2, i1, i2) => {
+
+        f1.set("order", i2 + 1)
+        f2.set("order", i1 + 1)
+        f1.unset("featureIndex")
         f1.unset('geometry')
-        f2.unset("featureIndex")      
+        f2.unset("featureIndex")
         f2.unset('geometry')
-    
-      var xml1= transactWFS("update", f1,props.layername,this.props.crs)
-      var xml2 = transactWFS("update", f2,props.layername,this.props.crs)
-      var proxy_urls = new URLS(urls)
-      const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-     
-      return fetch(proxiedURL, {
-          method: 'POST',
-          body: xml1,
-          credentials: 'include',
-          headers: new Headers({
-              'Content-Type': 'text/xml',
-              "X-CSRFToken": getCRSFToken()
-          })
-      }).then((res) => {
-                                    
-                            return fetch(proxiedURL, {
-                                method: 'POST',
-                                body: xml2,
-                                credentials: 'include',
-                                headers: new Headers({
-                                    'Content-Type': 'text/xml',
-                                    "X-CSRFToken": getCRSFToken()
-                                })
-                            }).then((res) => {
-                                        
-                                    
-                    
-                            
-                                    }).catch((error) => {
-                                        throw Error(error)
-                                    })
+
+        var xml1 = transactWFS("update", f1, props.layername, this.props.crs)
+        var xml2 = transactWFS("update", f2, props.layername, this.props.crs)
+        var proxy_urls = new URLS(urls)
+        const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
+
+        return fetch(proxiedURL, {
+            method: 'POST',
+            body: xml1,
+            credentials: 'include',
+            headers: new Headers({
+                'Content-Type': 'text/xml',
+                "X-CSRFToken": getCRSFToken()
+            })
+        }).then((res) => {
+
+            return fetch(proxiedURL, {
+                method: 'POST',
+                body: xml2,
+                credentials: 'include',
+                headers: new Headers({
+                    'Content-Type': 'text/xml',
+                    "X-CSRFToken": getCRSFToken()
+                })
+            }).then((res) => {
 
 
-              }).catch((error) => {
-                  throw Error(error)
-              })
+
+
+            }).catch((error) => {
+                throw Error(error)
+            })
+
+
+        }).catch((error) => {
+            throw Error(error)
+        })
 
 
 
@@ -190,48 +194,51 @@ export class FeatureListComponent extends React.Component {
     onSortEnd = ({ oldIndex, newIndex }) => {
 
 
-       
+
         const { openDetails } = this.props
-      
-        
+
+
         if (oldIndex == newIndex) {
             $('.image-container').removeClass("inFocus").addClass("outFocus");
             $('#id' + newIndex).removeClass("outFocus").addClass("inFocus");
             openDetails({ detailsOfFeature: this.state.features[newIndex] })
         }
-        else{    var firstFeature=this.state.features[oldIndex]
-                 var secondFeature=this.state.features[newIndex]
-            this.swapFeature(firstFeature,secondFeature,oldIndex,newIndex)}
+        else {
+            var firstFeature = this.state.features[oldIndex]
+            var secondFeature = this.state.features[newIndex]
+            this.swapFeature(firstFeature, secondFeature, oldIndex, newIndex)
+        }
         this.setState({
             features: arrayMove(this.state.features, oldIndex, newIndex),
         });
     };
-     checkPermissions=(name)=>{
-            props.access.access.map((user)=>{
-            if(user.value==name){
-               this.setState({access:true})
+    checkPermissions = (name) => {
+        props.access.access.map((user) => {
+            if (user.value == name) {
+                this.setState({ access: true })
             }
-        
-        })}
-        handleCloseSnackBar=()=>{
-            this.setState({openSnackBar:false})
-        }
-    componentDidMount(){
-         this.checkPermissions(loggedUser)
+
+        })
+    }
+    handleCloseSnackBar = () => {
+        this.setState({ openSnackBar: false })
+    }
+    componentDidMount() {
+        this.checkPermissions(loggedUser)
     }
     componentWillReceiveProps(nextProps) {
-       
-        this.setState({ features: nextProps.features,crs:nextProps.crs })
+
+        this.setState({ features: nextProps.features, crs: nextProps.crs })
     }
-    addDefaultSrc=(ev)=>{
-   
+    addDefaultSrc = (ev) => {
+
         ev.target.src = urls.static + 'cartoview_story_map/img/no-img.png'
-      }
+    }
     render() {
 
 
         const vertical = 'bottom', horizontal = 'center'
-        console.log("statless",this.props)
+
         const {
             features,
             featuresIsLoading,
@@ -253,28 +260,28 @@ export class FeatureListComponent extends React.Component {
                             title={`${value.getProperties()['title']}`}
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                         </div>
-                         { this.state.access&& <div>
-                         <IconButton onMouseDown={() => { 
-                                 this.props.editFeature(value) 
-                                 this.props.handleEditFeature(value)
-                                 }}
+                        {this.state.access && <div>
+                            <IconButton onMouseDown={() => {
+                                this.props.editFeature(value)
+                                this.props.handleEditFeature(value)
+                            }}
                                 className={classes.button} aria-label="edit" color="primary">
                                 <EditIcon />
                             </IconButton>
-                            
-                            <IconButton onMouseDown={()=>
-                            {console.log("clicekd")
-                            this.deleteDialogeClickOpen(value)}}
+
+                            <IconButton onMouseDown={() => {
+                                this.deleteDialogeClickOpen(value)
+                            }}
                                 className={classes.button} aria-label="edit" color="primary">
                                 <DeleteIcon />
                             </IconButton>
-                            
+
                         </div>}
                     </div>
-                    <img   className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ?value.getProperties()['imageurl'] :urls.static + 'cartoview_story_map/img/no-img.png'
-                    ]} loader={<Loader />}  
-                    
-                    onError={this.addDefaultSrc}
+                    <img className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ? value.getProperties()['imageurl'] : urls.static + 'cartoview_story_map/img/no-img.png'
+                    ]} 
+
+                        onError={this.addDefaultSrc}
                     />
                     <CardContent>
                         <Typography component="p">
@@ -305,21 +312,24 @@ export class FeatureListComponent extends React.Component {
         });
         return (
             <div>
-            <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
-          <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
-          <DialogContent>
-          
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.deleteDialogeRequestClose} color="primary" autoFocus>
-              Cancel
+                <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
+                    <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
+                    <DialogContent>
+
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.deleteDialogeRequestClose} color="primary" autoFocus>
+                            Cancel
             </Button>
-            <Button onClick={this.deleteFeature} color="primary" >
-              Delete
+                        <Button onClick={this.deleteFeature} color="primary" disabled={this.state.loading}>
+                       
+   
+                           { this.state.loading?'Deleting':'Delete'}
+                            { this.state.loading&&<CircularProgress size={20}/>}
             </Button>
-          </DialogActions>
-        </Dialog>
-         <Snackbar
+                    </DialogActions>
+                </Dialog>
+                <Snackbar
                     anchorOrigin={{ vertical, horizontal }}
                     open={this.state.openSnackBar}
                     onRequestClose={this.handleCloseSnackBar}
@@ -331,7 +341,7 @@ export class FeatureListComponent extends React.Component {
                 {!featuresIsLoading && !attachmentIsLoading && features && features.length >
                     0 ?
                     <div id="contents"  >
-                        
+
                         <Message align="left" message={subheader} type="subheading" />
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />

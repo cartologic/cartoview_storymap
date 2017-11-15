@@ -41,17 +41,16 @@ const options = {
 export default class permissions extends Component {
     constructor( props ) {
         super( props )
-        let { config, keywords, selectedResource, title, abstract,access } = this
-            .props
+        let { config, keywords, selectedResource, title, abstract,access } = this.props
         this.state = {
             defaultConfig: {
                 // title: title || selectedResource.title,
                 // abstract: abstract || selectedResource.abstract,
-                access: access?access: false,
+                access: access?access.access: false,
           
             },
         }
-   console.log(this.props) }
+   console.log("aaaa",this.props) }
     save( ) {
         var basicConfig = this.form.getValue( )
         if ( basicConfig ) {
