@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Spinner from 'react-spinkit'
 import t from 'tcomb-form'
+import { CircularProgress } from 'material-ui/Progress'
 
 const filter = t.struct({
     type: t.String,
@@ -42,8 +43,9 @@ export default class General extends Component {
         const { config } = this.props
      
         this.state = {
-
+             
             value: {
+
                 title: this.props.general&&this.props.general.title?this.props.general.title:null,
                 abstract: this.props.general&&this.props.general.abstract?this.props.general.abstract:null,
                 DisplayNumbersOnMarkers:this.props.general&& this.props.general.DisplayNumbersOnMarkers?this.props.general.DisplayNumbersOnMarkers:null,
@@ -62,6 +64,7 @@ export default class General extends Component {
 
     }
     save = () => {
+        this.setState({loading:true})
         const value = this.form.getValue()
         if (value) {
             this.props.onComplete({
@@ -188,10 +191,17 @@ export default class General extends Component {
 							display: "inline-block",
 							margin: "0px 3px 0px 3px"
 						}}
+                            disabled={this.state.loading}
 							className={this.state.success === true
 							? "btn btn-primary btn-sm pull-right disabled"
 							: "btn btn-primary btn-sm pull-right"}
-							onClick={this.save.bind( this )}>Save</button>
+							onClick={this.save.bind( this )}>
+                            
+                             { this.state.loading?'saving':'saves'}
+                            { this.state.loading&&<CircularProgress size={20}/>}
+               
+                            
+                            </button>
 
 						<p
 							style={this.state.success == true
@@ -215,7 +225,6 @@ export default class General extends Component {
                     value={value}
                     onChange={this.onChange}
                     options={options} />}
-                {loading && < Spinner name="line-scale-pulse-out" color="steelblue" />}
             </div>
         )
     }
