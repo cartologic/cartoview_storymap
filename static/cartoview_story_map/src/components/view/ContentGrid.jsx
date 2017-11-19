@@ -11,6 +11,9 @@ import withWidth from 'material-ui/utils/withWidth'
 import AddIcon from 'material-ui-icons/Add';
 import RemoveIcon from 'material-ui-icons/Remove';
 import IconButton from 'material-ui/IconButton';
+import LocationIcon from 'material-ui-icons/LocationSearching';
+import TextField from 'material-ui/TextField';
+import Geolocation from 'ol/geolocation';
 import {
     addSelectionLayer,
     getFeatureInfoUrl,
@@ -58,7 +61,65 @@ class ContentGrid extends Component {
         success: false,
         access: true
     }
+geolocation=()=>{
+var map = this.props.map
+      // create a Geolocation object setup to track the position of the device
+      var geolocation = new ol.Geolocation({
+        tracking: true
+      });
+      geolocation.on('change', function(evt) {
+       console.log(geolocation.getPosition());
+       
 
+
+
+       this.feature = new ol.Feature({
+       geom: new ol.geom.Point([geolocation.getPosition()[0], geolocation.getPosition()[1]]),
+       geometryName: 'the_geom'
+   })
+   this.feature.setGeometryName("the_geom")
+
+   const featureStyle = new ol.style.Style({
+       image: new ol.style.Icon({
+           anchor: [
+               0.5, 31
+           ],
+           anchorXUnits: 'fraction',
+           anchorYUnits: 'pixels',
+
+           src: 
+        "https://cdn1.iconfinder.com/data/icons/streamline-map-location-2/60/cell-0-2-120.png"
+       }),
+       text: new ol.style.Text({
+           text: '+',
+           fill: new ol.style.Fill({ color: '#fff' }),
+           stroke: new ol.style.Stroke({
+               color: '#fff',
+               width: 2
+           }),
+           textAlign: 'center',
+           offsetY: -20,
+           font: '18px serif'
+       }),
+
+   })
+   this.vectorLayer = new ol.layer.Vector({
+       source: new ol.source.Vector({
+           features: [this.feature]
+       }),
+       style: featureStyle,
+
+   })
+ var  vectorSource=map.getView().getSource()
+//    this.feature.setGeometry(new ol.geom.Point(this.props.map.getView().getCenter()))
+vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([geolocation.getPosition()[0], geolocation.getPosition()[1]], 200)));
+  map.addLayer(this.vectorLayer)
+   this.vectorLayer.setZIndex(10)
+
+
+      });
+      console.log(geolocation,geolocation.getProperties(),geolocation.getPosition())
+  }  
     componentDidMount() {
         const { map } = this.props
 
@@ -122,12 +183,36 @@ class ContentGrid extends Component {
                                     <AddIcon />
                                 </Button>}
                             {!this.state.switch &&
+                            <div>
+
+{/* 
+<TextField style={{ position: "absolute", top:10, left:50, zIndex: 100 ,width:"300px",color:"black"}}
+          id="name"
+       
+          label="Search Location by address"
+          className={classes.textField}
+          value={this.state.name}
+          onChange={console.log("k")}
+          margin="normal"
+        />
+
+                                         <Button style={{ position: "absolute", bottom:70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                    // this.setState({ switch: true, add: false })
+                                    // this.props.childrenProps.removeLocation()
+                                    this.geolocation()
+                                }}>
+                                    <LocationIcon />
+                                </Button>
+                                 */}
+
+
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
                                     this.setState({ switch: true, add: false })
                                     this.props.childrenProps.removeLocation()
                                 }}>
                                     <RemoveIcon />
-                                </Button>}
+                                </Button>
+                                </div>}
                         </div>
                     }
                 </Grid>
