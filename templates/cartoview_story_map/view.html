@@ -80,8 +80,14 @@
     const props = {{ instance.config | safe }}
     const loggedUser="{{request.user.username}}"
     const owner="{{instance.owner.username}}"
-    props.formTitle="{{instance.title}}"
-    props.layername="geonode:"+"{{instance.title}}"+"_"+"{{app}}"
+    const layerTitle="{{instance.title}}"
+    const trimmed_layername=layerTitle.replace(/[&#39; ']+/g, "_")
+
+    props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
+
+
+    props.layername="geonode:"+trimmed_layername+"_"+"{{app}}"
+    console.log(props.layername)
     props.formAbstract="{{instance.abstract}}"
     props.username="{{request.user.username}}"
   </script>

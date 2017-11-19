@@ -197,7 +197,7 @@ export default class General extends Component {
 							: "btn btn-primary btn-sm pull-right"}
 							onClick={this.save.bind( this )}>
                             
-                             { this.state.loading?'saving':'saves'}
+                             { this.state.loading?'saving':'save'}
                             { this.state.loading&&<CircularProgress size={20}/>}
                
                             
