@@ -37,7 +37,7 @@ import URLS from '../../containers/URLS'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
 import Snackbar from 'material-ui/Snackbar';
 import Dropzone from 'react-dropzone'
-
+import Badge from 'material-ui/Badge';
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -257,9 +257,13 @@ export class FeatureListComponent extends React.Component {
             <div className="card-div" >
                 < Card id={"id" + sortIndex} className='image-container'>
                     <div style={{ display: "flex" }}>
-                        <div style={{ "flexGrow": "1" }}> <CardHeader
+                        <div style={{ "flexGrow": "1" }}> 
+                        <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
+                        <CardHeader
+                            
                             title={`${value.getProperties()['title']}`}
                             subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+                            
                         </div>
                         {this.state.access && <div>
                             <IconButton onMouseDown={() => {
