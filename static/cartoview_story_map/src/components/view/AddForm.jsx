@@ -23,6 +23,7 @@ import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
+
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -66,15 +67,21 @@ class addForm extends React.Component {
         this.state = {
             formValue: {},
             success: false,
-            loading:false
+            loading: false,
+            fileName: "",
+            clicked: false
         }
 
     }
     WFS = new WFSClient(this.props.urls)
 
-    componentDidMount() {
-
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.attachments) {
+            console.log("next", nextProps.attachments.file)
+            this.setState({ fileName: nextProps.attachments.file })
+        }
     }
+
     getType = (type) => {
         var result = ""
         if (type == "string") { result = "" }
@@ -90,22 +97,15 @@ class addForm extends React.Component {
         //     this.state.[attr]: event.target.value,
         //   });
     }
-    save = () => {
 
-        // this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
-        //     res.text()).then((res) => {
-        //         this.setState({ success: true }, this.props.back())
-        //     }).catch((error) => {
-        //         throw Error(error)
-        //     })
-
-        this.setState({loading:true})
+    sendRequest = () => {
+        this.setState({ loading: true })
         var feature = this.props.newFeature
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
         feature.set("order", this.props.features.length + 1)
-
+        feature.set("imageurl", this.state.fileName)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
@@ -125,18 +125,39 @@ class addForm extends React.Component {
             this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.back()
-            this.setState({loading:false})
-           
+            this.setState({ loading: false })
+
             feature.set("featureIndex", ++this.props.features.length)
             this.props.refreshMap(feature)
             // return res.json()
         }).catch((error) => {
             throw Error(error)
         })
+    }
+    save = () => {
 
+        // this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
+        //     res.text()).then((res) => {
+        //         this.setState({ success: true }, this.props.back())
+        //     }).catch((error) => {
+        //         throw Error(error)
+        //     })
+        while (true) {
+            if (this.state.clicked == true && this.state.fileName != "") {
+                this.sendRequest()
+                break
+            }
+
+            else if (this.state.clicked == false) {
+                this.sendRequest()
+                break
+            }
+        }
     }
 
-
+    click = () => {
+        this.setState({ clicked: true }, console.log("clicked true"))
+    }
     render() {
         const vertical = 'bottom', horizontal = 'center'
         const {
@@ -148,7 +169,8 @@ class addForm extends React.Component {
             addComment,
             username,
             SaveImageBase64,
-            featureTypes
+            featureTypes,
+            getImageFromURL
         } = this.props
         return (
             <div>
@@ -161,7 +183,7 @@ class addForm extends React.Component {
                     {
                         featureTypes && featureTypes.map((feature, i) => {
 
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "imageurl") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
@@ -191,11 +213,17 @@ class addForm extends React.Component {
                             }
                         })
                     }
-                    <Button  disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
-                      
-                            { this.state.loading?'saving':'save'}
-                            { this.state.loading&&<CircularProgress size={20}/>}
-                 </Button>
+
+                    <div onClick={() => this.click()}>
+                        <Slider attachments={[]} />
+                        <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
+                    </div>
+
+                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+
+                        {this.state.loading ? 'saving' : 'save'}
+                        {this.state.loading && <CircularProgress size={20} />}
+                    </Button>
                 </div>
                 <div className={classes.textCenter}>
 

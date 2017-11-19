@@ -1,38 +1,112 @@
 import Dialog, {
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog'
+import { checkImageSrc, checkURL } from '../../containers/staticMethods'
 
-import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button'
-import Dropzone from 'react-dropzone'
+import { DropZoneComponent } from './statelessComponents'
+import FileUpload from 'material-ui-icons/FileUpload';
+import { FormControlLabel } from 'material-ui/Form'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Slide from 'material-ui/transitions/Slide'
-import Typography from 'material-ui/Typography'
+import Switch from 'material-ui/Switch'
+import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
     button: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing.unit,
     },
-    flex: {
-        flex: 1,
+    textField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 200,
+    }, rightIcon: {
+        marginLeft: theme.spacing.unit,
     },
-    CenterDiv: {
-        marginRight: "auto",
-        marginLeft: "auto"
-    },
-    textCenter: {
-        textAlign: 'center'
-    }
 })
+const UploaderActions = (props) => {
+    const { files, saveImage, handleRequestClose, ImageURLValid } = props
+    return <div>
+        {(files.length > 0 || ImageURLValid) ?
+            <Button onTouchTap={saveImage} color="accent">
+                {"Upload"}
+            </Button> : <Button disabled color="accent">
+                {"Upload"}
+            </Button>}
+
+        <Button onTouchTap={handleRequestClose} color="primary">
+            {"Cancel"}
+        </Button>
+    </div>
+}
+UploaderActions.propTypes = {
+    files: PropTypes.array.isRequired,
+    ImageURLValid: PropTypes.bool.isRequired,
+    saveImage: PropTypes.func.isRequired,
+    handleRequestClose: PropTypes.func.isRequired
+}
+const UploaderSwitcher = (props) => {
+    const { checked, changeUploader } = props
+    return <div className="element-flex">
+        <FormControlLabel
+            control={
+                <Switch
+                    checked={checked}
+                    onChange={(event, checked) => changeUploader(checked)}
+                />
+            }
+            label="Image From URL"
+        />
+    </div>
+}
+UploaderSwitcher.propTypes = {
+    checked: PropTypes.bool.isRequired,
+    changeUploader: PropTypes.func.isRequired
+}
+const URLBox = (props) => {
+    const { fromURL, ImageURLValid, ImageURL, classes, handleURLChange } =
+        props
+    return <div>
+        {fromURL && ImageURLValid && <TextField
+            required
+            label="Image URL"
+            className={classes.textField}
+            value={ImageURL}
+            onChange={handleURLChange}
+            margin="normal"
+        />}
+        {fromURL && !ImageURLValid && <TextField
+            required
+            error
+            label="Image URL"
+            className={classes.textField}
+            value={ImageURL}
+            onChange={handleURLChange}
+            margin="normal"
+        />}
+    </div>
+}
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
+URLBox.propTypes = {
+    // fromURL: PropTypes.bool.isRequired,
+    // ImageURLValid: PropTypes.bool.isRequired,
+    // ImageURL: PropTypes.string.isRequired,
+    // classes: PropTypes.object.isRequired,
+    // handleURLChange: PropTypes.func.isRequired
+}
 class ImageDialog extends React.Component {
     state = {
         open: false,
-        files: []
+        files: [],
+        fromURL: false,
+        ImageURL: '',
+        ImageURLValid: false
     }
     handleClickOpen = () => {
         this.setState({ open: true })
@@ -42,52 +116,75 @@ class ImageDialog extends React.Component {
             files
         })
     }
+    reset = () => {
+        this.setState({
+            open: false,
+            files: [],
+            fromURL: false,
+            ImageURL: '',
+            ImageURLValid: false
+        })
+    }
+    handleURLChange = (event) => {
+        const inputValue = event.target.value
+        this.setState({
+            ImageURL: inputValue,
+            ImageURLValid: checkURL(inputValue)
+        })
+    }
     handleRequestClose = () => {
         this.setState({ open: false })
     }
+    changeUploader = (bool) => {
+        this.setState({
+            fromURL: bool,
+            files: [],
+            ImageURL: '',
+            ImageURLValid: false
+        })
+    }
     saveImage = () => {
-        const { SaveImageBase64, featureId } = this.props
-        const { files } = this.state
-        SaveImageBase64(files[0], featureId)
-        this.setState({ open: false })
+        const { SaveImageBase64, featureId, getImageFromURL } = this.props
+        const { files, ImageURL, fromURL } = this.state
+        if (ImageURL !== '' && fromURL) {
+            checkImageSrc(ImageURL, () => {
+                getImageFromURL(ImageURL, featureId)
+                this.reset()
+            },
+                () => alert(
+                    "Bad Image URL Please check your link or Enter a new one"
+                ))
+        } else {
+            SaveImageBase64(files[0], featureId)
+            this.reset()
+        }
     }
     render() {
-        const { classes } = this.props
-        let { files } = this.state
+        const { classes,  } = this.props
+        const username=loggedUser
+        let { files, fromURL, ImageURL, ImageURLValid } = this.state
         return (
-            <div className={classes.textCenter}>
-                <Button fab color="accent" className={classes.button} onClick={this.handleClickOpen}><AddIcon /></Button>
+            <div className="text-center">
+
+                {username !== "" && <Button onTouchTap={this.handleClickOpen} className={classes.button} color="primary">
+                    {"Add photo"}
+                    <FileUpload className={classes.rightIcon} />
+                </Button>}
                 <Dialog
                     open={this.state.open}
-                    transition={<Slide direction="up" />}
+                    transition={Transition}
                     keepMounted
                     onRequestClose={this.handleRequestClose}
                 >
                     <DialogTitle>{"Image Uploader"}</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>
-                            <div className={classes.CenterDiv}>
-                                <Dropzone maxSize={5242880} multiple={false} accept="image/*" onDrop={this.onDrop}>
-                                    <Typography type="body1" color="inherit" className={classes.flex}>
-                                        {"Click to select Image to upload."}
-                                    </Typography>
-                                    <ul> {files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)}</ul>
+                        <UploaderSwitcher checked={fromURL} changeUploader={this.changeUploader} />
+                        {!fromURL && <DropZoneComponent files={files} onDrop={this.onDrop} classes={classes} />}
+                        <URLBox handleURLChange={this.handleURLChange} classes={classes} fromURL={fromURL} ImageURL={ImageURL} ImageURLValid={ImageURLValid} />
 
-                                </Dropzone>
-                            </div>
-                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        {files.length > 0 ?
-                            <Button onClick={this.saveImage} color="accent">
-                                {"Upload"}
-                            </Button> : <Button disabled color="accent">
-                                {"Upload"}
-                            </Button>}
-
-                        <Button onClick={this.handleRequestClose} color="primary">
-                            {"Cancel"}
-                        </Button>
+                        <UploaderActions ImageURLValid={ImageURLValid} files={files} saveImage={this.saveImage} handleRequestClose={this.handleRequestClose} />
                     </DialogActions>
                 </Dialog>
             </div>
@@ -95,8 +192,10 @@ class ImageDialog extends React.Component {
     }
 }
 ImageDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
-    SaveImageBase64: PropTypes.func.isRequired,
-    featureId: PropTypes.string.isRequired,
+    // classes: PropTypes.object.isRequired,
+    // SaveImageBase64: PropTypes.func.isRequired,
+    // getImageFromURL: PropTypes.func.isRequired,
+    // featureId: PropTypes.string.isRequired,
+    // username: PropTypes.string.isRequired,
 }
 export default withStyles(styles)(ImageDialog)

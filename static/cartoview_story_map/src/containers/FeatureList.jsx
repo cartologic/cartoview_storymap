@@ -11,7 +11,9 @@ import {
     getWMSLayer,
     layerName,
     layerNameSpace,
-    wmsGetFeatureInfoFormats
+    wmsGetFeatureInfoFormats,
+
+    getAttachmentTags
 } from './staticMethods'
 
 import FeatureList from '../components/view/FeatureList'
@@ -50,7 +52,9 @@ class FeatureListContainer extends Component {
             ImageBase64: null,
             xyValue: null,
             showDialog: false,
-            crs:"3857"
+            crs:"3857",
+            result:"",
+            fileName:"",
 
 
         }
@@ -92,13 +96,13 @@ class FeatureListContainer extends Component {
        
     }
     refreshMapEdit=(feature)=>{
-        console.log("referrrrrrrrrrsh")
+     
           this.map.removeInteraction(this.modifyInteractionEdit)
-          this.featureCollection.removeAt(feature.getProperties()['order']-1)
+        //   this.featureCollection.removeAt(feature.getProperties()['order']-1)
         //   this.featureCollection.push(feature)
           
           
-          this.state.features[feature.getProperties()['order']-1]=feature
+        //   this.state.features[feature.getProperties()['order']-1]=feature
           
         //   console.log(feature)
         //   this.getLocation()
@@ -435,7 +439,7 @@ class FeatureListContainer extends Component {
                 throw Error(error)
             })
     }
-    SaveImageBase64 = (file, featureId) => {
+    SaveImageBase64 = (file) => {
         const { config } = this.props
         const { attachments } = this.state
         let promise = new Promise((resolve, reject) => {
@@ -448,9 +452,9 @@ class FeatureListContainer extends Component {
                     file_name: file.name,
                     username: config.username,
                     is_image: true,
-                    feature_id: featureId,
+                    feature_id: 0,
                     tags: [
-                        `feature_list_${layerName(config.layer)}`
+                        `storymap_${props.layer}`
                     ]
                 }
                 resolve(data)
@@ -461,15 +465,54 @@ class FeatureListContainer extends Component {
         })
         promise.then((apiData) => {
             this.saveAttachment(apiData).then(result => {
+                console.log("result",result)
                 this.setState({ attachments: [...attachments, result] })
             })
         }, (error) => {
             throw (error)
         })
     }
+
+    readThenSave = ( file, featureId ) => {
+        const { config } = this.props
+        const { attachments } = this.state
+        var reader = new FileReader()
+        reader.readAsDataURL( file )
+        reader.onload = () => {
+            const apiData = {
+                file: reader.result,
+                file_name: `${props.layer}_${featureId}.png`,
+                username: loggedUser,
+                is_image: true,
+                feature_id: 0,
+                tags: ["a"]
+            }
+            this.saveAttachment( apiData ).then( result => {
+                console.log("------------",result)
+                this.setState( {
+                    attachments:result 
+                } )
+            } )
+        }
+        reader.onerror = ( error ) => {
+            throw ( error )
+        }
+    }
+    getImageFromURL = ( url, featureId ) => {
+        const proxiedURL = this.urls.getProxiedURL( url )
+        fetch( proxiedURL, {
+            method: "GET",
+            credentials: "same-origin",
+            headers: {
+                "Accept": "image/*"
+            }
+        } ).then( response => response.blob() ).then( blob => {
+            this.readThenSave( blob, featureId )
+        } )
+    }
     saveAttachment = (data) => {
         const { urls, config } = this.props
-        const url = urls.attachmentUploadUrl(layerName(config.layer))
+        const url = urls.attachmentUploadUrl(props.layer)
         return fetch(url, {
             method: 'POST',
             credentials: "same-origin",
@@ -626,7 +669,9 @@ class FeatureListContainer extends Component {
             geometry:this.state.geometry,
             backFromEdit:this.backFromEdit,
             removeFeatureMarker:this.removeFeatureMarker,
-            crs:this.state.crs?this.state.crs:"3857"
+            crs:this.state.crs?this.state.crs:"3857",
+            getImageFromURL: this.getImageFromURL,
+            result:this.state.result
             
         }
         return <FeatureList childrenProps={childrenProps} map={this.map} />

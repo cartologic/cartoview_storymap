@@ -41,6 +41,12 @@ export const getMap = () => {
     
     return map
 }
+export const getAttachmentTags = (config) => {
+    const configTags = config.attachmentTags
+    const tags = (configTags && configTags.length > 0) ? configTags : [
+        `feature_list_${layerName(config.layer)}`]
+    return tags
+}
 export const getFilterByName = (attrs, attrName) => {
     let attributeType = null
     if (attrs) {
@@ -73,6 +79,12 @@ export const checkURL = (value) => {
         return isURL(value)
     }
     return false
+}
+export const checkImageSrc = (src, good, bad) => {
+    var img = new Image()
+    img.onload = good
+    img.onerror = bad
+    img.src = src
 }
 export const addSelectionLayer = (map, featureCollection, styleFunction) => {
   

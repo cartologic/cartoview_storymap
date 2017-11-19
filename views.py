@@ -25,7 +25,7 @@ def save(request, instance_id=None, app_name=APP_NAME):
     extent = data.get('extent', [])
 
     # config.update(access=access, keywords=keywords)
-    config = json.dumps(data.get('config', None))
+   
     abstract = data.get('abstract', "")
 
     if instance_id is None:
@@ -36,17 +36,18 @@ def save(request, instance_id=None, app_name=APP_NAME):
         name = title+'_'+app_name
         layer_title = title+'_'+app_name
         geometry_type = "Point"
-        # config.update(layername=layer_title)
-        attributes = json.dumps({"title":"string","description":"string","title":"string","imageUrl":"string","order":"integer"})
+        config.update(layername=layer_title)
+        attributes = json.dumps({"title":"string","description":"string","title":"string","imageUrl":"string","order":"integer","link":"string"})
         # permissions = form.cleaned_data["permissions"]
         layer = create_layer(name, layer_title, request.user.username, geometry_type,attributes)
+    
         # layer.set_permissions(json.loads(permissions))
         # return redirect(layer)
 
 
     else:
         instance_obj = AppInstance.objects.get(pk=instance_id)
-
+    config = json.dumps(data.get('config', None))
     instance_obj.title = title
     instance_obj.config = config
     instance_obj.abstract = abstract

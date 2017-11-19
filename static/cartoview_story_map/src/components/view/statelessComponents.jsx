@@ -36,6 +36,7 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import URLS from '../../containers/URLS'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
 import Snackbar from 'material-ui/Snackbar';
+import Dropzone from 'react-dropzone'
 
 import Dialog, {
     DialogActions,
@@ -404,6 +405,20 @@ PropsTable.propTypes = {
     classes: PropTypes.object.isRequired,
     selectedFeature: PropTypes.object.isRequired
 }
+
+export const DropZoneComponent = ( props ) => {
+    const { classes, files, onDrop } = props
+    return (
+        <div className="center-div">
+            <Dropzone maxSize={5242880} multiple={false} accept="image/*" onDrop={onDrop}>
+                <div>
+                    <Message message={"Click to select Image to upload."} type="body1" />
+                    <ul> {files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)}</ul>
+                </div>
+            </Dropzone>
+        </div>
+    )
+}
 export const Slider = (props) => {
     const { attachments } = props
     return <div>
@@ -419,7 +434,7 @@ export const Slider = (props) => {
                         }
                     )}
                 </Carousel>
-            </Grid> : <Message align="center" message={'No Attachments'} type="body1" />}
+            </Grid> : <Message align="center" message={""} type="body1" />}
         </Grid>
     </div>
 }
