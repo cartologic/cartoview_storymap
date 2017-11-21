@@ -50,7 +50,7 @@ class CartoviewList extends React.Component {
         currentPage: 1,
         detailsModeEnabled: false,
         detailsOfFeature: null,
-        add: false,
+        add: this.props.addEntry,
         featureTypes: null,
         success: false,
         edit: false,
@@ -59,22 +59,27 @@ class CartoviewList extends React.Component {
 
     }
     back = () => {
+        console.log("back called")
         const {
             selectionModeEnabled,
             featureIdentifyResult,
             addStyleToFeature
         } = this.props
-        this.setState({ detailsModeEnabled: false, detailsOfFeature: null, add: false, edit: false })
-        if (selectionModeEnabled) {
-            addStyleToFeature(featureIdentifyResult)
-        } else {
-            addStyleToFeature([])
-        }
-
+        this.state['add']=false
+        this.state['selectionModeEnabled']=false
+        this.setState({detailsModeEnabled: false,selectionModeEnabled :false, detailsOfFeature: null, add: false, edit: false })
+        // if (selectionModeEnabled) {
+        //     addStyleToFeature(featureIdentifyResult)
+        // } else {
+        //     addStyleToFeature([])
+        // }
+ console.log(this.state)
         if(this.state.edit){
             this.props.backFromEdit()
         }
+   
     }
+
     openDetails = (state) => {
         this.setState({ ...state }, () => this.addStyleZoom())
     }
@@ -90,7 +95,7 @@ class CartoviewList extends React.Component {
         getdescribeFeatureType(this.props.config.layer).then(data => { this.setState({ featureTypes: data }) })
     }
     componentWillReceiveProps(nextProps) {
-
+console.log(nextProps.addEntry)
         this.setState({ add: nextProps.addEntry })
     }
     handleClose = () => {

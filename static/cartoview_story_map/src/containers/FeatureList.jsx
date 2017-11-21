@@ -55,14 +55,16 @@ class FeatureListContainer extends Component {
             crs:"3857",
             result:"",
             fileName:"",
+            addEntry:false,
+            map:getMap()
 
 
         }
 
         this.urls = new URLS(this.props.urls)
-        this.map = getMap()
+        // this.state.map = getMap()
         this.featureCollection = new ol.Collection()
-        this.selectionLayer = addSelectionLayer(this.map, this.featureCollection, styleFunction)
+        this.selectionLayer = addSelectionLayer(this.state.map, this.featureCollection, styleFunction)
 
     }
     openDialog = (bool) => {
@@ -71,10 +73,11 @@ class FeatureListContainer extends Component {
     onFeatureMove = (event) => {
 
         const crs = 'EPSG:' + this.state.crs
-
+console.log(event.mapBrowserEvent.coordinate, crs,
+    this.state.map.getView().getProjection())
         var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
-            this.map.getView().getProjection())
-
+            this.state.map.getView().getProjection())
+console.log("feture move",event.mapBrowserEvent.coordinatecente)
         const geometry = {
             name: 'the_geom',
             srsName: crs,
@@ -84,12 +87,12 @@ class FeatureListContainer extends Component {
 
 
      
-        this.setState({ geometry, showDialog: true, mapProjection: this.map.getView().getProjection() })
+        this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
     }
 
     refreshMap=(feature)=>{
 
-        this.map.removeInteraction(this.modifyInteraction)
+        this.state.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
         this.state.features.push(feature)
         // this.getLocation()
@@ -97,7 +100,7 @@ class FeatureListContainer extends Component {
     }
     refreshMapEdit=(feature)=>{
      
-          this.map.removeInteraction(this.modifyInteractionEdit)
+          this.state.map.removeInteraction(this.modifyInteractionEdit)
         //   this.featureCollection.removeAt(feature.getProperties()['order']-1)
         //   this.featureCollection.push(feature)
           
@@ -108,10 +111,14 @@ class FeatureListContainer extends Component {
         //   this.getLocation()
          
       }
-    getLocation = () => {
-
+    getLocation = (x=0,y=0) => {
+        
+        const crs = 'EPSG:' + this.state.crs
+        var center = ol.proj.transform([x,y], crs,this.state.map.getView().getProjection(),
+            )
+console.log("center",center,this.state.map.getView().getProjection())
         this.feature = new ol.Feature({
-            geom: new ol.geom.Point([0, 0]),
+            geom: new ol.geom.Point([x, y]),
             geometryName: 'the_geom'
         })
         this.feature.setGeometryName("the_geom")
@@ -147,31 +154,51 @@ class FeatureListContainer extends Component {
             style: featureStyle,
 
         })
+       
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.feature]),
             pixelTolerance: 32,
             style: []
         })
         this.modifyInteraction.on('modifyend', this.onFeatureMove)
-        this.feature.setGeometry(new ol.geom.Point(this.map.getView().getCenter()))
+        this.feature.setGeometry(new ol.geom.Point([center[0], center[1]]))
         this.setState({ vectorLayer: this.vectorLayer })
+    if(x!=0){
+        this.zoomToFeature(this.feature)
+    
+        const geometry = {
+            name: 'the_geom',
+            srsName: crs,
+            x: center[0],
+            y: center[1]
+        }
 
-        this.map.addLayer(this.vectorLayer)
+
+     
+        this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
+   
+    }
+
+
+
+        this.state.map.addLayer(this.vectorLayer)
+        console.log(this.feature.getGeometry().getCoordinates())
         this.vectorLayer.setZIndex(10)
-        this.map.addInteraction(this.modifyInteraction)
-
+        this.state.map.addInteraction(this.modifyInteraction)
+this.setState({addEntry: true})
     }
     removeLocation = () => {
-
-        this.map.removeLayer(this.state.vectorLayer);
-
+console.log("remove laer called")
+        this.state.map.removeLayer(this.state.vectorLayer);
+        this.setState({addEntry: false})
+        
     }
     onFeatureMoveEdit = (event) => {
 
         const crs = 'EPSG:' + this.state.crs
                 
                 var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
-                    this.map.getView().getProjection())
+                    this.state.map.getView().getProjection())
         
                 const geometry = {
                     name: 'the_geom',
@@ -182,7 +209,7 @@ class FeatureListContainer extends Component {
         
         
              
-                this.setState({ geometry, mapProjection: this.map.getView().getProjection() })
+                this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
         
     }
     
@@ -231,10 +258,10 @@ class FeatureListContainer extends Component {
         // console.log(feature.getProperties().featureIndex)
         this.setState({featureCollection:this.featureCollection})
         this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
-        this.map.addLayer(this.vectorLayerEdit)
+        this.state.map.addLayer(this.vectorLayerEdit)
         
         this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
-        this.map.addInteraction(this.modifyInteractionEdit)
+        this.state.map.addInteraction(this.modifyInteractionEdit)
     }
     removeFeatureMarker=(feature)=>{
         this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
@@ -353,7 +380,7 @@ class FeatureListContainer extends Component {
             request: 'GetFeature',
             typeNames: props.layername,
             outputFormat: 'json',
-            srsName: this.map.getView().getProjection().getCode(),
+            srsName: this.state.map.getView().getProjection().getCode(),
             sortBy:'order',
             startIndex
         })
@@ -372,7 +399,7 @@ class FeatureListContainer extends Component {
                 this.setState({ featuresIsLoading: false })
                 let features = new ol.format.GeoJSON().readFeatures(
                     data, {
-                        featureProjection: this.map.getView().getProjection()
+                        featureProjection: this.state.map.getView().getProjection()
                     })
                 features.forEach((f, i) => {
 
@@ -397,7 +424,7 @@ class FeatureListContainer extends Component {
         const { filterType } = this.state
         this.setState({ searchResultIsLoading: true, searchModeEnable: true })
         var request = new ol.format.WFS().writeGetFeature({
-            srsName: this.map.getView().getProjection().getCode(),
+            srsName: this.state.map.getView().getProjection().getCode(),
             featureNS: 'http://www.geonode.org/',
             featurePrefix: layerNameSpace(config.layer),
             outputFormat: 'application/json',
@@ -525,11 +552,11 @@ class FeatureListContainer extends Component {
     }
     zoomToFeature = (feature, done = () => { }) => {
         if(props.config.zoomOnClick){
-        var duration = 1000;
+        var duration = 1500;
         // console.log(feature, feature.getGeometry())
         var location = feature.getGeometry().getFirstCoordinate()
         // console.log(this.feature.getGeometry())
-        var view = this.map.getView()
+        var view = this.state.map.getView()
         var zoom = view.getZoom();
 
         var parts = 2;
@@ -563,7 +590,7 @@ class FeatureListContainer extends Component {
         }
     }}
     singleClickListner = () => {
-        this.map.on('singleclick', (e) => {
+        this.state.map.on('singleclick', (e) => {
 
         })
     }
@@ -571,7 +598,7 @@ class FeatureListContainer extends Component {
         this.featureCollection.insertAt(this.state.removedFeature.featureIndex-1, this.state.removedFeature)
 
        
-        this.map.removeLayer(this.state.vectorLayerEdit)
+        this.state.map.removeLayer(this.state.vectorLayerEdit)
     }
     backToAllFeatures = () => {
         this.setState({
@@ -605,7 +632,7 @@ class FeatureListContainer extends Component {
     featureIdentify = (map, coordinate) => {
         const { config } = this.props
         const view = map.getView()
-        const layer = getWMSLayer(config.layer, this.map.getLayers().getArray())
+        const layer = getWMSLayer(config.layer, this.state.map.getLayers().getArray())
         const url = getFeatureInfoUrl(layer, coordinate, view,
             'application/json')
         fetch(this.urls.getProxiedURL(url)).then((response) =>
@@ -674,7 +701,7 @@ class FeatureListContainer extends Component {
             result:this.state.result
             
         }
-        return <FeatureList childrenProps={childrenProps} map={this.map} />
+        return <FeatureList childrenProps={childrenProps} map={this.state.map} />
     }
 }
 FeatureListContainer.propTypes = {

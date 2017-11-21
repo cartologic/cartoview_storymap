@@ -22,12 +22,12 @@ export const getFeatureInfoUrl = (layer, coordinate, view, infoFormat) => {
         })
     return `${url}&FEATURE_COUNT=10`
 }
-export const getMap = () => {
+export function getMap() {
 
-    const map = new ol.Map({
+    let map = new ol.Map({
         view: new ol.View({
-            center: [0,0],
-             
+            center: [0, 0],
+
         }),
         layers: [
             new ol.layer.Tile({
@@ -38,7 +38,7 @@ export const getMap = () => {
     })
 
 
-    
+
     return map
 }
 export const getAttachmentTags = (config) => {
@@ -87,7 +87,7 @@ export const checkImageSrc = (src, good, bad) => {
     img.src = src
 }
 export const addSelectionLayer = (map, featureCollection, styleFunction) => {
-  
+
     const layer = new ol.layer.Vector({
         source: new ol.source.Vector({ features: featureCollection }),
         style: styleFunction,
@@ -102,7 +102,7 @@ export const addSelectionLayer = (map, featureCollection, styleFunction) => {
     map.addLayer(layer)
     return layer
 }
-export const getdescribeFeatureType = (typename=props.layername) => {
+export const getdescribeFeatureType = (typename = props.layername) => {
     var proxy_urls = new URLS(urls)
     var url = urls.describeFeatureType(typename)
     var proxy_url = proxy_urls.getProxiedURL(url)
@@ -113,7 +113,7 @@ export const getdescribeFeatureType = (typename=props.layername) => {
 }
 export const transactWFS = (action, feature, layerName, crs) => {
     var formatWFS = new WFS
-   console.log(feature)
+    console.log(feature)
     const [namespace, name] = layerName.split(":")
     var formatGMLOptions = {
         featureNS: "http://www.geonode.org/",

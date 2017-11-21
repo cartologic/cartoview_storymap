@@ -62,63 +62,19 @@ class ContentGrid extends Component {
         access: true
     }
 geolocation=()=>{
+
 var map = this.props.map
       // create a Geolocation object setup to track the position of the device
       var geolocation = new ol.Geolocation({
-        tracking: true
+        tracking: true,
+        projection:'EPSG:3857'
       });
-      geolocation.on('change', function(evt) {
+      geolocation.on('change', (evt)=> {
        console.log(geolocation.getPosition());
-       
+       this.props.childrenProps.removeLocation()  
+       this.props.childrenProps.getLocation(geolocation.getPosition()[0],geolocation.getPosition()[1])
 
-
-
-       this.feature = new ol.Feature({
-       geom: new ol.geom.Point([geolocation.getPosition()[0], geolocation.getPosition()[1]]),
-       geometryName: 'the_geom'
-   })
-   this.feature.setGeometryName("the_geom")
-
-   const featureStyle = new ol.style.Style({
-       image: new ol.style.Icon({
-           anchor: [
-               0.5, 31
-           ],
-           anchorXUnits: 'fraction',
-           anchorYUnits: 'pixels',
-
-           src: 
-        "https://cdn1.iconfinder.com/data/icons/streamline-map-location-2/60/cell-0-2-120.png"
-       }),
-       text: new ol.style.Text({
-           text: '+',
-           fill: new ol.style.Fill({ color: '#fff' }),
-           stroke: new ol.style.Stroke({
-               color: '#fff',
-               width: 2
-           }),
-           textAlign: 'center',
-           offsetY: -20,
-           font: '18px serif'
-       }),
-
-   })
-   this.vectorLayer = new ol.layer.Vector({
-       source: new ol.source.Vector({
-           features: [this.feature]
-       }),
-       style: featureStyle,
-
-   })
- var  vectorSource=map.getView().getSource()
-//    this.feature.setGeometry(new ol.geom.Point(this.props.map.getView().getCenter()))
-vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([geolocation.getPosition()[0], geolocation.getPosition()[1]], 200)));
-  map.addLayer(this.vectorLayer)
-   this.vectorLayer.setZIndex(10)
-
-
-      });
-      console.log(geolocation,geolocation.getProperties(),geolocation.getPosition())
+      })
   }  
     componentDidMount() {
         const { map } = this.props
@@ -194,20 +150,20 @@ vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([geolocation.getPositi
           value={this.state.name}
           onChange={console.log("k")}
           margin="normal"
-        />
+        /> */}
 
-                                         <Button style={{ position: "absolute", bottom:70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                    // this.setState({ switch: true, add: false })
-                                    // this.props.childrenProps.removeLocation()
-                                    this.geolocation()
-                                }}>
-                                    <LocationIcon />
-                                </Button>
-                                 */}
+                    <Button style={{ position: "absolute", bottom:70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+            
+                    this.geolocation()
+        }}>
+            <LocationIcon />
+        </Button>
+                                
 
 
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                    this.setState({ switch: true, add: false })
+                               this.state['add']=false
+                                    this.setState({switch: true},console.log("ss",this.state.add))
                                     this.props.childrenProps.removeLocation()
                                 }}>
                                     <RemoveIcon />
@@ -220,7 +176,7 @@ vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([geolocation.getPositi
                     <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
                 <div>
-                    <Dialog open={childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
+                    {/* <Dialog open={childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
                         <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
                         <DialogContent>
                         </DialogContent>
@@ -232,7 +188,7 @@ vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([geolocation.getPositi
                                 Agree
                             </Button>
                         </DialogActions>
-                    </Dialog>
+                    </Dialog> */}
                 </div>
 
             </Grid>

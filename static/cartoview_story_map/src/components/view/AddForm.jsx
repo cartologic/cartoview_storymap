@@ -72,7 +72,7 @@ class addForm extends React.Component {
             clicked: false
         }
 
-    }
+    console.log(this.props)}
     WFS = new WFSClient(this.props.urls)
 
     componentWillReceiveProps(nextProps) {
@@ -154,7 +154,18 @@ class addForm extends React.Component {
             }
         }
     }
+    test=()=>{
+        console.log("rwat")
+        this.props.back()
+    }
+cancel=()=>{
+    
 
+     this.props.handleSwitch()
+ 
+    this.props.removeLocation()
+
+}
     click = () => {
         this.setState({ clicked: true }, console.log("clicked true"))
     }
@@ -219,10 +230,15 @@ class addForm extends React.Component {
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
 
-                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} >
 
                         {this.state.loading ? 'saving' : 'save'}
                         {this.state.loading && <CircularProgress size={20} />}
+                    </Button>
+                    <Button raised color="primary" onClick={()=>this.cancel()
+                    }className={classes.button} style={{ float: "right" }}>
+
+                      Cancel
                     </Button>
                 </div>
                 <div className={classes.textCenter}>
