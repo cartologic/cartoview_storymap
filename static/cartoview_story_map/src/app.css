@@ -98,3 +98,7 @@ z-index: 1 !important;
 .card-div{
   margin-right: 15px;
 }
+
+[class*="MuiBadge-badge"] {
+  position: static !important;
+}
