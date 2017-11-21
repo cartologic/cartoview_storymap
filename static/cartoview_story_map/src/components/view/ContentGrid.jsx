@@ -14,6 +14,7 @@ import IconButton from 'material-ui/IconButton';
 import LocationIcon from 'material-ui-icons/LocationSearching';
 import TextField from 'material-ui/TextField';
 import Geolocation from 'ol/geolocation';
+import Geocoder from 'ol-geocoder'
 import {
     addSelectionLayer,
     getFeatureInfoUrl,
@@ -61,27 +62,48 @@ class ContentGrid extends Component {
         success: false,
         access: true
     }
-geolocation=()=>{
+    geolocation = () => {
+        console.log("geo")
+        var map = this.props.map
+        // create a Geolocation object setup to track the position of the device
+        var geolocation = new ol.Geolocation({
+            tracking: true,
+            projection: 'EPSG:3857'
+        });
+        geolocation.on('change', (evt) => {
+            console.log(geolocation.getPosition());
+            this.props.childrenProps.removeLocation()
+            this.props.childrenProps.getLocation(geolocation.getPosition()[0], geolocation.getPosition()[1])
+            this.setState({ geolocation })
+        })
 
-var map = this.props.map
-      // create a Geolocation object setup to track the position of the device
-      var geolocation = new ol.Geolocation({
-        tracking: true,
-        projection:'EPSG:3857'
-      });
-      geolocation.on('change', (evt)=> {
-       console.log(geolocation.getPosition());
-       this.props.childrenProps.removeLocation()  
-       this.props.childrenProps.getLocation(geolocation.getPosition()[0],geolocation.getPosition()[1])
-
-      })
-  }  
+        this.props.childrenProps.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
+        //   this.props.childrenProps.removeLocation() 
+    }
     componentDidMount() {
         const { map } = this.props
 
         map.setTarget(this.mapDiv)
         map.getView().fit(props.extent, map.getSize())
         this.checkPermissions(loggedUser)
+        var geocoder = new Geocoder('nominatim', {
+            provider: 'mapquest',
+            key: '__some_key__',
+            lang: 'pt-BR', //en-US, fr-FR
+            placeholder: 'Search for ...',
+            targetType: 'text-input',
+            limit: 5,
+            keepOpen: true
+        });
+        map.addControl(geocoder);
+        geocoder.on('addresschosen', function (evt) {
+            var feature = evt.feature,
+                coord = evt.coordinate,
+                address = evt.address;
+            // some popup solution
+            // content.innerHTML = '<p>'+ address.formatted +'</p>';
+            overlay.setPosition(coord);
+        });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -133,41 +155,24 @@ var map = this.props.map
                             {this.state.switch &&
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
                                     this.setState({ switch: false })
-
                                     this.props.childrenProps.getLocation()
                                 }}>
                                     <AddIcon />
                                 </Button>}
                             {!this.state.switch &&
-                            <div>
-
-{/* 
-<TextField style={{ position: "absolute", top:10, left:50, zIndex: 100 ,width:"300px",color:"black"}}
-          id="name"
-       
-          label="Search Location by address"
-          className={classes.textField}
-          value={this.state.name}
-          onChange={console.log("k")}
-          margin="normal"
-        /> */}
-
-                    <Button style={{ position: "absolute", bottom:70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-            
-                    this.geolocation()
-        }}>
-            <LocationIcon />
-        </Button>
-                                
-
-
-                                <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                               this.state['add']=false
-                                    this.setState({switch: true},console.log("ss",this.state.add))
-                                    this.props.childrenProps.removeLocation()
-                                }}>
-                                    <RemoveIcon />
-                                </Button>
+                                <div>
+                                    <Button style={{ position: "absolute", bottom: 70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                        this.geolocation()
+                                    }}>
+                                        <LocationIcon />
+                                    </Button>
+                                    <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                        this.state['add'] = false
+                                        this.setState({ switch: true }, console.log("ss", this.state.add))
+                                        this.props.childrenProps.removeLocation()
+                                    }}>
+                                        <RemoveIcon />
+                                    </Button>
                                 </div>}
                         </div>
                     }
@@ -176,19 +181,7 @@ var map = this.props.map
                     <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
                 <div>
-                    {/* <Dialog open={childrenProps.showDialog} onRequestClose={this.handleRequestClose}>
-                        <DialogTitle>{"Save this location to feature ?"}</DialogTitle>
-                        <DialogContent>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleRequestClose} color="primary">
-                                Disagree
-                            </Button>
-                            <Button onClick={this.addEntry} color="primary" autoFocus>
-                                Agree
-                            </Button>
-                        </DialogActions>
-                    </Dialog> */}
+                  
                 </div>
 
             </Grid>

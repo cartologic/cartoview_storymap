@@ -30,7 +30,7 @@ import { wfsQueryBuilder } from "../helpers/helpers.jsx"
 class FeatureListContainer extends Component {
     constructor(props) {
         super(props)
-       
+
         this.state = {
             mapIsLoading: false,
             featuresIsLoading: false,
@@ -52,11 +52,11 @@ class FeatureListContainer extends Component {
             ImageBase64: null,
             xyValue: null,
             showDialog: false,
-            crs:"3857",
-            result:"",
-            fileName:"",
-            addEntry:false,
-            map:getMap()
+            crs: "3857",
+            result: "",
+            fileName: "",
+            addEntry: false,
+            map: getMap()
 
 
         }
@@ -73,11 +73,9 @@ class FeatureListContainer extends Component {
     onFeatureMove = (event) => {
 
         const crs = 'EPSG:' + this.state.crs
-console.log(event.mapBrowserEvent.coordinate, crs,
-    this.state.map.getView().getProjection())
+
         var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
             this.state.map.getView().getProjection())
-console.log("feture move",event.mapBrowserEvent.coordinatecente)
         const geometry = {
             name: 'the_geom',
             srsName: crs,
@@ -86,37 +84,30 @@ console.log("feture move",event.mapBrowserEvent.coordinatecente)
         }
 
 
-     
+
         this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
     }
 
-    refreshMap=(feature)=>{
+    refreshMap = (feature) => {
 
         this.state.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
         this.state.features.push(feature)
         // this.getLocation()
-       
+
     }
-    refreshMapEdit=(feature)=>{
-     
-          this.state.map.removeInteraction(this.modifyInteractionEdit)
-        //   this.featureCollection.removeAt(feature.getProperties()['order']-1)
-        //   this.featureCollection.push(feature)
-          
-          
-        //   this.state.features[feature.getProperties()['order']-1]=feature
-          
-        //   console.log(feature)
-        //   this.getLocation()
-         
-      }
-    getLocation = (x=0,y=0) => {
-        
+    refreshMapEdit = (feature) => {
+
+        this.state.map.removeInteraction(this.modifyInteractionEdit)
+
+    }
+    getLocation = (x = 0, y = 0) => {
+this.state.map.removeLayer(this.state.vectorLayer)
+this.feature=null
         const crs = 'EPSG:' + this.state.crs
-        var center = ol.proj.transform([x,y], crs,this.state.map.getView().getProjection(),
-            )
-console.log("center",center,this.state.map.getView().getProjection())
+        var center = ol.proj.transform([x, y], crs, this.state.map.getView().getProjection(),
+        )
+
         this.feature = new ol.Feature({
             geom: new ol.geom.Point([x, y]),
             geometryName: 'the_geom'
@@ -154,7 +145,7 @@ console.log("center",center,this.state.map.getView().getProjection())
             style: featureStyle,
 
         })
-       
+
         this.modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.feature]),
             pixelTolerance: 32,
@@ -163,9 +154,43 @@ console.log("center",center,this.state.map.getView().getProjection())
         this.modifyInteraction.on('modifyend', this.onFeatureMove)
         this.feature.setGeometry(new ol.geom.Point([center[0], center[1]]))
         this.setState({ vectorLayer: this.vectorLayer })
-    if(x!=0){
-        this.zoomToFeature(this.feature)
-    
+        if (x != 0) {
+            this.zoomToFeature(this.feature)
+
+            const geometry = {
+                name: 'the_geom',
+                srsName: crs,
+                x: center[0],
+                y: center[1]
+            }
+
+
+
+            this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
+
+       }
+
+
+
+        this.state.map.addLayer(this.vectorLayer)
+
+        this.vectorLayer.setZIndex(10)
+        this.state.map.addInteraction(this.modifyInteraction)
+        this.setState({ addEntry: true })
+    }
+    removeLocation = () => {
+
+        this.state.map.removeLayer(this.state.vectorLayer);
+        this.setState({ addEntry: false })
+
+    }
+    onFeatureMoveEdit = (event) => {
+
+        const crs = 'EPSG:' + this.state.crs
+
+        var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
+            this.state.map.getView().getProjection())
+
         const geometry = {
             name: 'the_geom',
             srsName: crs,
@@ -174,50 +199,16 @@ console.log("center",center,this.state.map.getView().getProjection())
         }
 
 
-     
+
         this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
-   
+
     }
 
-
-
-        this.state.map.addLayer(this.vectorLayer)
-        console.log(this.feature.getGeometry().getCoordinates())
-        this.vectorLayer.setZIndex(10)
-        this.state.map.addInteraction(this.modifyInteraction)
-this.setState({addEntry: true})
-    }
-    removeLocation = () => {
-console.log("remove laer called")
-        this.state.map.removeLayer(this.state.vectorLayer);
-        this.setState({addEntry: false})
-        
-    }
-    onFeatureMoveEdit = (event) => {
-
-        const crs = 'EPSG:' + this.state.crs
-                
-                var center = ol.proj.transform(event.mapBrowserEvent.coordinate, crs,
-                    this.state.map.getView().getProjection())
-        
-                const geometry = {
-                    name: 'the_geom',
-                    srsName: crs,
-                    x: center[0],
-                    y: center[1]
-                }
-        
-        
-             
-                this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
-        
-    }
-    
     editFeature = (feature) => {
-        this.editedFeature=feature
-        this.setState({removedFeature:feature})
+        this.editedFeature = feature
+        this.setState({ removedFeature: feature })
         const featureStyle = new ol.style.Style({
-              image: new ol.style.Icon({
+            image: new ol.style.Icon({
                 anchor: [
                     0.5, 31
                 ],
@@ -246,29 +237,29 @@ console.log("remove laer called")
             style: featureStyle,
 
         })
-       this.setState({vectorLayerEdit:this.vectorLayerEdit})
+        this.setState({ vectorLayerEdit: this.vectorLayerEdit })
         // feature.setStyle(featureStyle)
         // this.selectionLayer.getSource().addFeature(feature)
 
         this.modifyInteractionEdit = new ol.interaction.Modify({
             features: new ol.Collection([feature]),
             pixelTolerance: 32,
-             style: []
+            style: []
         })
-        // console.log(feature.getProperties().featureIndex)
-        this.setState({featureCollection:this.featureCollection})
-        this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
+
+        this.setState({ featureCollection: this.featureCollection })
+        this.featureCollection.removeAt(feature.getProperties().featureIndex - 1)
         this.state.map.addLayer(this.vectorLayerEdit)
-        
+
         this.modifyInteractionEdit.on('modifyend', this.onFeatureMoveEdit)
         this.state.map.addInteraction(this.modifyInteractionEdit)
     }
-    removeFeatureMarker=(feature)=>{
-        this.featureCollection.removeAt(feature.getProperties().featureIndex-1)
+    removeFeatureMarker = (feature) => {
+        this.featureCollection.removeAt(feature.getProperties().featureIndex - 1)
 
         this.setState({
-            features: update(this.state.features, {$splice: [[feature.getProperties().featureIndex-1, 1]]})
-           })
+            features: update(this.state.features, { $splice: [[feature.getProperties().featureIndex - 1, 1]] })
+        })
     }
     addComment = (data) => {
         const { urls, config } = this.props
@@ -355,15 +346,16 @@ console.log("remove laer called")
         let promise = new Promise((resolve, reject) => {
             if (proj4.defs('EPSG:' + crs)) {
                 resolve(crs)
-            } 
+            }
             else {
                 fetch("https://epsg.io/?format=json&q=" + crs).then(
                     response => response.json()).then(
                     projres => {
-                        if( projres.results[0]){
-                        proj4.defs('EPSG:' + crs, projres.results[
-                            0].proj4)
-                        resolve(crs)}
+                        if (projres.results[0]) {
+                            proj4.defs('EPSG:' + crs, projres.results[
+                                0].proj4)
+                            resolve(crs)
+                        }
                     })
             }
         })
@@ -381,7 +373,7 @@ console.log("remove laer called")
             typeNames: props.layername,
             outputFormat: 'json',
             srsName: this.state.map.getView().getProjection().getCode(),
-            sortBy:'order',
+            sortBy: 'order',
             startIndex
         })
         fetch(this.urls.getProxiedURL(requestUrl)).then((response) =>
@@ -492,7 +484,7 @@ console.log("remove laer called")
         })
         promise.then((apiData) => {
             this.saveAttachment(apiData).then(result => {
-                console.log("result",result)
+
                 this.setState({ attachments: [...attachments, result] })
             })
         }, (error) => {
@@ -500,11 +492,11 @@ console.log("remove laer called")
         })
     }
 
-    readThenSave = ( file, featureId ) => {
+    readThenSave = (file, featureId) => {
         const { config } = this.props
         const { attachments } = this.state
         var reader = new FileReader()
-        reader.readAsDataURL( file )
+        reader.readAsDataURL(file)
         reader.onload = () => {
             const apiData = {
                 file: reader.result,
@@ -514,28 +506,28 @@ console.log("remove laer called")
                 feature_id: 0,
                 tags: ["a"]
             }
-            this.saveAttachment( apiData ).then( result => {
-                console.log("------------",result)
-                this.setState( {
-                    attachments:result 
-                } )
-            } )
+            this.saveAttachment(apiData).then(result => {
+
+                this.setState({
+                    attachments: result
+                })
+            })
         }
-        reader.onerror = ( error ) => {
-            throw ( error )
+        reader.onerror = (error) => {
+            throw (error)
         }
     }
-    getImageFromURL = ( url, featureId ) => {
-        const proxiedURL = this.urls.getProxiedURL( url )
-        fetch( proxiedURL, {
+    getImageFromURL = (url, featureId) => {
+        const proxiedURL = this.urls.getProxiedURL(url)
+        fetch(proxiedURL, {
             method: "GET",
             credentials: "same-origin",
             headers: {
                 "Accept": "image/*"
             }
-        } ).then( response => response.blob() ).then( blob => {
-            this.readThenSave( blob, featureId )
-        } )
+        }).then(response => response.blob()).then(blob => {
+            this.readThenSave(blob, featureId)
+        })
     }
     saveAttachment = (data) => {
         const { urls, config } = this.props
@@ -551,53 +543,55 @@ console.log("remove laer called")
         }).then((response) => response.json())
     }
     zoomToFeature = (feature, done = () => { }) => {
-        if(props.config.zoomOnClick){
-        var duration = 1500;
-        // console.log(feature, feature.getGeometry())
-        var location = feature.getGeometry().getFirstCoordinate()
-        // console.log(this.feature.getGeometry())
-        var view = this.state.map.getView()
-        var zoom = view.getZoom();
+        if (props.config.zoomOnClick) {
+            var duration = 1500
+                ;
 
-        var parts = 2;
-        var called = false;
-        function callback(complete) {
-            --parts;
-            if (called) {
-                return;
+            var location = feature.getGeometry().getFirstCoordinate()
+
+            var view = this.state.map.getView()
+            var zoom = view.getZoom();
+
+            var parts = 2;
+            var called = false;
+            function callback(complete) {
+                --parts;
+                if (called) {
+                    return;
+                }
+                if (parts === 0 || !complete) {
+                    called = true;
+                    done(complete);
+                }
             }
-            if (parts === 0 || !complete) {
-                called = true;
-                done(complete);
-            }
-        }
-        view.animate({
-            center: location,
-            duration: duration
-        }, callback);
-        view.animate({
-            zoom: zoom - 1,
-            duration: duration / 2
-        }, {
-                zoom: zoom,
-                duration: duration / 2
+            view.animate({
+                center: location,
+                duration: duration
             }, callback);
+            view.animate({
+                zoom: zoom - 1,
+                duration: duration / 2
+            }, {
+                    zoom: zoom,
+                    duration: duration / 2
+                }, callback);
 
-        const { config } = this.props
+            const { config } = this.props
 
-        if (config && config.zoomOnSelect) {
+            if (config && config.zoomOnSelect) {
 
+            }
         }
-    }}
+    }
     singleClickListner = () => {
         this.state.map.on('singleclick', (e) => {
 
         })
     }
-    backFromEdit=()=>{
-        this.featureCollection.insertAt(this.state.removedFeature.featureIndex-1, this.state.removedFeature)
+    backFromEdit = () => {
+        this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
 
-       
+
         this.state.map.removeLayer(this.state.vectorLayerEdit)
     }
     backToAllFeatures = () => {
@@ -690,16 +684,16 @@ console.log("remove laer called")
             openDialog: this.openDialog,
             editFeature: this.editFeature,
             newFeature: this.feature,
-            refreshMap:this.refreshMap,
-            refreshMapEdit:this.refreshMapEdit,
-            editedFeature:this.editedFeature,
-            geometry:this.state.geometry,
-            backFromEdit:this.backFromEdit,
-            removeFeatureMarker:this.removeFeatureMarker,
-            crs:this.state.crs?this.state.crs:"3857",
+            refreshMap: this.refreshMap,
+            refreshMapEdit: this.refreshMapEdit,
+            editedFeature: this.editedFeature,
+            geometry: this.state.geometry,
+            backFromEdit: this.backFromEdit,
+            removeFeatureMarker: this.removeFeatureMarker,
+            crs: this.state.crs ? this.state.crs : "3857",
             getImageFromURL: this.getImageFromURL,
-            result:this.state.result
-            
+            result: this.state.result
+
         }
         return <FeatureList childrenProps={childrenProps} map={this.state.map} />
     }

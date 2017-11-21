@@ -68,11 +68,7 @@ class CartoviewList extends React.Component {
         this.state['add']=false
         this.state['selectionModeEnabled']=false
         this.setState({detailsModeEnabled: false,selectionModeEnabled :false, detailsOfFeature: null, add: false, edit: false })
-        // if (selectionModeEnabled) {
-        //     addStyleToFeature(featureIdentifyResult)
-        // } else {
-        //     addStyleToFeature([])
-        // }
+       
  console.log(this.state)
         if(this.state.edit){
             this.props.backFromEdit()
@@ -94,6 +90,7 @@ class CartoviewList extends React.Component {
         const allFeature = this.props.getFeatures(0)
         getdescribeFeatureType(this.props.config.layer).then(data => { this.setState({ featureTypes: data }) })
     }
+
     componentWillReceiveProps(nextProps) {
 console.log(nextProps.addEntry)
         this.setState({ add: nextProps.addEntry })

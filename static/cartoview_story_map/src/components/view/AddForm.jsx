@@ -72,12 +72,13 @@ class addForm extends React.Component {
             clicked: false
         }
 
-    console.log(this.props)}
+        console.log(this.props)
+    }
     WFS = new WFSClient(this.props.urls)
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.attachments) {
-            console.log("next", nextProps.attachments.file)
+
             this.setState({ fileName: nextProps.attachments.file })
         }
     }
@@ -93,9 +94,7 @@ class addForm extends React.Component {
     }
     handleChange = attr => event => {
         this.state.formValue[attr] = event.target.value
-        // this.setState({
-        //     this.state.[attr]: event.target.value,
-        //   });
+
     }
 
     sendRequest = () => {
@@ -110,7 +109,6 @@ class addForm extends React.Component {
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
-
         return fetch(proxiedURL, {
             method: 'POST',
             body: xml,
@@ -120,28 +118,21 @@ class addForm extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-
             this.setState({ success: true })
             this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.back()
             this.setState({ loading: false })
-
             feature.set("featureIndex", ++this.props.features.length)
             this.props.refreshMap(feature)
-            // return res.json()
+     
         }).catch((error) => {
             throw Error(error)
         })
     }
     save = () => {
 
-        // this.WFS.insertFeature(this.props.config.layer, this.state.formValue, this.props.geometry).then(res =>
-        //     res.text()).then((res) => {
-        //         this.setState({ success: true }, this.props.back())
-        //     }).catch((error) => {
-        //         throw Error(error)
-        //     })
+
         while (true) {
             if (this.state.clicked == true && this.state.fileName != "") {
                 this.sendRequest()
@@ -154,18 +145,12 @@ class addForm extends React.Component {
             }
         }
     }
-    test=()=>{
-        console.log("rwat")
-        this.props.back()
+
+    cancel = () => {
+        this.props.handleSwitch()
+        this.props.removeLocation()
+
     }
-cancel=()=>{
-    
-
-     this.props.handleSwitch()
- 
-    this.props.removeLocation()
-
-}
     click = () => {
         this.setState({ clicked: true }, console.log("clicked true"))
     }
@@ -186,7 +171,7 @@ cancel=()=>{
         return (
             <div>
                 <Hidden smDown>
-                    <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
+                    <IconButton className={classes.button} aria-label="Delete" onClick={() => this.cancel()} >
                         <BackIcon />
                     </IconButton>
                 </Hidden>
@@ -230,16 +215,12 @@ cancel=()=>{
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
 
-                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} >
+                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
 
                         {this.state.loading ? 'saving' : 'save'}
                         {this.state.loading && <CircularProgress size={20} />}
                     </Button>
-                    <Button raised color="primary" onClick={()=>this.cancel()
-                    }className={classes.button} style={{ float: "right" }}>
 
-                      Cancel
-                    </Button>
                 </div>
                 <div className={classes.textCenter}>
 
@@ -249,11 +230,5 @@ cancel=()=>{
         )
     }
 }
-// ItemDetails.propTypes = { ...commentsPropTypes,
-// searchFilesById: PropTypes.func.isRequired,
-// back: PropTypes.func.isRequired,
-// searchCommentById: PropTypes.func.isRequired,
-// username: PropTypes.string.isRequired,
-// SaveImageBase64: PropTypes.func.isRequired,
-// }
+
 export default withStyles(styles)(addForm)

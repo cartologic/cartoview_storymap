@@ -17,7 +17,7 @@
     "jquery": "^3.2.1",
     "material-ui": "^1.0.0-beta.17",
     "material-ui-icons": "^1.0.0-beta.5",
-    "ol": "^4.4.2",
+    "ol": "^4.5.0",
     "react": "^15.5.4",
     "react-addons-css-transition-group": "^15.5.2",
     "react-addons-transition-group": "^15.5.2",

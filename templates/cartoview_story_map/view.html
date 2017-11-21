@@ -11,6 +11,7 @@
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script>
 </script>
+
    <style>
         html,body {
             height: 100%;
@@ -21,7 +22,12 @@
             height: 100%
         }
     </style>
+       <link rel="stylesheet" href="https://openlayers.org/en/v4.5.0/css/ol.css" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.3.4/ol-debug.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.3.4/ol.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.3.4/ol.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ol3/4.3.4/ol-debug.css" />
 </head>
 <body>
     <script
@@ -92,6 +98,7 @@
     props.formAbstract="{{instance.abstract}}"
     props.username="{{request.user.username}}"
   </script>
+  
 <script src="{% static 'cartoview_story_map/dist/FeatureList.bundle.js?version=2' %}"></script>
 
     <script  type="text/javascript">
