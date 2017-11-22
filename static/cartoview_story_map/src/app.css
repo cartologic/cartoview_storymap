@@ -102,3 +102,6 @@ z-index: 1 !important;
 [class*="MuiBadge-badge"] {
   position: static !important;
 }
+hr{
+  width: 350px;
+}

@@ -26,7 +26,7 @@ import ol from 'openlayers'
 import { render } from 'react-dom'
 import { styleFunction } from './styling.jsx'
 import { wfsQueryBuilder } from "../helpers/helpers.jsx"
-
+import GeoCoding from '../services/geocodingservice'
 class FeatureListContainer extends Component {
     constructor(props) {
         super(props)
@@ -176,12 +176,18 @@ this.feature=null
 
         this.vectorLayer.setZIndex(10)
         this.state.map.addInteraction(this.modifyInteraction)
+      
+    }
+    showAddPanel=()=>{
         this.setState({ addEntry: true })
+    }
+    hideAddPanel=()=>{
+        this.setState({ addEntry: false })
     }
     removeLocation = () => {
 
         this.state.map.removeLayer(this.state.vectorLayer);
-        this.setState({ addEntry: false })
+        // this.setState({ addEntry: false })
 
     }
     onFeatureMoveEdit = (event) => {
@@ -692,8 +698,10 @@ this.feature=null
             removeFeatureMarker: this.removeFeatureMarker,
             crs: this.state.crs ? this.state.crs : "3857",
             getImageFromURL: this.getImageFromURL,
-            result: this.state.result
-
+            result: this.state.result,
+            showAddPanel:this.showAddPanel,
+            hideAddPanel:this.hideAddPanel,
+            geocodeSearch:GeoCoding.search
         }
         return <FeatureList childrenProps={childrenProps} map={this.state.map} />
     }

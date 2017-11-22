@@ -11,31 +11,38 @@ import ol from 'openlayers'
 import parse from 'autosuggest-highlight/parse'
 import { withStyles } from 'material-ui/styles'
 
+// import { Loader, Message } from 'Source/CommonComponents'
+
+
+
 function renderInput(inputProps) {
-    const { classes, autoFocus, value, ref, ...other } = inputProps
+    const { classes, autoFocus, value, ref, ...
+        other } = inputProps
     return (
-        <TextField
-            autoFocus={autoFocus}
-            className={classes.textField}
-            value={value}
-            inputRef={ref}
-            InputProps={{
-                classes: {
-                    input: classes.input,
-                },
-                ...other,
-            }}
-        />
+    
+            <TextField
+                autoFocus={autoFocus}
+                className={classes.textField}
+                value={value}
+                inputRef={ref}
+                InputProps={{
+                    classes: {
+                        input: classes.input,
+                    },
+                    ...other,
+                }}
+            />
+         
+       
     )
 }
-
-
-
 const styles = theme => ({
     container: {
         flexGrow: 1,
         position: 'relative',
-        height: 50,
+        height: 'auto',
+        margin: "15px",
+        width: "100%"
     },
     suggestionsContainerOpen: {
         position: 'absolute',
@@ -62,11 +69,13 @@ class IntegrationAutosuggest extends React.Component {
         suggestions: [],
     }
     renderSuggestion = (suggestion, { query, isHighlighted }) => {
-        const { openDetails } = this.props
+        const { action } = this.props
         const matches = match(suggestion.label, query)
         const parts = parse(suggestion.label, matches)
+        const lon = parseFloat(suggestion.value.lon)
+        const lat = parseFloat(suggestion.value.lat)
         return (
-            <MenuItem onClick={()=>openDetails({detailsModeEnabled: true, detailsOfFeature: suggestion.value })} selected={isHighlighted} component="div">
+            <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
                 <div>
                     {parts.map((part, index) => {
                         return part.highlight ? (
@@ -81,7 +90,6 @@ class IntegrationAutosuggest extends React.Component {
                     })}
                 </div>
             </MenuItem>
-
         )
     }
     getSuggestionValue = (suggestion) => {
@@ -90,29 +98,29 @@ class IntegrationAutosuggest extends React.Component {
     renderSuggestionsContainer = (options) => {
         const { classes } = this.props
         const { containerProps, children } = options
-        return (<Paper style={{
-            zIndex: 123123,
-            maxHeight: 200,
-            overflowY: 'overlay'
-        }} className={classes.paperContainer} {...containerProps} square>
-            {children}
-        </Paper>)
+        return (
+            <Paper style={{
+                zIndex: 1149,
+                maxHeight: 200,
+                overflowY: 'overlay'
+            }} className={classes.paperContainer} {...containerProps} square>
+                {children}
+            </Paper>
+        )
     }
     handleSuggestionsFetchRequested = ({ value }) => {
-        let { config, search } = this.props
-        search(value).then((json) => {
-            let features = new ol.format.GeoJSON().readFeatures(
-                json)
-            const total = json.totalFeatures
-            let suggestions = features.map((feature, i) => {
-                const filterValue=feature.getProperties()[config.filters]
-                return { label: filterValue.toString(), value: feature }
+        const { search } = this.props
+        search(value, (result) => {
+            let suggestions = result.map(obj => {
+                return {
+                    label: obj.display_name,
+                    value: obj
+                }
             })
             this.setState({
                 suggestions
             })
         })
-
     }
     handleSuggestionsClearRequested = () => {
         this.setState({
@@ -125,7 +133,7 @@ class IntegrationAutosuggest extends React.Component {
         })
     }
     render() {
-        const { classes,config } = this.props
+        const { classes } = this.props
         return (
             <Autosuggest
                 theme={{
@@ -144,9 +152,9 @@ class IntegrationAutosuggest extends React.Component {
                 inputProps={{
                     autoFocus: true,
                     classes,
-                    placeholder: `Search by ${config.filters}`,
+                    placeholder: `Add Location by Address`,
                     value: this.state.value,
-                    onChange: this.handleChange,
+                    onChange: this.handleChange
                 }}
             />
         )
@@ -154,8 +162,7 @@ class IntegrationAutosuggest extends React.Component {
 }
 IntegrationAutosuggest.propTypes = {
     classes: PropTypes.object.isRequired,
-    search:PropTypes.func.isRequired,
-    config:PropTypes.object.isRequired,
-    openDetails:PropTypes.func.isRequired
+    search: PropTypes.func.isRequired,
+    action: PropTypes.func.isRequired
 }
 export default withStyles(styles)(IntegrationAutosuggest)

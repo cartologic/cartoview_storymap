@@ -23,6 +23,8 @@ import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
+import green from 'material-ui/colors/green';
+import GeoCodeSearchInput from './SearchInput';
 
 const styles = theme => ({
     root: {
@@ -69,7 +71,8 @@ class addForm extends React.Component {
             success: false,
             loading: false,
             fileName: "",
-            clicked: false
+            clicked: false,
+            coordinates:false
         }
 
         console.log(this.props)
@@ -99,12 +102,14 @@ class addForm extends React.Component {
 
     sendRequest = () => {
         this.setState({ loading: true })
-        var feature = this.props.newFeature
+        var feature=this.props.newFeature 
+     
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
         feature.set("order", this.props.features.length + 1)
         feature.set("imageurl", this.state.fileName)
+        console.log(feature)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
@@ -145,11 +150,32 @@ class addForm extends React.Component {
             }
         }
     }
+    locationOnMap=(event)=>{
+        console.log( event.target.checked,"kk")
+        this.setState({ checked: event.target.checked })
+        if( event.target.checked ){
+            this.props.showCurrentLocation()
+            this.props.getLocation()
+        }else{
+            this.props.hideCurrentLocation()
+            this.props.removeLocation()
+        }
 
+    }
+    zoomToLocation = ( pointArray ) => {
+        console.log(pointArray)
+        var center = ol.proj.transform(pointArray, "EPSG:4326",
+            this.props.map.getView().getProjection())
+            console.log(center)
+            // this.setState({coordinates:center})
+            this.props.getLocation(center[0],center[1])
+        
+    }
     cancel = () => {
         this.props.handleSwitch()
         this.props.removeLocation()
-
+        this.props.hideCurrentLocation()
+        this.props.hideAddPanel()
     }
     click = () => {
         this.setState({ clicked: true }, console.log("clicked true"))
@@ -214,13 +240,31 @@ class addForm extends React.Component {
                         <Slider attachments={[]} />
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
+                    <hr/>
+                    <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>
 
-                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={this.state.checked}
+                                onChange={this.locationOnMap}
+                                value="checked"
+                            />
+                        }
+                        label="add location on map"
+                    />
+
+
+
+                   
+
+<div>
+                    <Button disabled={this.state.loading||(!this.props.newFeature&&!this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
 
                         {this.state.loading ? 'saving' : 'save'}
                         {this.state.loading && <CircularProgress size={20} />}
                     </Button>
-
+</div>
                 </div>
                 <div className={classes.textCenter}>
 

@@ -61,7 +61,14 @@ class ContentGrid extends Component {
         add: false,
         switch: true,
         success: false,
-        access: false
+        access: false,
+        currentlocation:false
+    }
+    showCurrentLocation=()=>{
+        this.setState({currentlocation:true})
+    }
+    hideCurrentLocation=()=>{
+        this.setState({currentlocation:false})
     }
     geolocation = () => {
         console.log("geo")
@@ -90,25 +97,7 @@ class ContentGrid extends Component {
         map.setTarget(this.mapDiv)
         map.getView().fit(props.extent, map.getSize())
         this.checkPermissions(loggedUser)
-        // var geocoder = new Geocoder('nominatim', {
-        //     provider: 'mapquest',
-        //     key: '__some_key__',
-        //     lang: 'pt-BR', //en-US, fr-FR
-        //     placeholder: 'Search for ...',
-        //     targetType: 'text-input',
-        //     limit: 5,
-        //     keepOpen: true
-        // });
-        // var control =new Control
-        // map.addControl(control);
-        // geocoder.on('addresschosen', function (evt) {
-        //     var feature = evt.feature,
-        //         coord = evt.coordinate,
-        //         address = evt.address;
-        //     // some popup solution
-        //     // content.innerHTML = '<p>'+ address.formatted +'</p>';
-        //     overlay.setPosition(coord);
-        // });
+     
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -159,20 +148,22 @@ console.log(user,"pp",props.access.access,name)
                         <div>
                             {this.state.switch &&
                                 <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                    this.setState({ switch: false })
-                                    this.props.childrenProps.getLocation()
+                                    this.setState({ switch: false})
+                                    this.props.childrenProps.showAddPanel()
                                 }}>
                                     <AddIcon />
                                 </Button>}
-                            {!this.state.switch &&
-                                <div>
-                                    <Button style={{ position: "absolute", bottom: 70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
+                                {this.state.currentlocation&& <Button style={{ position: "absolute", bottom: 70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
                                         this.geolocation()
                                     }}>
                                         <LocationIcon />
-                                    </Button>
+                                    </Button>}
+                            {!this.state.switch &&
+                                <div>
+                                   
                                     <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
                                         this.state['add'] = false
+                                        this.props.childrenProps.hideAddPanel()
                                         this.setState({ switch: true }, console.log("ss", this.state.add))
                                         this.props.childrenProps.removeLocation()
                                     }}>
@@ -183,7 +174,7 @@ console.log(user,"pp",props.access.access,name)
                     }
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
+                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList hideCurrentLocation={this.hideCurrentLocation} showCurrentLocation={this.showCurrentLocation} handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
                 <div>
                   
