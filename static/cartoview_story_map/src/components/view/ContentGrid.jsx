@@ -14,6 +14,7 @@ import IconButton from 'material-ui/IconButton';
 import LocationIcon from 'material-ui-icons/LocationSearching';
 import TextField from 'material-ui/TextField';
 import Geolocation from 'ol/geolocation';
+import Control from 'ol/control';
 import Geocoder from 'ol-geocoder'
 import {
     addSelectionLayer,
@@ -60,7 +61,7 @@ class ContentGrid extends Component {
         add: false,
         switch: true,
         success: false,
-        access: true
+        access: false
     }
     geolocation = () => {
         console.log("geo")
@@ -80,30 +81,34 @@ class ContentGrid extends Component {
         this.props.childrenProps.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
         //   this.props.childrenProps.removeLocation() 
     }
+    componentWillMount(){
+        this.checkPermissions(loggedUser)
+    }
     componentDidMount() {
         const { map } = this.props
-
+        // var control = new ol.Control();
         map.setTarget(this.mapDiv)
         map.getView().fit(props.extent, map.getSize())
         this.checkPermissions(loggedUser)
-        var geocoder = new Geocoder('nominatim', {
-            provider: 'mapquest',
-            key: '__some_key__',
-            lang: 'pt-BR', //en-US, fr-FR
-            placeholder: 'Search for ...',
-            targetType: 'text-input',
-            limit: 5,
-            keepOpen: true
-        });
-        map.addControl(geocoder);
-        geocoder.on('addresschosen', function (evt) {
-            var feature = evt.feature,
-                coord = evt.coordinate,
-                address = evt.address;
-            // some popup solution
-            // content.innerHTML = '<p>'+ address.formatted +'</p>';
-            overlay.setPosition(coord);
-        });
+        // var geocoder = new Geocoder('nominatim', {
+        //     provider: 'mapquest',
+        //     key: '__some_key__',
+        //     lang: 'pt-BR', //en-US, fr-FR
+        //     placeholder: 'Search for ...',
+        //     targetType: 'text-input',
+        //     limit: 5,
+        //     keepOpen: true
+        // });
+        // var control =new Control
+        // map.addControl(control);
+        // geocoder.on('addresschosen', function (evt) {
+        //     var feature = evt.feature,
+        //         coord = evt.coordinate,
+        //         address = evt.address;
+        //     // some popup solution
+        //     // content.innerHTML = '<p>'+ address.formatted +'</p>';
+        //     overlay.setPosition(coord);
+        // });
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -133,7 +138,7 @@ class ContentGrid extends Component {
     checkPermissions = (name) => {
 
         props.access.access.map((user) => {
-
+console.log(user,"pp",props.access.access,name)
             if (user.value == name) {
 
                 this.setState({ access: true })

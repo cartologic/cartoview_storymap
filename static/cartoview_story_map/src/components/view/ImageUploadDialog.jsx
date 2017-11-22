@@ -166,10 +166,10 @@ class ImageDialog extends React.Component {
         return (
             <div className="text-center">
 
-                {username !== "" && <Button onTouchTap={this.handleClickOpen} className={classes.button} color="primary">
+               <Button onTouchTap={this.handleClickOpen} className={classes.button} color="primary">
                     {"Add photo"}
                     <FileUpload className={classes.rightIcon} />
-                </Button>}
+                </Button>
                 <Dialog
                     open={this.state.open}
                     transition={Transition}
