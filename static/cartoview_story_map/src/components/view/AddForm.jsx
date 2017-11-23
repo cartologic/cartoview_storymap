@@ -18,13 +18,25 @@ import Checkbox from 'material-ui/Checkbox';
 import { FormGroup, FormControlLabel } from 'material-ui/Form';
 import WFSClient from '../../utils/WFSClient.jsx'
 import { getCRSFToken } from '../../helpers/helpers.jsx'
-import URLS from '../../containers/URLS'
+import URLS from '../../containers/URLS';
 import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
-import green from 'material-ui/colors/green';
+// import green from 'material-ui/colors/green';
 import GeoCodeSearchInput from './SearchInput';
+import ColorPicker from 'material-ui-color-picker';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
+import StarIcon from 'material-ui-icons/Star';
+import TriangleIcon from 'material-ui-icons/ChangeHistory';
+import SquareIcon  from 'material-ui-icons/Stop'
+import CrossIcon from 'material-ui-icons/Add'
+import CircleIcon from 'material-ui-icons/FiberManualRecord';
+import Select from 'material-ui/Select';
+import XICon from 'material-ui-icons/Clear'
+import MaterialColorPicker from 'react-material-color-picker';
 
 const styles = theme => ({
     root: {
@@ -57,11 +69,18 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        // width: 200,
+         width: '100%'
     },
     progress: {
         margin: `0 ${theme.spacing.unit * 2}px`,
     },
+     formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
 })
 class addForm extends React.Component {
     constructor(props) {
@@ -72,7 +91,11 @@ class addForm extends React.Component {
             loading: false,
             fileName: "",
             clicked: false,
-            coordinates:false
+            coordinates:false,
+            markercolor:'#000000',
+            numberscolor:'#ffffff',
+            markershape:"circle",
+            shapeMenuOpen:false,
         }
 
         console.log(this.props)
@@ -109,6 +132,9 @@ class addForm extends React.Component {
         })
         feature.set("order", this.props.features.length + 1)
         feature.set("imageurl", this.state.fileName)
+        feature.set("markercolor",this.state.markercolor)
+        feature.set("numberscolor",this.state.numberscolor)
+         feature.set("markershape",this.state.markershape)
         console.log(feature)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
@@ -151,7 +177,7 @@ class addForm extends React.Component {
         }
     }
     locationOnMap=(event)=>{
-        console.log( event.target.checked,"kk")
+     
         this.setState({ checked: event.target.checked })
         if( event.target.checked ){
             this.props.showCurrentLocation()
@@ -180,6 +206,15 @@ class addForm extends React.Component {
     click = () => {
         this.setState({ clicked: true }, console.log("clicked true"))
     }
+  handleShape = (event) =>{
+      console.log("sss",event.target.value )
+    this.setState({ markershape: event.target.value });
+  };
+    handleColor(value,color){
+        console.log(value,color.target.value)
+        this.setState({[value]:color.target.value})
+    }
+   
     render() {
         const vertical = 'bottom', horizontal = 'center'
         const {
@@ -205,7 +240,7 @@ class addForm extends React.Component {
                     {
                         featureTypes && featureTypes.map((feature, i) => {
 
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "imageurl") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
@@ -235,6 +270,48 @@ class addForm extends React.Component {
                             }
                         })
                     }
+      <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
+          <Select
+          
+            value={this.state.markershape}
+            onChange={(e)=>this.handleShape(e)}
+            input={<Input id="age-simple" />}
+          >
+           
+            <MenuItem value={'circle'}><CircleIcon/> circle</MenuItem>
+            <MenuItem value={'triangle'}><TriangleIcon/>triangle</MenuItem>
+            <MenuItem value={'square'}><SquareIcon/> square</MenuItem>
+            <MenuItem value={'star'}><StarIcon/> star</MenuItem>
+            <MenuItem value={'cross'}><CrossIcon/> cross</MenuItem>
+            <MenuItem value={'X'}><XICon/> x</MenuItem>
+          </Select>
+        </FormControl>           
+  <div   className={'color-picker'}> 
+  <label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker color</label>
+<br/>
+
+<MaterialColorPicker 
+    initColor={this.state.markercolor.toString()}
+    onSubmit={(color)=> this.handleColor('markercolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
+/>
+ 
+<br/>
+<label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker numbers color</label>
+  <br/>
+  <MaterialColorPicker 
+    initColor={this.state.numberscolor.toString()}
+    onSubmit={(color)=> this.handleColor('numberscolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
+/>
+</div>
 
                     <div onClick={() => this.click()}>
                         <Slider attachments={[]} />
@@ -253,11 +330,8 @@ class addForm extends React.Component {
                         }
                         label="add location on map"
                     />
-
-
-
-                   
-
+                 
+                
 <div>
                     <Button disabled={this.state.loading||(!this.props.newFeature&&!this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
 

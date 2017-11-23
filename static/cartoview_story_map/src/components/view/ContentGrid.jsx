@@ -15,7 +15,7 @@ import LocationIcon from 'material-ui-icons/LocationSearching';
 import TextField from 'material-ui/TextField';
 import Geolocation from 'ol/geolocation';
 import Control from 'ol/control';
-import Geocoder from 'ol-geocoder'
+
 import {
     addSelectionLayer,
     getFeatureInfoUrl,
