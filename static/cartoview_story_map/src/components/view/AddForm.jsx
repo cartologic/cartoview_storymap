@@ -155,7 +155,7 @@ class addForm extends React.Component {
             })
         }).then((res) => {
             this.setState({ success: true })
-            this.props.handleSwitch()
+            // this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.back()
             this.setState({ loading: false })
@@ -203,9 +203,9 @@ class addForm extends React.Component {
         
     }
     cancel = () => {
-        this.props.handleSwitch()
+        // this.props.handleSwitch()
         this.props.removeLocation()
-        this.props.hideCurrentLocation()
+        // this.props.hideCurrentLocation()
         this.props.hideAddPanel()
     }
     click = () => {

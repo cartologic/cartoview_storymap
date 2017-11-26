@@ -24,7 +24,20 @@ import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { transactWFS } from '../../containers/staticMethods'
 import { CircularProgress } from 'material-ui/Progress'
-
+import StarIcon from 'material-ui-icons/Star';
+import TriangleIcon from 'material-ui-icons/ChangeHistory';
+import SquareIcon  from 'material-ui-icons/Stop'
+import CrossIcon from 'material-ui-icons/Add'
+import CircleIcon from 'material-ui-icons/FiberManualRecord';
+import Select from 'material-ui/Select';
+import XICon from 'material-ui-icons/Clear'
+import MaterialColorPicker from 'react-material-color-picker';
+import Radio, { RadioGroup } from 'material-ui/Radio';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Input, { InputLabel } from 'material-ui/Input';
+import GeoCodeSearchInput from './SearchInput';
+import ColorPicker from 'material-ui-color-picker';
+import { MenuItem } from 'material-ui/Menu';
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -56,11 +69,18 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        // width: 200,
+         width: '100%'
     },
     progress: {
         margin: `0 ${theme.spacing.unit * 2}px`,
     },
+     formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
 })
 class EditForm extends React.Component {
     constructor(props) {
@@ -69,6 +89,9 @@ class EditForm extends React.Component {
             formValue: this.props.editedFeature ? this.props.editedFeature.getProperties() : this.props.featureEdit.getProperties(),
             success: false,
             loading: false,
+            markershape:this.props.featureEdit.getProperties()['markershape'],
+            markercolor:this.props.featureEdit.getProperties()['markercolor'],
+            numberscolor:this.props.featureEdit.getProperties()['numberscolor'],
             id: this.props.featureEdit.getProperties()['featureIndex'],
             geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 }
         }
@@ -78,6 +101,11 @@ class EditForm extends React.Component {
     componentDidMount() {
 
     }
+      handleShape = (event) =>{
+     
+    this.setState({ markershape: event.target.value });
+     this.state.formValue['markershape']=event.target.value
+  };
     getType = (type) => {
         var result = ""
         if (type == "string") { result = "" }
@@ -145,13 +173,13 @@ class EditForm extends React.Component {
             x: coordinate[0],
             y: coordinate[1]
         }
-            console.log(this.props.crs,this.props.geometry,feature.getId())
             Object.keys(this.state.formValue).map(property => {
                     if (property != 'geometry' && property != 'featureIndex') {
                         feature.set(property, this.state.formValue[property])
                        
                     }
                 })
+               feature.set('markershape',this.state.markershape) 
             this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue,geometry).then(res =>
             res.text()).then((res) => {
                 this.setState({ success: true })
@@ -166,7 +194,10 @@ class EditForm extends React.Component {
                 throw Error(error)
             })
     }
-
+handleColor(value,color){
+        this.setState({[value]:color.target.value})
+        this.state.formValue[value]=color.target.value
+    }
 
     render() {
         const vertical = 'bottom', horizontal = 'center'
@@ -192,7 +223,7 @@ class EditForm extends React.Component {
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order"&&feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
@@ -223,11 +254,51 @@ class EditForm extends React.Component {
                             }
                         })
                     }
-                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
-                        {this.state.loading ? 'saving' : 'save'}
-                        {this.state.loading && <CircularProgress size={20} />}
-                    </Button>
-                </div>
+
+<FormControl className={classes.formControl}>
+            <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
+                <Select
+                    value={this.state.markershape}
+                    onChange={(e)=>this.handleShape(e)}
+                    input={<Input id="age-simple" />}
+                >
+            
+                        <MenuItem value={'circle'}><CircleIcon/> circle</MenuItem>
+                        <MenuItem value={'triangle'}><TriangleIcon/>triangle</MenuItem>
+                        <MenuItem value={'square'}><SquareIcon/> square</MenuItem>
+                        <MenuItem value={'star'}><StarIcon/> star</MenuItem>
+                        <MenuItem value={'cross'}><CrossIcon/> cross</MenuItem>
+                        <MenuItem value={'X'}><XICon/> x</MenuItem>
+                </Select>
+        </FormControl>    
+        <MaterialColorPicker 
+            initColor={this.state.markercolor.toString()}
+            onSubmit={(color)=> this.handleColor('markercolor',color)}
+            onReset={console.log("s")}
+            style={{width: 300, backgroundColor: '#c7c7c7'}}
+            submitLabel='Apply'
+            resetLabel='Undo'
+        />
+ 
+        <br/>
+        <label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker numbers color</label>
+        <br/>
+        <MaterialColorPicker 
+            initColor={this.state.numberscolor.toString()}
+            onSubmit={(color)=> this.handleColor('numberscolor',color)}
+            onReset={console.log("s")}
+            style={{width: 300, backgroundColor: '#c7c7c7'}}
+            submitLabel='Apply'
+            resetLabel='Undo'
+/>
+</div>
+       
+        <div>
+        <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+            {this.state.loading ? 'saving' : 'save'}
+            {this.state.loading && <CircularProgress size={20} />}
+        </Button>
+        </div>
                 <div className={classes.textCenter}>
 
                 </div>

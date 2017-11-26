@@ -458,7 +458,7 @@ export const MobileDrawer = (props) => {
             classes={{
                 paper: classes.drawerPaper,
             }}
-            onRequestClose={handleDrawerToggle}
+         
             ModalProps={{
                 keepMounted: true,
             }}
