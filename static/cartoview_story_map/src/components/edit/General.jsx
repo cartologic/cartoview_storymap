@@ -10,46 +10,23 @@ const filter = t.struct({
     type: t.String,
     name: t.String
 })
-const Color = t.enums({
-    bluemarker: 'Blue',
-    yellowmarker: 'Yellow',
-    blackmarker: 'Black',
-    redmarker: 'Red'
-});
 const formConfig = t.struct({
-    // layer: t.String,
     title: t.String,
     abstract: t.String,
-    // subtitleAttribute: t.maybe(t.String),
-    // filters: t.maybe(t.String),
-    // description:t.maybe(t.String),
-    // pagination: t.String,
-    color: Color,
     DisplayNumbersOnMarkers: t.maybe(t.Boolean),
-    // enableImageListView: t.Boolean
-
     zoomOnClick: t.maybe(t.Boolean)
 })
 const Form = t.form.Form
-const getPropertyFromConfig = (config, property, defaultValue) => {
-    // const propertyValue = config[property] ? config[property] : defaultValue
-    // const nestedPropertyValue = config.config && config.config[property] ?
-    //     config.config[property] : propertyValue
-    // return nestedPropertyValue
-}
 export default class General extends Component {
     constructor(props) {
         super(props)
         const { config } = this.props
      
         this.state = {
-             
             value: {
-
                 title: this.props.general&&this.props.general.title?this.props.general.title:null,
                 abstract: this.props.general&&this.props.general.abstract?this.props.general.abstract:null,
                 DisplayNumbersOnMarkers:this.props.general&& this.props.general.DisplayNumbersOnMarkers?this.props.general.DisplayNumbersOnMarkers:null,
-                color: this.props.general&&this.props.general.color?this.props.general.color:null,
                 zoomOnClick: this.props.general&&this.props.general.zoomOnClick?this.props.general.zoomOnClick:null,
             },
             attributeOptions: [],
@@ -59,10 +36,6 @@ export default class General extends Component {
      
     }
 
-
-    componentDidMount() {
-
-    }
     save = () => {
         this.setState({loading:true})
         const value = this.form.getValue()
@@ -75,63 +48,12 @@ export default class General extends Component {
         }
     }
 
-    getFormOptions = () => {
-        let {
-            attributeOptions,
-        } = this.state
-        const options = {
-            fields: {
-                //     layer: {
-                //         factory: t.form.Select,
-                //         nullOption: { value: '', text: 'Choose Layer' },
-                //         options: this.getLayerOptions()
-                //     },
-                //     titleAttribute: {
-                //         factory: t.form.Select,
-                //         nullOption: { value: '', text: 'Choose Title Attribute' },
-                //         options: attributeOptions
-                //     },
-                //     subtitleAttribute: {
-                //         label: "Subtitle Attribute (optional)",
-                //         factory: t.form.Select,
-                //         nullOption: { value: '', text: 'Choose subTitle Attribute' },
-                //         options: attributeOptions
-                //     },
-                //     description:{
-                //         label: "Description Attribute (optional)",
-                //         factory: t.form.Select,
-                //         nullOption: { value: '', text: 'Choose Description Attribute' },
-                //         options: attributeOptions
-                //     },
 
-                //     filters: {
-                //         factory: t.form.Select,
-                //         nullOption: { value: '', text: 'Choose Search Attribute' },
-                //         options: attributeOptions
-                //     },
-                // pagination: {
-                //     factory: t.form.Select,
-                //     nullOption: { value: '', text: 'Choose number of Features' },
-                //     options: [
-                //         { value: '10', text: "10" },
-                //         { value: '20', text: "20" },
-                //         { value: '40', text: "40" },
-                //         { value: '80', text: "80" }
-                //     ]
-                // } 
-                color: {
-                    label: "Marker Color"
-                }
-            }
-        }
-        return options
-    }
     render() {
         let {
             loading,
             value
         } = this.state
-        const options = this.getFormOptions()
         return (
             <div className="row">
 				<div className="row">
@@ -224,7 +146,7 @@ export default class General extends Component {
                     type={formConfig}
                     value={value}
                     onChange={this.onChange}
-                    options={options} />}
+                    />}
             </div>
         )
     }

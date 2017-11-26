@@ -29,7 +29,7 @@ class Viewer {
                 }
               
                 render(
-                    <Edit urls={this.urls} config={this.config} username={this.username}/>,
+                    <Edit urls={this.urls} config={this.config} id={res.id} username={this.username}/>,
                     document.getElementById( this.domId ) )
             } )
         } else {

@@ -24,7 +24,7 @@ export default class Edit extends Component {
             extent: config &&this.props.config.config.extent ? this.props.config.config.extent : null,
             general: config && this.props.config.config.config ? this.props.config.config.config : null
         }
-console.log("tss",this.props.config)
+
     }
     goToStep(step) {
         this.setState({ step })
@@ -39,7 +39,8 @@ console.log("tss",this.props.config)
         this.state.config['access'] = this.state.access
         var config = { abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access }
         const { urls } = this.props
-        const { id } = this.state
+        const { id } = this.props
+        console.log("id",id)
         const url = id ? urls.editURL(id) : urls.newURL
         this.setState({
             config: instanceConfig
