@@ -325,7 +325,7 @@ export class FeatureListComponent extends React.Component {
                     <DialogActions>
                         <Button onClick={this.deleteDialogeRequestClose} color="primary" autoFocus>
                             Cancel
-            </Button>
+                        </Button>
                         <Button onClick={this.deleteFeature} color="primary" disabled={this.state.loading}>
                        
    
@@ -347,7 +347,9 @@ export class FeatureListComponent extends React.Component {
                     0 ?
                     <div id="contents"  >
 
-                        <Message align="left" message={subheader} type="subheading" />
+                   {this.state.access &&   <Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button} >
+        submit
+      </Button>}
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>
@@ -367,7 +369,7 @@ FeatureListComponent.propTypes = {
     features: PropTypes.array,
     config: PropTypes.object.isRequired,
     openDetails: PropTypes.func.isRequired,
-    subheader: PropTypes.string.isRequired,
+
     message: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     attachmentIsLoading: PropTypes.bool.isRequired,

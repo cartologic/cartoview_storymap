@@ -23,7 +23,7 @@ import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
-// import green from 'material-ui/colors/green';
+import Switch from 'material-ui/Switch';
 import GeoCodeSearchInput from './SearchInput';
 import ColorPicker from 'material-ui-color-picker';
 import { MenuItem } from 'material-ui/Menu';
@@ -37,6 +37,8 @@ import CircleIcon from 'material-ui-icons/FiberManualRecord';
 import Select from 'material-ui/Select';
 import XICon from 'material-ui-icons/Clear'
 import MaterialColorPicker from 'react-material-color-picker';
+import Radio, { RadioGroup } from 'material-ui/Radio';
+
 
 const styles = theme => ({
     root: {
@@ -96,6 +98,9 @@ class addForm extends React.Component {
             numberscolor:'#ffffff',
             markershape:"circle",
             shapeMenuOpen:false,
+            locationAddress:true,
+            locationMap:'',
+            
         }
 
         console.log(this.props)
@@ -206,6 +211,24 @@ class addForm extends React.Component {
     click = () => {
         this.setState({ clicked: true }, console.log("clicked true"))
     }
+        geolocation = () => {
+        console.log("geo")
+        var map = this.props.map
+        // create a Geolocation object setup to track the position of the device
+        var geolocation = new ol.Geolocation({
+            tracking: true,
+            projection: 'EPSG:3857'
+        });
+        geolocation.on('change', (evt) => {
+            console.log(geolocation.getPosition());
+            this.props.removeLocation()
+            this.props.getLocation(geolocation.getPosition()[0], geolocation.getPosition()[1])
+            this.setState({ geolocation })
+        })
+
+        this.props.childrenProps.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
+    
+    }
   handleShape = (event) =>{
       console.log("sss",event.target.value )
     this.setState({ markershape: event.target.value });
@@ -214,7 +237,18 @@ class addForm extends React.Component {
         console.log(value,color.target.value)
         this.setState({[value]:color.target.value})
     }
-   
+    handleChangeLocation = (event, value) => {
+    this.setState({locationMap:value });
+     if(value=='onMap'){
+         console.log("on map")
+            //  this.props.showCurrentLocation()
+            this.props.getLocation()
+        }else{
+            // this.props.hideCurrentLocation()
+            // this.props.removeLocation()
+            this.geolocation()
+        }
+  };
     render() {
         const vertical = 'bottom', horizontal = 'center'
         const {
@@ -231,11 +265,11 @@ class addForm extends React.Component {
         } = this.props
         return (
             <div>
-                <Hidden smDown>
+               
                     <IconButton className={classes.button} aria-label="Delete" onClick={() => this.cancel()} >
                         <BackIcon />
                     </IconButton>
-                </Hidden>
+              
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
@@ -317,21 +351,39 @@ class addForm extends React.Component {
                         <Slider attachments={[]} />
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
-                    <hr/>
-                    <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>
+                    <Divider/>
 
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={this.state.checked}
-                                onChange={this.locationOnMap}
-                                value="checked"
-                            />
-                        }
-                        label="add location on map"
-                    />
-                 
+                     <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.locationAddress}
+              onChange={(event, checked) => this.setState({ locationAddress: checked })}
+            />
+          }
+          label="Search location by address"
+        />
+                   { this.state.locationAddress&&   <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>}
+
+<br/>
+
+                  { ! this.state.locationAddress&&
+                 <div> 
                 
+                 <FormControl component="fieldset" required className={classes.formControl}>
+                        <RadioGroup
+                    
+                            name="location"
+                            className={classes.group}
+                            value={this.state.locationMap}
+                            onChange={this.handleChangeLocation}
+                        >
+                            <FormControlLabel value="onMap" control={<Radio />} label="add location on map" />
+                            <FormControlLabel value="current" control={<Radio />} label="add my current location" />
+                   </RadioGroup>
+               </FormControl>
+                
+                
+                </div>  }
 <div>
                     <Button disabled={this.state.loading||(!this.props.newFeature&&!this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
 

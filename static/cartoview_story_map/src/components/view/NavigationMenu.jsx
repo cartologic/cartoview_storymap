@@ -46,10 +46,10 @@ class NavigationMenu extends React.Component {
                     open={this.state.open}
                     onRequestClose={this.handleRequestClose}
                 >   
-                    <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.appInstancesPage)}><ListIcon className={classes.button} /> All FeatureList apps</MenuItem>
-                    <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.layers)}><LayerIcon className={classes.button} /> Layers</MenuItem>
-                    <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.maps)}><MapIcon className={classes.button} /> Maps</MenuItem>
-                    <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.apps)}><GridIcon className={classes.button} /> Apps</MenuItem>
+                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.appInstancesPage)}><ListIcon className={classes.button} /> All FeatureList apps</MenuItem>
+                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.layers)}><LayerIcon className={classes.button} /> Layers</MenuItem>
+                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.maps)}><MapIcon className={classes.button} /> Maps</MenuItem>
+                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.apps)}><GridIcon className={classes.button} /> Apps</MenuItem>
                 </Menu>
             </div>
         );

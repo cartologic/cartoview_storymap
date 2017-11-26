@@ -21,7 +21,7 @@ function renderInput(inputProps) {
     return (
     
             <TextField
-                autoFocus={autoFocus}
+               
                 className={classes.textField}
                 value={value}
                 inputRef={ref}
@@ -150,7 +150,7 @@ class IntegrationAutosuggest extends React.Component {
                 getSuggestionValue={this.getSuggestionValue}
                 renderSuggestion={this.renderSuggestion}
                 inputProps={{
-                    autoFocus: true,
+                 
                     classes,
                     placeholder: `Add Location by Address`,
                     value: this.state.value,

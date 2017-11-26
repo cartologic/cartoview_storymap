@@ -70,24 +70,7 @@ class ContentGrid extends Component {
     hideCurrentLocation=()=>{
         this.setState({currentlocation:false})
     }
-    geolocation = () => {
-        console.log("geo")
-        var map = this.props.map
-        // create a Geolocation object setup to track the position of the device
-        var geolocation = new ol.Geolocation({
-            tracking: true,
-            projection: 'EPSG:3857'
-        });
-        geolocation.on('change', (evt) => {
-            console.log(geolocation.getPosition());
-            this.props.childrenProps.removeLocation()
-            this.props.childrenProps.getLocation(geolocation.getPosition()[0], geolocation.getPosition()[1])
-            this.setState({ geolocation })
-        })
 
-        this.props.childrenProps.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
-        //   this.props.childrenProps.removeLocation() 
-    }
     componentWillMount(){
         this.checkPermissions(loggedUser)
     }
@@ -144,37 +127,11 @@ console.log(user,"pp",props.access.access,name)
                 <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{ position: "relative" }}>
                     <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classes.mapPanel}>
                     </div>
-                    {this.state.access &&
-                        <div>
-                            {this.state.switch &&
-                                <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                    this.setState({ switch: false})
-                                    this.props.childrenProps.showAddPanel()
-                                }}>
-                                    <AddIcon />
-                                </Button>}
-                                {this.state.currentlocation&& <Button style={{ position: "absolute", bottom: 70, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                        this.geolocation()
-                                    }}>
-                                        <LocationIcon />
-                                    </Button>}
-                            {!this.state.switch &&
-                                <div>
-                                   
-                                    <Button style={{ position: "absolute", bottom: 10, left: 10, zIndex: 100 }} fab color="primary" aria-label="add" onClick={() => {
-                                        this.state['add'] = false
-                                        this.props.childrenProps.hideAddPanel()
-                                        this.setState({ switch: true }, console.log("ss", this.state.add))
-                                        this.props.childrenProps.removeLocation()
-                                    }}>
-                                        <RemoveIcon />
-                                    </Button>
-                                </div>}
-                        </div>
-                    }
+             
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList hideCurrentLocation={this.hideCurrentLocation} showCurrentLocation={this.showCurrentLocation} handleSwitch={this.handleSwitch} handleOpen={this.handleOpen} addEntry={this.state.add} {...childrenProps} /></Paper>
+                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList 
+                     addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
                 <div>
                   
