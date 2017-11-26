@@ -59,7 +59,7 @@ class CartoviewList extends React.Component {
 
     }
     back = () => {
-        console.log("back called")
+      
         const {
             selectionModeEnabled,
             featureIdentifyResult,
@@ -69,7 +69,7 @@ class CartoviewList extends React.Component {
         this.state['selectionModeEnabled']=false
         this.setState({detailsModeEnabled: false,selectionModeEnabled :false, detailsOfFeature: null, add: false, edit: false })
        
- console.log(this.state)
+
         if(this.state.edit){
             this.props.backFromEdit()
         }
@@ -92,7 +92,7 @@ class CartoviewList extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-console.log(nextProps.addEntry)
+
         this.setState({ add: nextProps.addEntry })
     }
     handleClose = () => {

@@ -347,9 +347,9 @@ export class FeatureListComponent extends React.Component {
                     0 ?
                     <div id="contents"  >
 
-                   {this.state.access &&   <Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button} >
+                   {this.state.access &&   <Paper className='fixed-container'><Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'100%'}} >
         submit
-      </Button>}
+      </Button></Paper>}
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>

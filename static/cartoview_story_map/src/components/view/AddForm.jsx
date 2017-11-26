@@ -103,7 +103,7 @@ class addForm extends React.Component {
             
         }
 
-        console.log(this.props)
+        //console.log(this.props)
     }
     WFS = new WFSClient(this.props.urls)
 
@@ -140,7 +140,7 @@ class addForm extends React.Component {
         feature.set("markercolor",this.state.markercolor)
         feature.set("numberscolor",this.state.numberscolor)
          feature.set("markershape",this.state.markershape)
-        console.log(feature)
+        //console.log(feature)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
@@ -194,10 +194,10 @@ class addForm extends React.Component {
 
     }
     zoomToLocation = ( pointArray ) => {
-        console.log(pointArray)
+        //console.log(pointArray)
         var center = ol.proj.transform(pointArray, "EPSG:4326",
             this.props.map.getView().getProjection())
-            console.log(center)
+            //console.log(center)
             // this.setState({coordinates:center})
             this.props.getLocation(center[0],center[1])
         
@@ -209,10 +209,10 @@ class addForm extends React.Component {
         this.props.hideAddPanel()
     }
     click = () => {
-        this.setState({ clicked: true }, console.log("clicked true"))
+        this.setState({ clicked: true })
     }
         geolocation = () => {
-        console.log("geo")
+        //console.log("geo")
         var map = this.props.map
         // create a Geolocation object setup to track the position of the device
         var geolocation = new ol.Geolocation({
@@ -220,7 +220,7 @@ class addForm extends React.Component {
             projection: 'EPSG:3857'
         });
         geolocation.on('change', (evt) => {
-            console.log(geolocation.getPosition());
+            //console.log(geolocation.getPosition());
             this.props.removeLocation()
             this.props.getLocation(geolocation.getPosition()[0], geolocation.getPosition()[1])
             this.setState({ geolocation })
@@ -230,17 +230,17 @@ class addForm extends React.Component {
     
     }
   handleShape = (event) =>{
-      console.log("sss",event.target.value )
+      //console.log("sss",event.target.value )
     this.setState({ markershape: event.target.value });
   };
     handleColor(value,color){
-        console.log(value,color.target.value)
+        //console.log(value,color.target.value)
         this.setState({[value]:color.target.value})
     }
     handleChangeLocation = (event, value) => {
     this.setState({locationMap:value });
      if(value=='onMap'){
-         console.log("on map")
+         //console.log("on map")
             //  this.props.showCurrentLocation()
             this.props.getLocation()
         }else{

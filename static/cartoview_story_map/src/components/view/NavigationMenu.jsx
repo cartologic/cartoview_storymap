@@ -33,24 +33,7 @@ class NavigationMenu extends React.Component {
         const { classes,urls } = this.props
         return (
             <div>
-                <IconButton
-                    aria-owns={this.state.open ? 'nav-menu' : null}
-                    onClick={this.handleClick}
-                    className={classes.button}
-                    aria-label="Menu">
-                    <MenuIcon />
-                </IconButton>
-                <Menu
-                    id="nav-menu"
-                    anchorEl={this.state.anchorEl}
-                    open={this.state.open}
-                    onRequestClose={this.handleRequestClose}
-                >   
-                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.appInstancesPage)}><ListIcon className={classes.button} /> All FeatureList apps</MenuItem>
-                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.layers)}><LayerIcon className={classes.button} /> Layers</MenuItem>
-                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.maps)}><MapIcon className={classes.button} /> Maps</MenuItem>
-                    // <MenuItem onClick={(e)=>this.handleRequestClose(e,urls.apps)}><GridIcon className={classes.button} /> Apps</MenuItem>
-                </Menu>
+               
             </div>
         );
     }
