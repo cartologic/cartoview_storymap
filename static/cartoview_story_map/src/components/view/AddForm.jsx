@@ -236,7 +236,7 @@ if(nextProps.attachments.file)
             this.setState({ geolocation })
         })
 
-        this.props.childrenProps.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
+        this.props.getLocation(this.state.geolocation.getPosition()[0], this.state.geolocation.getPosition()[1])
     
     }
   handleShape = (event) =>{
