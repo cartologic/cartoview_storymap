@@ -35,6 +35,7 @@
     "react-paginate": "^4.4.3",
     "react-responsive-carousel": "^3.1.27",
     "react-select": "^1.0.0-rc.5",
+    "react-simple-colorpicker": "^1.4.2",
     "react-sortable-hoc": "^0.6.8",
     "react-spinkit": "^3.0.0",
     "react-tag-autocomplete": "^5.4.1",

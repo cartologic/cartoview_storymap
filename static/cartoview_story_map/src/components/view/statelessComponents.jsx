@@ -228,7 +228,7 @@ export class FeatureListComponent extends React.Component {
         this.checkPermissions(loggedUser)
     }
     componentWillReceiveProps(nextProps) {
-console.log(nextProps.features? nextProps.features[0].getProperties():"k")
+
         this.setState({ features: nextProps.features, crs: nextProps.crs })
     }
     addDefaultSrc = (ev) => {

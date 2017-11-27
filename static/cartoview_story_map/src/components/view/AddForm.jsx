@@ -25,7 +25,12 @@ import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
 import Switch from 'material-ui/Switch';
 import GeoCodeSearchInput from './SearchInput';
-import ColorPicker from 'material-ui-color-picker';
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -100,6 +105,8 @@ class addForm extends React.Component {
             shapeMenuOpen:false,
             locationAddress:true,
             locationMap:'',
+            markerColorOpen:false,
+            numberColorOpen:false
             
         }
 
@@ -252,6 +259,20 @@ if(nextProps.attachments.file)
             this.geolocation()
         }
   };
+  handleMarkerColorOpen = () => {
+    this.setState({ markerColorOpen: true });
+  };
+
+  handleMarkerColorClose = () => {
+    this.setState({ markerColorOpen: false });
+  };
+  handleNumberColorOpen = () => {
+    this.setState({ numberColorOpen: true });
+  };
+
+  handleNumberColorClose = () => {
+    this.setState({ numberColorOpen: false });
+  };
     render() {
         const vertical = 'bottom', horizontal = 'center'
         const {
@@ -325,10 +346,19 @@ if(nextProps.attachments.file)
           </Select>
         </FormControl>           
   <div   className={'color-picker'}> 
-  <label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker color</label>
+  
+
+
+
 <br/>
 
-<MaterialColorPicker 
+<div>
+        <Button onClick={this.handleMarkerColorOpen}>Marker color</Button>
+        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+          <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
+          <DialogContent>
+
+          <MaterialColorPicker 
     initColor={this.state.markercolor.toString()}
     onSubmit={(color)=> this.handleColor('markercolor',color)}
     onReset={console.log("s")}
@@ -336,11 +366,28 @@ if(nextProps.attachments.file)
     submitLabel='Apply'
     resetLabel='Undo'
 />
- 
+          </DialogContent>
+         
+        </Dialog>
+      </div>
+
+
 <br/>
-<label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker numbers color</label>
-  <br/>
-  <MaterialColorPicker 
+
+
+
+
+
+
+ 
+      <Button onClick={this.handleNumberColorOpen}>Numbers on Marker color</Button>
+        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+          <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
+          <DialogContent>
+
+
+
+          <MaterialColorPicker 
     initColor={this.state.numberscolor.toString()}
     onSubmit={(color)=> this.handleColor('numberscolor',color)}
     onReset={console.log("s")}
@@ -348,6 +395,11 @@ if(nextProps.attachments.file)
     submitLabel='Apply'
     resetLabel='Undo'
 />
+
+</DialogContent>
+         
+        </Dialog>
+
 </div>
 
                     <div onClick={() => this.click()}>
@@ -388,11 +440,14 @@ if(nextProps.attachments.file)
                 
                 </div>  }
 <div>
-                    <Button disabled={this.state.loading||(!this.props.newFeature&&!this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
+
+              <Button disabled={this.state.loading||(!this.props.newFeature&&!this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
 
                         {this.state.loading ? 'saving' : 'save'}
                         {this.state.loading && <CircularProgress size={20} />}
                     </Button>
+          
+
 </div>
                 </div>
                 <div className={classes.textCenter}>
