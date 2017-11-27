@@ -37,7 +37,7 @@ export default class MapViewer extends Component {
     }
     save() {
 
-         this.props.onComplete(this.map.getView().calculateExtent(this.map.getSize()))
+         this.props.onComplete(this.map.getView().calculateExtent(this.map.getSize()),this.map.getView().getZoom(),this.map.getView().getProjection(),this.map.getView().getCenter())
     }
 
     render() {

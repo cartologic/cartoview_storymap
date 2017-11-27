@@ -228,7 +228,7 @@ export class FeatureListComponent extends React.Component {
         this.checkPermissions(loggedUser)
     }
     componentWillReceiveProps(nextProps) {
-
+console.log(nextProps.features? nextProps.features[0].getProperties():"k")
         this.setState({ features: nextProps.features, crs: nextProps.crs })
     }
     addDefaultSrc = (ev) => {
@@ -419,7 +419,7 @@ export const DropZoneComponent = ( props ) => {
             <Dropzone maxSize={5242880} multiple={false} accept="image/*" onDrop={onDrop}>
                 <div>
                     <Message message={"Click to select Image to upload."} type="body1" />
-                    <ul> {files.map(f => <li key={f.name}>{f.name} - {f.size} bytes</li>)}</ul>
+                    {files.map(f =><img src={f.preview} style={{    "width": "200px","height": "180px"}}/> )}
                 </div>
             </Dropzone>
         </div>

@@ -110,10 +110,12 @@ class addForm extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.attachments) {
 
-            this.setState({ fileName: nextProps.attachments.file })
+if(nextProps.attachments.file)
+          {  this.setState({ fileName: nextProps.attachments.file })
         }
+        else{this.setState({ fileName: nextProps.attachments[1].file })}
     }
-
+    }
     getType = (type) => {
         var result = ""
         if (type == "string") { result = "" }
@@ -157,6 +159,7 @@ class addForm extends React.Component {
             this.setState({ success: true })
             // this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
+            this.props.removeLocation()
             this.props.back()
             this.setState({ loading: false })
             feature.set("featureIndex", ++this.props.features.length)

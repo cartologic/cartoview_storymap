@@ -36,8 +36,11 @@ export default class Edit extends Component {
     save = (instanceConfig) => {
 
         this.state.config['extent'] = this.state.extent
+        this.state.config['zoom']=this.state.zoom
+        this.state.config['projection']=this.state.projection
+        this.state.config['center']=this.state.center
         this.state.config['access'] = this.state.access
-        var config = { abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access }
+        var config = { projection:this.state.projection,center:this.state.center,zoom:this.state.zoom,abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access }
         const { urls } = this.props
         const { id } = this.props
         console.log("id",id)
@@ -82,10 +85,10 @@ export default class Edit extends Component {
                     resourcesUrl: urls.resources_url,
                     username: username,
                     extent: extent,
-                    onComplete: (extent) => {
-
+                    onComplete: (extent,zoom,projection,center) => {
+                    console.log("hjhkjh",extent,zoom,projection,center)
                         var { step, config } = this.state
-                        this.setState({ extent })
+                        this.setState({ extent ,zoom,projection,center})
                         this.goToStep(++step)
                     }
                 },
