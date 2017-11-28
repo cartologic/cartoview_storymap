@@ -102,7 +102,8 @@ def save(request, instance_id=None, app_name=APP_NAME):
     permessions = {
             'users': {
                 '{}'.format(request.user.username): owner_permissions,
-            }
+            },
+            'groups':{ '{}'.format("amira"): owner_permissions}
         }
     get_users_permissions(access, permessions, request.user.username)
     # set permissions so that no one can view this appinstance other than

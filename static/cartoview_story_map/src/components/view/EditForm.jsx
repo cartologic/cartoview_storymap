@@ -38,6 +38,12 @@ import Input, { InputLabel } from 'material-ui/Input';
 import GeoCodeSearchInput from './SearchInput';
 import ColorPicker from 'material-ui-color-picker';
 import { MenuItem } from 'material-ui/Menu';
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+  } from 'material-ui/Dialog';
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -93,7 +99,9 @@ class EditForm extends React.Component {
             markercolor:this.props.featureEdit.getProperties()['markercolor'],
             numberscolor:this.props.featureEdit.getProperties()['numberscolor'],
             id: this.props.featureEdit.getProperties()['featureIndex'],
-            geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 }
+            geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 },
+            markerColorOpen:false,
+            numberColorOpen:false
         }
         this.WFS = new WFSClient(this.props.urls)
     }
@@ -119,6 +127,20 @@ class EditForm extends React.Component {
         this.state.formValue[attr] = event.target.value
 
     }
+    handleMarkerColorOpen = () => {
+    this.setState({ markerColorOpen: true });
+  };
+
+  handleMarkerColorClose = () => {
+    this.setState({ markerColorOpen: false });
+  };
+  handleNumberColorOpen = () => {
+    this.setState({ numberColorOpen: true });
+  };
+
+  handleNumberColorClose = () => {
+    this.setState({ numberColorOpen: false });
+  };
     save = () => {
          this.setState({ loading: true })
         // var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
@@ -271,26 +293,53 @@ handleColor(value,color){
                         <MenuItem value={'X'}><XICon/> x</MenuItem>
                 </Select>
         </FormControl>    
-        <MaterialColorPicker 
-            initColor={this.state.markercolor.toString()}
-            onSubmit={(color)=> this.handleColor('markercolor',color)}
-            onReset={console.log("s")}
-            style={{width: 300, backgroundColor: '#c7c7c7'}}
-            submitLabel='Apply'
-            resetLabel='Undo'
-        />
- 
-        <br/>
-        <label className={"MuiFormLabel-root-354 "} style={{"fontSize":'14px',"color":"rgba(0, 0, 0, 0.54)"}}> marker numbers color</label>
-        <br/>
-        <MaterialColorPicker 
-            initColor={this.state.numberscolor.toString()}
-            onSubmit={(color)=> this.handleColor('numberscolor',color)}
-            onReset={console.log("s")}
-            style={{width: 300, backgroundColor: '#c7c7c7'}}
-            submitLabel='Apply'
-            resetLabel='Undo'
+        <div>
+        <Button onClick={this.handleMarkerColorOpen}>Marker color</Button>
+        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+          <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
+          <DialogContent>
+
+          <MaterialColorPicker 
+    initColor={this.state.markercolor}
+    onSubmit={(color)=> this.handleColor('markercolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
 />
+          </DialogContent>
+         
+        </Dialog>
+      </div>
+
+
+<br/>
+
+
+
+
+
+
+ 
+      <Button onClick={this.handleNumberColorOpen}>Numbers on Marker color</Button>
+        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+          <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
+          <DialogContent>
+
+
+
+          <MaterialColorPicker 
+    initColor={this.state.numberscolor}
+    onSubmit={(color)=> this.handleColor('numberscolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
+/>
+
+</DialogContent>
+         
+        </Dialog>
 </div>
        
         <div>

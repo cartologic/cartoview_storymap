@@ -99,8 +99,8 @@ class addForm extends React.Component {
             fileName: "",
             clicked: false,
             coordinates:false,
-            markercolor:'#000000',
-            numberscolor:'#ffffff',
+            markercolor:"#000000",
+            numberscolor:"#ffffff",
             markershape:"circle",
             shapeMenuOpen:false,
             locationAddress:true,
@@ -359,7 +359,7 @@ if(nextProps.attachments.file)
           <DialogContent>
 
           <MaterialColorPicker 
-    initColor={this.state.markercolor.toString()}
+    initColor={this.state.markercolor}
     onSubmit={(color)=> this.handleColor('markercolor',color)}
     onReset={console.log("s")}
     style={{width: 300, backgroundColor: '#c7c7c7'}}
@@ -388,7 +388,7 @@ if(nextProps.attachments.file)
 
 
           <MaterialColorPicker 
-    initColor={this.state.numberscolor.toString()}
+    initColor={this.state.numberscolor}
     onSubmit={(color)=> this.handleColor('numberscolor',color)}
     onReset={console.log("s")}
     style={{width: 300, backgroundColor: '#c7c7c7'}}
