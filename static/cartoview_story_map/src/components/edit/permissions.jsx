@@ -24,18 +24,39 @@ const options = {
         // title: {
         //     label: "App Title"
         // },
-        access: {
+   
+        whoCanView: {
             factory: t.form.Textbox,
             template: getAccessTemplate( {
-                loadOptions: getAccessOptions
+                loadOptions: getAccessOptions,
+                message:"Select Users or empty for anyone"
+            } )
+        }
+        ,
+      
+        whoCanChangeMetadata: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+                
             } )
         },
-        // keywords: {
-        //     factory: t.form.Textbox,
-        //     template: getKeywordsTemplate( {
-        //         loadOptions: getKeywordsOptions
-        //     } )
-        // }
+        whoCanDelete: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+            } )
+        },
+        whoCanChangeConfiguration: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+            } )
+        }
+     
     }
 }
 export default class permissions extends Component {
@@ -46,24 +67,42 @@ export default class permissions extends Component {
             defaultConfig: {
                 // title: title || selectedResource.title,
                 // abstract: abstract || selectedResource.abstract,
-                access: access?access.access: false,
-          
+             
+                whoCanView: access?access.whoCanView: [],
+                whoCanEdit: access?access.whoCanEdit: [],
+                whoCanChangeMetadata:access?access.whoCanChangeMetadata: [],
+                whoCanDelete:  access?access.whoCanDelete: [],
+                whoCanChangeConfiguration: access?access.whoCanChangeConfiguration: [],
             },
         }
-   console.log("aaaa",this.props) }
+   }
+   flattenedUsers = (users) => {
+        return users.map(obj => obj.value)
+    }
+    getFormValueForSaving = (value) => {
+        let data = {}
+        Object.keys(value).map(attr => {
+            const attributeValue = value[attr]
+            data[attr] = attributeValue ? this.flattenedUsers(attributeValue) : null
+        })
+        return data
+    }
     save( ) {
         var basicConfig = this.form.getValue( )
         if ( basicConfig ) {
-            this.props.onComplete( basicConfig )
+            
+            this.props.onComplete(basicConfig,this.getFormValueForSaving(basicConfig))
         }
     }
     render( ) {
         let { onPrevious } = this.props
         let mapConfig = t.struct( {
-            // title: t.String,
-            // abstract: t.String,
-            access: t.list( selectAccessItem ),
-            // keywords: t.list( t.maybe( selectKeywordItem ) )
+          
+            whoCanView:  t.maybe(t.list( selectAccessItem )),
+            whoCanChangeMetadata:  t.maybe(t.list( selectAccessItem )),
+            whoCanDelete: t.maybe( t.list( selectAccessItem )),
+            whoCanChangeConfiguration:  t.maybe(t.list( selectAccessItem )),
+            
         } )
         return (
             <div className="row">

@@ -13,14 +13,43 @@ from geonode.maps.models import Map
 username, password = ogc_server_settings.credentials
 gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
 geonode_workspace = gs_catalog.get_workspace("geonode")
+_js_permissions_mapping = {
+    'whoCanView': 'view_resourcebase',
+    'whoCanChangeMetadata': 'change_resourcebase_metadata',
+    'whoCanDelete': 'delete_resourcebase',
+    'whoCanChangeConfiguration': 'change_resourcebase'
+}
+def change_dict_None_to_list(access):
+    for permission, users in list(access.items()):
+        if not users:
+            access[permission] = []
+def get_users_permissions(access, initial, owner):
+        change_dict_None_to_list(access)
+        users = []
+        for permission_users in list(access.values()):
+            if permission_users:
+                users.extend(permission_users)
+        users = set(users)
+        for user in users:
+            user_permissions = []
+            for js_permission, gaurdian_permission in \
+                    list(_js_permissions_mapping.items()):
+                if user in access[js_permission]:
+                    user_permissions.append(gaurdian_permission)
+            if len(user_permissions) > 0 and user != owner:
+                initial['users'].update({'{}'.format(user): user_permissions})
+            if len(access["whoCanView"]) == 0:
+                initial['users'].update({'AnonymousUser': [
+                    'view_resourcebase',
+                ]})
 
-print(username,geonode_workspace.__dict__)
 def save(request, instance_id=None, app_name=APP_NAME):
     res_json = dict(success=False)
     data = json.loads(request.body)
     config = data.get('config', None)
     title =  data.get('title', None)
-    access = data.get('access', None)
+    access = data.get('permissions', None)
+    print(access)
     extent = data.get('extent', [])
 
     # config.update(access=access, keywords=keywords)
@@ -70,14 +99,12 @@ def save(request, instance_id=None, app_name=APP_NAME):
     ]
     # access limited to specific users
     users_permissions = {'{}'.format(request.user): owner_permissions}
-    for user in access:
-        if isinstance(user, dict) and \
-                user.get('value', None) != request.user.username:
-            users_permissions.update(
-                {user.get('value', None): ['view_resourcebase', 'download_resourcebase','change_resourcebase_metadata','change_resourcebase','delete_resourcebase', ]})
     permessions = {
-        'users': users_permissions
-    }
+            'users': {
+                '{}'.format(request.user.username): owner_permissions,
+            }
+        }
+    get_users_permissions(access, permessions, request.user.username)
     # set permissions so that no one can view this appinstance other than
     #  the user
     instance_obj.set_permissions(permessions)

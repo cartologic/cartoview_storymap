@@ -18,10 +18,10 @@ export const getAccessTemplate = ( options ) => {
         loadOptions={options.loadOptions}
         value={locals.value}
         multi={true}
-        required={true}
+        required={false}
         deleteRemoves={true}
-        resetValue={null}
-        placeholder={"Select User Who Can Access The Layer"}/>
+        resetValue={[]}
+        placeholder={options.message}/>
         </div>
     }
 

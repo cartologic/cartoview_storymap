@@ -109,14 +109,7 @@ class ContentGrid extends Component {
     }
     checkPermissions = (name) => {
 
-        props.access.access.map((user) => {
-console.log(user,"pp",props.access.access,name)
-            if (user.value == name) {
-
-                this.setState({ access: true })
-            }
-
-        })
+        
 
     }
     render() {

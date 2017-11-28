@@ -214,12 +214,18 @@ export class FeatureListComponent extends React.Component {
         });
     };
     checkPermissions = (name) => {
-        props.access.access.map((user) => {
-            if (user.value == name) {
-                this.setState({ access: true })
+        console.log("asas",props.access,owner,loggedUser)
+        props.access.whoCanChangeMetadata.map((user) => {
+            if (user.value == name || loggedUser==owner) {
+                console.log("in if")
+                 this.setState({ access: true })
             }
 
         })
+        if (loggedUser==name) {
+               
+                 this.setState({ access: true })
+            }
     }
     handleCloseSnackBar = () => {
         this.setState({ openSnackBar: false })

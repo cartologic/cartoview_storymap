@@ -40,7 +40,8 @@ export default class Edit extends Component {
         this.state.config['projection']=this.state.projection
         this.state.config['center']=this.state.center
         this.state.config['access'] = this.state.access
-        var config = { projection:this.state.projection,center:this.state.center,zoom:this.state.zoom,abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access }
+        this.state.config['permissions'] = this.state.miniAccess
+        var config = { projection:this.state.projection,center:this.state.center,zoom:this.state.zoom,abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access ,permissions:this.state.miniAccess}
         const { urls } = this.props
         const { id } = this.props
         console.log("id",id)
@@ -104,9 +105,9 @@ export default class Edit extends Component {
                     success,
                     id: id,
                     access: this.state.access ? this.state.access : null,
-                    onComplete: (access) => {
+                    onComplete: (access,miniAccess) => {
                         console.log(access, "access")
-                        this.setState({ access }, this.goToStep(++step))
+                        this.setState({ access,miniAccess }, this.goToStep(++step))
 
 
                     },
