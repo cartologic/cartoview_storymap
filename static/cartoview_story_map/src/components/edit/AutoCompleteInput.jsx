@@ -5,6 +5,7 @@ import React from 'react'
 
 let users = null
 let keywords = null
+let groups=null
 export const getAccessTemplate = ( options ) => {
     function renderInput( locals ) {
         return <div style={{paddingTop:5,paddingBottom:5}} className={locals.hasError?"has-error":""}>
@@ -68,6 +69,36 @@ export const getAccessOptions = ( input, callback ) => {
     } else {
         callback( null, {
             options: users,
+            complete: true
+        } )
+    }
+
+
+}
+
+
+
+export const getGroupOptions = ( input, callback ) => {
+    if ( !groups ) {
+        fetch( "/api/groups/" ).then( ( response ) => response.json( ) )
+            .then( ( data ) => {
+                groups = [ ]
+                data.objects.forEach( group => {
+                    groups.push( {
+                        label: group.title,
+                        value: group.title,
+                       
+                    } )
+                } )
+                callback( null, {
+                    options: groups,
+                    complete: true
+                } )
+
+            } )
+    } else {
+        callback( null, {
+            options: groups,
             complete: true
         } )
     }

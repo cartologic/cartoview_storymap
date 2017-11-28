@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {
     getAccessOptions,
+    getGroupOptions,
     getAccessTemplate,
     getKeywordsOptions,
     getKeywordsTemplate
@@ -14,6 +15,11 @@ const selectAccessItem = t.struct( {
     value: t.String,
     label: t.String,
     email: t.String
+} )
+const selectGroupItem = t.struct( {
+    value: t.String,
+    label: t.String,
+    
 } )
 const selectKeywordItem = t.struct( {
     value: t.String,
@@ -59,15 +65,61 @@ const options = {
      
     }
 }
+const groupOptions = {
+    fields: {
+        // title: {
+        //     label: "App Title"
+        // },
+   
+        whoCanView: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getGroupOptions,
+                message:"Select groups or empty for anyone"
+            } )
+        }
+        ,
+      
+        whoCanChangeMetadata: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getGroupOptions,
+                message: "Select groups or empty for owner(you) only"
+                
+            } )
+        },
+        whoCanDelete: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getGroupOptions,
+                message: "Select groups or empty for owner(you) only"
+            } )
+        },
+        whoCanChangeConfiguration: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getGroupOptions,
+                message: "Select groups or empty for owner(you) only"
+            } )
+        }
+     
+    }
+}
 export default class permissions extends Component {
     constructor( props ) {
         super( props )
         let { config, keywords, selectedResource, title, abstract,access } = this.props
         this.state = {
             defaultConfig: {
-                // title: title || selectedResource.title,
-                // abstract: abstract || selectedResource.abstract,
-             
+                           
+                whoCanView: access?access.whoCanView: [],
+                whoCanEdit: access?access.whoCanEdit: [],
+                whoCanChangeMetadata:access?access.whoCanChangeMetadata: [],
+                whoCanDelete:  access?access.whoCanDelete: [],
+                whoCanChangeConfiguration: access?access.whoCanChangeConfiguration: [],
+            },
+            groupDefaultConfig: {
+                           
                 whoCanView: access?access.whoCanView: [],
                 whoCanEdit: access?access.whoCanEdit: [],
                 whoCanChangeMetadata:access?access.whoCanChangeMetadata: [],
@@ -89,9 +141,11 @@ export default class permissions extends Component {
     }
     save( ) {
         var basicConfig = this.form.getValue( )
+         var groupconf=this.groupform.getValue()
+        console.log("group conf",basicConfig,groupconf)
         if ( basicConfig ) {
             
-            this.props.onComplete(basicConfig,this.getFormValueForSaving(basicConfig))
+            this.props.onComplete(basicConfig,this.getFormValueForSaving(basicConfig),this.getFormValueForSaving(groupconf))
         }
     }
     render( ) {
@@ -102,6 +156,14 @@ export default class permissions extends Component {
             whoCanChangeMetadata:  t.maybe(t.list( selectAccessItem )),
             whoCanDelete: t.maybe( t.list( selectAccessItem )),
             whoCanChangeConfiguration:  t.maybe(t.list( selectAccessItem )),
+            
+        } )
+        let groupConfig = t.struct( {
+          
+            whoCanView:  t.maybe(t.list( selectGroupItem )),
+            whoCanChangeMetadata:  t.maybe(t.list( selectGroupItem )),
+            whoCanDelete: t.maybe( t.list( selectGroupItem )),
+            whoCanChangeConfiguration:  t.maybe(t.list( selectGroupItem )),
             
         } )
         return (
@@ -124,13 +186,40 @@ export default class permissions extends Component {
                     </div>
                 </div>
                 <hr></hr>
+                <div className="panel-group">
+  <div className="panel panel-default">
+    <div className="panel-heading">
+      <h4 className="panel-title">
+        <a data-toggle="collapse" href="#collapse1">Users permissions</a>
+      </h4>
+    </div>
+    <div id="collapse1" className="panel-collapse collapse" style={{"padding":"20px"}}>
+    <Form
+    ref={(form) => this.form = form}
+    value={this.state.defaultConfig}
+    type={mapConfig}
+    onChange={this.onChange}
+    options={options} />
+    </div>
+  </div>
+</div>
+<div className="panel panel-default">
+    <div className="panel-heading">
+      <h4 className="panel-title">
+        <a data-toggle="collapse" href="#collapse2">Groups permissions</a>
+      </h4>
+    </div>
+    <div id="collapse2" className="panel-collapse collapse" style={{"padding":"20px"}}>
+    <Form
+    ref={(form) => this.groupform = form}
+    value={this.state.groupDefaultConfig}
+    type={groupConfig}
+    onChange={this.onChange}
+    options={groupOptions} />
+    </div>
+  </div>
 
-                <Form
-                    ref={(form) => this.form = form}
-                    value={this.state.defaultConfig}
-                    type={mapConfig}
-                    onChange={this.onChange}
-                    options={options} />
+                
 
             </div>
         )

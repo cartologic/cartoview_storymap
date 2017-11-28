@@ -42,14 +42,33 @@ def get_users_permissions(access, initial, owner):
                 initial['users'].update({'AnonymousUser': [
                     'view_resourcebase',
                 ]})
-
+def get_groups_permissions(access, initial, owner):
+        change_dict_None_to_list(access)
+        groups = []
+        for permission_groups in list(access.values()):
+            if permission_groups:
+                groups.extend(permission_groups)
+        groups = set(groups)
+        for group in groups:
+            group_permissions = []
+            for js_permission, gaurdian_permission in \
+                    list(_js_permissions_mapping.items()):
+                if group in access[js_permission]:
+                    group_permissions.append(gaurdian_permission)
+            if len(group_permissions) > 0 :
+                initial['groups'].update({'{}'.format(group): group_permissions})
+            if len(access["whoCanView"]) == 0:
+                initial['groups'].update({'AnonymousUser': [
+                    'view_resourcebase',
+                ]})
 def save(request, instance_id=None, app_name=APP_NAME):
     res_json = dict(success=False)
     data = json.loads(request.body)
     config = data.get('config', None)
     title =  data.get('title', None)
     access = data.get('permissions', None)
-    print(access)
+    groupAccess=data.get('groupPermissions', None)
+    print(groupAccess)
     extent = data.get('extent', [])
 
     # config.update(access=access, keywords=keywords)
@@ -103,9 +122,10 @@ def save(request, instance_id=None, app_name=APP_NAME):
             'users': {
                 '{}'.format(request.user.username): owner_permissions,
             },
-            'groups':{ '{}'.format("amira"): owner_permissions}
+            'groups':{}
         }
     get_users_permissions(access, permessions, request.user.username)
+    get_groups_permissions(groupAccess, permessions, request.user.username)
     # set permissions so that no one can view this appinstance other than
     #  the user
     instance_obj.set_permissions(permessions)
