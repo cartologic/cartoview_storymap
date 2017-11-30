@@ -37,9 +37,10 @@ export default class General extends Component {
     }
 
     save = () => {
-        this.setState({loading:true})
+      
         const value = this.form.getValue()
         if (value) {
+			this.setState({loading:true})
             this.props.onComplete({
                 config: {
                     ...value

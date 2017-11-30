@@ -83,7 +83,7 @@ const styles = theme => ({
     },
      formControl: {
     margin: theme.spacing.unit,
-    minWidth: 120,
+    width: '100%',
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -246,6 +246,8 @@ if(nextProps.attachments.file)
     handleColor(value,color){
         //console.log(value,color.target.value)
         this.setState({[value]:color.target.value})
+        this.handleMarkerColorClose()
+        this.handleNumberColorClose()
     }
     handleChangeLocation = (event, value) => {
     this.setState({locationMap:value });
@@ -352,8 +354,8 @@ if(nextProps.attachments.file)
 
 <br/>
 
-<div>
-        <Button onClick={this.handleMarkerColorOpen}>Marker color</Button>
+<div style={{display:"flex"}}>
+       <label style={{ "flexGrow": "1" }} className="lab">Marker color</label> <Button onClick={this.handleMarkerColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.markercolor}}></div></Button>
         <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
           <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
           <DialogContent>
@@ -371,16 +373,16 @@ if(nextProps.attachments.file)
         </Dialog>
       </div>
 
-
 <br/>
+<Divider/>
 
 
 
 
 
 
- 
-      <Button onClick={this.handleNumberColorOpen}>Numbers on Marker color</Button>
+ <div style={{display:"flex"}}>
+     <label style={{ "flexGrow": "1" }} className="lab"> Numbers on Marker color</label><Button onClick={this.handleNumberColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.numberscolor}}></div></Button>
         <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
           <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
           <DialogContent>
@@ -399,9 +401,10 @@ if(nextProps.attachments.file)
 </DialogContent>
          
         </Dialog>
-
 </div>
-
+</div>
+<br/>
+<Divider/>
                     <div onClick={() => this.click()}>
                         <Slider attachments={[]} />
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
@@ -415,7 +418,7 @@ if(nextProps.attachments.file)
               onChange={(event, checked) => this.setState({ locationAddress: checked })}
             />
           }
-          label="Search location by address"
+          label="Add location by address"
         />
                    { this.state.locationAddress&&   <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>}
 

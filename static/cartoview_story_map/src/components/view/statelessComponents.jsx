@@ -215,13 +215,13 @@ export class FeatureListComponent extends React.Component {
     };
     checkPermissions = (name) => {
         console.log("asas",props.access,owner,loggedUser)
-        props.access.whoCanChangeMetadata.map((user) => {
+       {props.access.whoCanAddEditAndDeleteStory&& props.access.whoCanAddEditAndDeleteStory.map((user) => {
             if (user.value == name || loggedUser==owner) {
                 console.log("in if")
                  this.setState({ access: true })
             }
 
-        })
+        })}
         if (loggedUser==name) {
                
                  this.setState({ access: true })

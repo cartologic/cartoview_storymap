@@ -7,7 +7,7 @@ import { checkImageSrc, checkURL } from '../../containers/staticMethods'
 
 import Button from 'material-ui/Button'
 import { DropZoneComponent } from './statelessComponents'
-import FileUpload from 'material-ui-icons/FileUpload';
+import FileUpload from 'material-ui-icons/Add';
 import { FormControlLabel } from 'material-ui/Form'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -164,10 +164,10 @@ class ImageDialog extends React.Component {
         const username=loggedUser
         let { files, fromURL, ImageURL, ImageURLValid } = this.state
         return (
-            <div className="text-center">
+            <div className="text-center " style={{display:"flex"}} >
 
-               <Button onTouchTap={this.handleClickOpen} className={classes.button} color="primary">
-                    {"Add photo"}
+             <label  style={{ "flexGrow": "1" }} className="lab">Add Photo</label><Button onTouchTap={this.handleClickOpen} className={classes.button} style={{minWidth:0,padding:3}} color="primary">
+                    
                     <FileUpload className={classes.rightIcon} />
                 </Button>
                 <Dialog

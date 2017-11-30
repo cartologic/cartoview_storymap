@@ -61,6 +61,13 @@ const options = {
                 loadOptions: getAccessOptions,
                 message: "Select Users or empty for owner(you) only"
             } )
+        },
+        whoCanAddEditAndDeleteStory: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+            } )
         }
      
     }
@@ -117,6 +124,7 @@ export default class permissions extends Component {
                 whoCanChangeMetadata:access?access.whoCanChangeMetadata: [],
                 whoCanDelete:  access?access.whoCanDelete: [],
                 whoCanChangeConfiguration: access?access.whoCanChangeConfiguration: [],
+                whoCanAddEditAndDeleteStory: access?access.whoCanAddEditAndDeleteAStory:[]
             },
             groupDefaultConfig: {
                            
@@ -156,7 +164,7 @@ export default class permissions extends Component {
             whoCanChangeMetadata:  t.maybe(t.list( selectAccessItem )),
             whoCanDelete: t.maybe( t.list( selectAccessItem )),
             whoCanChangeConfiguration:  t.maybe(t.list( selectAccessItem )),
-            
+            whoCanAddEditAndDeleteStory: t.maybe(t.list( selectAccessItem )),
         } )
         let groupConfig = t.struct( {
           
@@ -186,8 +194,8 @@ export default class permissions extends Component {
                     </div>
                 </div>
                 <hr></hr>
-                <div className="panel-group">
-  <div className="panel panel-default">
+                <div className="panel-group" style={{overFlow: "visible" }}>
+  <div className="panel-default panel" style={{  overFlow: "visible"}}>
     <div className="panel-heading">
       <h4 className="panel-title">
         <a data-toggle="collapse" href="#collapse1">Users permissions</a>

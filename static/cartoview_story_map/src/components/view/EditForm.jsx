@@ -219,6 +219,8 @@ class EditForm extends React.Component {
 handleColor(value,color){
         this.setState({[value]:color.target.value})
         this.state.formValue[value]=color.target.value
+        this.handleMarkerColorClose()
+        this.handleNumberColorClose()
     }
 
     render() {
