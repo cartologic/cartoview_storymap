@@ -312,10 +312,10 @@ handleColor(value,color){
           <MaterialColorPicker 
     initColor={this.state.markercolor}
     onSubmit={(color)=> this.handleColor('markercolor',color)}
-    onReset={console.log("s")}
+    onReset={this.handleMarkerColorClose}
     style={{width: 300, backgroundColor: '#c7c7c7'}}
     submitLabel='Apply'
-    resetLabel='Undo'
+    resetLabel='Cancel'
 />
           </DialogContent>
          
@@ -341,10 +341,10 @@ handleColor(value,color){
           <MaterialColorPicker 
     initColor={this.state.numberscolor}
     onSubmit={(color)=> this.handleColor('numberscolor',color)}
-    onReset={console.log("s")}
+    onReset={this.handleNumberColorClose}
     style={{width: 300, backgroundColor: '#c7c7c7'}}
     submitLabel='Apply'
-    resetLabel='Undo'
+    resetLabel='Cancel'
 />
 
 </DialogContent>
