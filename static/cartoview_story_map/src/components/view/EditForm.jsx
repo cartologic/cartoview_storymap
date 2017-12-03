@@ -303,6 +303,54 @@ handleColor(value,color){
 
 
 
+<div style={{display:"flex"}}>
+       <label style={{ "flexGrow": "1" }} className="lab">Marker color</label> <Button onClick={this.handleMarkerColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.markercolor}}></div></Button>
+        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+          <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
+          <DialogContent>
+
+          <MaterialColorPicker 
+    initColor={this.state.markercolor}
+    onSubmit={(color)=> this.handleColor('markercolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
+/>
+          </DialogContent>
+         
+        </Dialog>
+      </div>
+
+<br/>
+<Divider/>
+
+
+
+
+
+
+ <div style={{display:"flex"}}>
+     <label style={{ "flexGrow": "1" }} className="lab"> Numbers on Marker color</label><Button onClick={this.handleNumberColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.numberscolor}}></div></Button>
+        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+          <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
+          <DialogContent>
+
+
+
+          <MaterialColorPicker 
+    initColor={this.state.numberscolor}
+    onSubmit={(color)=> this.handleColor('numberscolor',color)}
+    onReset={console.log("s")}
+    style={{width: 300, backgroundColor: '#c7c7c7'}}
+    submitLabel='Apply'
+    resetLabel='Undo'
+/>
+
+</DialogContent>
+         
+        </Dialog>
+</div>
 
 
 
