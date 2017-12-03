@@ -24,6 +24,14 @@ var shape=feature.getProperties().markershape
                             radius2: 6,
                             angle: 0
                         })}
+        // else if(shape=='food'){
+        //           image = new ol.style.Icon(({
+        //                 anchor: [0.5, 45],
+        //                 anchorXUnits: 'fraction',
+        //                 anchorYUnits: 'pixels',
+        //                 size : ['20','20'],
+        //                 src: urls.static + 'cartoview_story_map/blue-restourant.png'
+        //             }))}
           else if(shape=='circle'){
 
               image = new ol.style.Circle({

@@ -209,9 +209,10 @@ class EditForm extends React.Component {
             
                 
                   this.props.handleOpen("Feature edited Successfully")
-                  this.props.handleSwitch()
+                //   this.props.handleSwitch()
+                this.props.back()
                   this.props.refreshMapEdit(feature)
-                  this.props.back()
+                  
             }).catch((error) => {
                 throw Error(error)
             })
@@ -282,7 +283,7 @@ handleColor(value,color){
 <FormControl className={classes.formControl}>
             <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                 <Select
-                    value={this.state.markershape}
+                    value={"this.state.markershape"}
                     onChange={(e)=>this.handleShape(e)}
                     input={<Input id="age-simple" />}
                 >
@@ -295,24 +296,7 @@ handleColor(value,color){
                         <MenuItem value={'X'}><XICon/> x</MenuItem>
                 </Select>
         </FormControl>    
-        <div>
-        <Button onClick={this.handleMarkerColorOpen}>Marker color</Button>
-        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
-          <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
-          <DialogContent>
-
-          <MaterialColorPicker 
-    initColor={this.state.markercolor}
-    onSubmit={(color)=> this.handleColor('markercolor',color)}
-    onReset={console.log("s")}
-    style={{width: 300, backgroundColor: '#c7c7c7'}}
-    submitLabel='Apply'
-    resetLabel='Undo'
-/>
-          </DialogContent>
-         
-        </Dialog>
-      </div>
+   
 
 
 <br/>
@@ -323,25 +307,7 @@ handleColor(value,color){
 
 
  
-      <Button onClick={this.handleNumberColorOpen}>Numbers on Marker color</Button>
-        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
-          <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
-          <DialogContent>
-
-
-
-          <MaterialColorPicker 
-    initColor={this.state.numberscolor}
-    onSubmit={(color)=> this.handleColor('numberscolor',color)}
-    onReset={console.log("s")}
-    style={{width: 300, backgroundColor: '#c7c7c7'}}
-    submitLabel='Apply'
-    resetLabel='Undo'
-/>
-
-</DialogContent>
-         
-        </Dialog>
+  
 </div>
        
         <div>

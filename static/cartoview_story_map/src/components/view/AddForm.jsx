@@ -345,6 +345,7 @@ if(nextProps.attachments.file)
             <MenuItem value={'star'}><StarIcon/> star</MenuItem>
             <MenuItem value={'cross'}><CrossIcon/> cross</MenuItem>
             <MenuItem value={'X'}><XICon/> x</MenuItem>
+            {/* <MenuItem value={'food'}><img style={{width:"30px",height:"30px"}} src={urls.static + 'cartoview_story_map/blue-restourant.png'}/>Food</MenuItem> */}
           </Select>
         </FormControl>           
   <div   className={'color-picker'}> 
