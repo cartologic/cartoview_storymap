@@ -26,7 +26,7 @@ import { transactWFS } from '../../containers/staticMethods'
 import { CircularProgress } from 'material-ui/Progress'
 import StarIcon from 'material-ui-icons/Star';
 import TriangleIcon from 'material-ui-icons/ChangeHistory';
-import SquareIcon  from 'material-ui-icons/Stop'
+import SquareIcon from 'material-ui-icons/Stop'
 import CrossIcon from 'material-ui-icons/Add'
 import CircleIcon from 'material-ui-icons/FiberManualRecord';
 import Select from 'material-ui/Select';
@@ -43,7 +43,7 @@ import Dialog, {
     DialogContent,
     DialogContentText,
     DialogTitle,
-  } from 'material-ui/Dialog';
+} from 'material-ui/Dialog';
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -75,18 +75,18 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-         width: '100%'
+        width: '100%'
     },
     progress: {
         margin: `0 ${theme.spacing.unit * 2}px`,
     },
-     formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing.unit * 2,
-  },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
+    },
 })
 class EditForm extends React.Component {
     constructor(props) {
@@ -95,13 +95,13 @@ class EditForm extends React.Component {
             formValue: this.props.editedFeature ? this.props.editedFeature.getProperties() : this.props.featureEdit.getProperties(),
             success: false,
             loading: false,
-            markershape:this.props.featureEdit.getProperties()['markershape'],
-            markercolor:this.props.featureEdit.getProperties()['markercolor'],
-            numberscolor:this.props.featureEdit.getProperties()['numberscolor'],
+            markershape: this.props.featureEdit.getProperties()['markershape'],
+            markercolor: this.props.featureEdit.getProperties()['markercolor'],
+            numberscolor: this.props.featureEdit.getProperties()['numberscolor'],
             id: this.props.featureEdit.getProperties()['featureIndex'],
             geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 },
-            markerColorOpen:false,
-            numberColorOpen:false
+            markerColorOpen: false,
+            numberColorOpen: false
         }
         this.WFS = new WFSClient(this.props.urls)
     }
@@ -109,11 +109,11 @@ class EditForm extends React.Component {
     componentDidMount() {
 
     }
-      handleShape = (event) =>{
-     
-    this.setState({ markershape: event.target.value });
-     this.state.formValue['markershape']=event.target.value
-  };
+    handleShape = (event) => {
+
+        this.setState({ markershape: event.target.value });
+        this.state.formValue['markershape'] = event.target.value
+    };
     getType = (type) => {
         var result = ""
         if (type == "string") { result = "" }
@@ -128,21 +128,21 @@ class EditForm extends React.Component {
 
     }
     handleMarkerColorOpen = () => {
-    this.setState({ markerColorOpen: true });
-  };
+        this.setState({ markerColorOpen: true });
+    };
 
-  handleMarkerColorClose = () => {
-    this.setState({ markerColorOpen: false });
-  };
-  handleNumberColorOpen = () => {
-    this.setState({ numberColorOpen: true });
-  };
+    handleMarkerColorClose = () => {
+        this.setState({ markerColorOpen: false });
+    };
+    handleNumberColorOpen = () => {
+        this.setState({ numberColorOpen: true });
+    };
 
-  handleNumberColorClose = () => {
-    this.setState({ numberColorOpen: false });
-  };
+    handleNumberColorClose = () => {
+        this.setState({ numberColorOpen: false });
+    };
     save = () => {
-         this.setState({ loading: true })
+        this.setState({ loading: true })
         // var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
         // var coordinate = feature.getGeometry().getCoordinates();
         // feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
@@ -158,9 +158,9 @@ class EditForm extends React.Component {
         //         newFeature.set(property, this.state.formValue[property])
         //     }
         // })
-        
+
         // console.log(this.props.mapProjection, "EPSG:" + this.props.crs)
-      
+
         // feature.unset("featureIndex")
         // //feature.unset('geometry')
         // var xml = transactWFS("update", feature, props.layername, this.props.crs)
@@ -189,37 +189,37 @@ class EditForm extends React.Component {
         //-----------------------------------------------------------------------------
         var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
         var coordinate = feature.getGeometry().getCoordinates();
-        const geometry = this.props.geometry?this.props.geometry:{
+        const geometry = this.props.geometry ? this.props.geometry : {
             name: 'the_geom',
-            srsName: "EPSG:"+this.props.crs,
+            srsName: "EPSG:" + this.props.crs,
             x: coordinate[0],
             y: coordinate[1]
         }
-            Object.keys(this.state.formValue).map(property => {
-                    if (property != 'geometry' && property != 'featureIndex') {
-                        feature.set(property, this.state.formValue[property])
-                       
-                    }
-                })
-               feature.set('markershape',this.state.markershape) 
-            this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue,geometry).then(res =>
+        Object.keys(this.state.formValue).map(property => {
+            if (property != 'geometry' && property != 'featureIndex') {
+                feature.set(property, this.state.formValue[property])
+
+            }
+        })
+        feature.set('markershape', this.state.markershape)
+        this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue, geometry).then(res =>
             res.text()).then((res) => {
                 this.setState({ success: true })
-         
-            
-                
-                  this.props.handleOpen("Feature edited Successfully")
+
+
+
+                this.props.handleOpen("Feature edited Successfully")
                 //   this.props.handleSwitch()
                 this.props.back()
-                  this.props.refreshMapEdit(feature)
-                  
+                this.props.refreshMapEdit(feature)
+
             }).catch((error) => {
                 throw Error(error)
             })
     }
-handleColor(value,color){
-        this.setState({[value]:color.target.value})
-        this.state.formValue[value]=color.target.value
+    handleColor(value, color) {
+        this.setState({ [value]: color.target.value })
+        this.state.formValue[value] = color.target.value
         this.handleMarkerColorClose()
         this.handleNumberColorClose()
     }
@@ -248,7 +248,7 @@ handleColor(value,color){
                 <div>
                     {
                         featureTypes && featureTypes.map((feature, i) => {
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order"&&feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
+                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
                                 return <TextField key={i}
                                     fullWidth
                                     required={!feature.nillable}
@@ -280,90 +280,90 @@ handleColor(value,color){
                         })
                     }
 
-<FormControl className={classes.formControl}>
-            <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
-                <Select
-                    value={"this.state.markershape"}
-                    onChange={(e)=>this.handleShape(e)}
-                    input={<Input id="age-simple" />}
-                >
-            
-                        <MenuItem value={'circle'}><CircleIcon/> circle</MenuItem>
-                        <MenuItem value={'triangle'}><TriangleIcon/>triangle</MenuItem>
-                        <MenuItem value={'square'}><SquareIcon/> square</MenuItem>
-                        <MenuItem value={'star'}><StarIcon/> star</MenuItem>
-                        <MenuItem value={'cross'}><CrossIcon/> cross</MenuItem>
-                        <MenuItem value={'X'}><XICon/> x</MenuItem>
-                </Select>
-        </FormControl>    
-   
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
+                        <Select
+                            value={this.state.markershape}
+                            onChange={(e) => this.handleShape(e)}
+                            input={<Input id="age-simple" />}
+                        >
 
-
-<br/>
+                            <MenuItem value={'circle'}><CircleIcon /> circle</MenuItem>
+                            <MenuItem value={'triangle'}><TriangleIcon />triangle</MenuItem>
+                            <MenuItem value={'square'}><SquareIcon /> square</MenuItem>
+                            <MenuItem value={'star'}><StarIcon /> star</MenuItem>
+                            <MenuItem value={'cross'}><CrossIcon /> cross</MenuItem>
+                            <MenuItem value={'X'}><XICon /> x</MenuItem>
+                        </Select>
+                    </FormControl>
 
 
 
-<div style={{display:"flex"}}>
-       <label style={{ "flexGrow": "1" }} className="lab">Marker color</label> <Button onClick={this.handleMarkerColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.markercolor}}></div></Button>
-        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
-          <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
-          <DialogContent>
-
-          <MaterialColorPicker 
-    initColor={this.state.markercolor}
-    onSubmit={(color)=> this.handleColor('markercolor',color)}
-    onReset={this.handleMarkerColorClose}
-    style={{width: 300, backgroundColor: '#c7c7c7'}}
-    submitLabel='Apply'
-    resetLabel='Cancel'
-/>
-          </DialogContent>
-         
-        </Dialog>
-      </div>
-
-<br/>
-<Divider/>
+                    <br />
 
 
 
+                    <div style={{ display: "flex" }}>
+                        <label style={{ "flexGrow": "1" }} className="lab">Marker color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
+                        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+                            <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
+                            <DialogContent>
+
+                                <MaterialColorPicker
+                                    initColor={this.state.markercolor}
+                                    onSubmit={(color) => this.handleColor('markercolor', color)}
+                                    onReset={this.handleMarkerColorClose}
+                                    style={{ width: 300, backgroundColor: '#c7c7c7' }}
+                                    submitLabel='Apply'
+                                    resetLabel='Cancel'
+                                />
+                            </DialogContent>
+
+                        </Dialog>
+                    </div>
+
+                    <br />
+                    <Divider />
 
 
 
- <div style={{display:"flex"}}>
-     <label style={{ "flexGrow": "1" }} className="lab"> Numbers on Marker color</label><Button onClick={this.handleNumberColorOpen} style={{minWidth:0,padding:3}}> <div className="box" style={{backgroundColor:this.state.numberscolor}}></div></Button>
-        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
-          <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
-          <DialogContent>
 
 
 
-          <MaterialColorPicker 
-    initColor={this.state.numberscolor}
-    onSubmit={(color)=> this.handleColor('numberscolor',color)}
-    onReset={this.handleNumberColorClose}
-    style={{width: 300, backgroundColor: '#c7c7c7'}}
-    submitLabel='Apply'
-    resetLabel='Cancel'
-/>
-
-</DialogContent>
-         
-        </Dialog>
-</div>
+                    <div style={{ display: "flex" }}>
+                        <label style={{ "flexGrow": "1" }} className="lab"> Numbers on Marker color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
+                        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+                            <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
+                            <DialogContent>
 
 
 
- 
-  
-</div>
-       
-        <div>
-        <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
-            {this.state.loading ? 'saving' : 'save'}
-            {this.state.loading && <CircularProgress size={20} />}
-        </Button>
-        </div>
+                                <MaterialColorPicker
+                                    initColor={this.state.numberscolor}
+                                    onSubmit={(color) => this.handleColor('numberscolor', color)}
+                                    onReset={this.handleNumberColorClose}
+                                    style={{ width: 300, backgroundColor: '#c7c7c7' }}
+                                    submitLabel='Apply'
+                                    resetLabel='Cancel'
+                                />
+
+                            </DialogContent>
+
+                        </Dialog>
+                    </div>
+
+
+
+
+
+                </div>
+
+                <div>
+                    <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
+                        {this.state.loading ? 'saving' : 'save'}
+                        {this.state.loading && <CircularProgress size={20} />}
+                    </Button>
+                </div>
                 <div className={classes.textCenter}>
 
                 </div>
