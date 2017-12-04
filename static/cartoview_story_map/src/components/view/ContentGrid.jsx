@@ -49,7 +49,7 @@ const styles = theme => ({
     },
     paper: {
         height: "100%",
-        overflowY: 'overlay'
+        overflowY:"scroll"
     },
     mapPanel: {
         height: '100%'

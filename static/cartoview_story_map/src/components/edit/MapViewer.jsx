@@ -45,7 +45,7 @@ export default class MapViewer extends Component {
             <div className="row">
                 <div className="row">
                     <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
-                        <h4>{'Select Map'}</h4>
+                        <h4>{'Select Extent'}</h4>
                     </div>
 
                     <div className="col-xs-6 col-md-4">
