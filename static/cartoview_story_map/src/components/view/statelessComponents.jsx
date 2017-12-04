@@ -214,7 +214,7 @@ export class FeatureListComponent extends React.Component {
         });
     };
     checkPermissions = (name) => {
-        console.log("asas",props.access,owner,loggedUser)
+        console.log("check permissions",props.access,owner,loggedUser,props.access.whoCanAddEditAndDeleteStory)
        {props.access.whoCanAddEditAndDeleteStory&& props.access.whoCanAddEditAndDeleteStory.map((user) => {
             if (user.value == name || loggedUser==owner) {
                 console.log("in if")
@@ -222,8 +222,8 @@ export class FeatureListComponent extends React.Component {
             }
 
         })}
-        if (loggedUser==name) {
-               
+        if (loggedUser==owner) {
+               console.log("in itherr if ",name,loggedUser)
                  this.setState({ access: true })
             }
     }

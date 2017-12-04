@@ -26,8 +26,8 @@ export default class General extends Component {
             value: {
                 title: this.props.general&&this.props.general.title?this.props.general.title:null,
                 abstract: this.props.general&&this.props.general.abstract?this.props.general.abstract:null,
-                DisplayNumbersOnMarkers:this.props.general&& this.props.general.DisplayNumbersOnMarkers?this.props.general.DisplayNumbersOnMarkers:null,
-                zoomOnClick: this.props.general&&this.props.general.zoomOnClick?this.props.general.zoomOnClick:null,
+                DisplayNumbersOnMarkers:this.props.general&& this.props.general.DisplayNumbersOnMarkers?this.props.general.DisplayNumbersOnMarkers:true,
+                zoomOnClick: this.props.general&&this.props.general.zoomOnClick?this.props.general.zoomOnClick:true,
             },
             attributeOptions: [],
             attributes: [],

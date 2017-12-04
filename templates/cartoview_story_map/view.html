@@ -87,8 +87,8 @@
     const loggedUser="{{request.user.username}}"
     const owner="{{instance.owner.username}}"
     const layerTitle="{{instance.title}}"
-    const trimmed_layername=layerTitle.replace(/[&#39; ']+/g, "_")
-
+    const trimmed_layername=layerTitle.replace(/[&#39; , - : & ! * ( ) + ^ $ # @ ~ " % ']+/g, "_")
+    console.log(trimmed_layername)
     props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
 
 

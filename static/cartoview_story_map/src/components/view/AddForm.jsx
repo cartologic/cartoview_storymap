@@ -133,6 +133,7 @@ class addForm extends React.Component {
         return result
     }
     handleChange = attr => event => {
+
         this.state.formValue[attr] = event.target.value
 
     }
@@ -297,39 +298,46 @@ class addForm extends React.Component {
                 </IconButton>
 
                 <div>
-                    {
-                        featureTypes && featureTypes.map((feature, i) => {
-
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
-                                return <TextField key={i}
+                    
+                        
+                            <TextField 
                                     fullWidth
-                                    required={!feature.nillable}
-                                    type={this.getType(feature.localType)}
-                                    id={feature.name}
-                                    label={feature.name}
+           
+                                
+                                    label={"Title"}
                                     className={classes.textField}
-                                    onChange={this.handleChange(feature.name)}
+                                    onChange={this.handleChange("title")}
                                     margin="normal"
                                     InputLabelProps={{
                                         shrink: true
                                     }}
                                 />
-                            }
-                            else if (feature.localType == "boolean") {
-                                return <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={"true"}
-                                            onChange={this.handleChange(feature.name)}
-                                            value="checkedA"
-                                        />
-                                    }
-                                    label={feature.name}
+                                <TextField 
+                                    fullWidth
+           
+                                
+                                    label={"Description"}
+                                    className={classes.textField}
+                                    onChange={this.handleChange("description")}
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
                                 />
-
-                            }
-                        })
-                    }
+                                <TextField 
+                                    fullWidth
+           
+                                
+                                    label={"Link"}
+                                    className={classes.textField}
+                                    onChange={this.handleChange("link")}
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
+                                />
+                                
+                     
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                         <Select

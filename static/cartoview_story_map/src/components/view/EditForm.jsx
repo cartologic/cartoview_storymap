@@ -246,40 +246,46 @@ class EditForm extends React.Component {
                     </IconButton>
                 </Hidden>
                 <div>
-                    {
-                        featureTypes && featureTypes.map((feature, i) => {
-                            if (feature.localType != "boolean" && feature.localType != "Point" && feature.localType != "dateTime" && feature.name != "order" && feature.name != "order" && feature.name != "imageurl" && feature.name != "markercolor" && feature.name != "markershape" && feature.name != "numberscolor") {
-                                return <TextField key={i}
+             
+
+                                  <TextField 
                                     fullWidth
-                                    required={!feature.nillable}
-                                    type={this.getType(feature.localType)}
-                                    id={feature.name}
-                                    defaultValue={this.props.featureEdit.getProperties()[feature.name]}
-                                    label={feature.name}
+                                    defaultValue={this.props.featureEdit.getProperties()['title']}
+           
+                                
+                                    label={"Title"}
                                     className={classes.textField}
-                                    onChange={this.handleChange(feature.name)}
+                                    onChange={this.handleChange("title")}
                                     margin="normal"
                                     InputLabelProps={{
                                         shrink: true
                                     }}
                                 />
-                            }
-                            else if (feature.localType == "boolean") {
-                                return <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={"true"}
-                                            onChange={this.handleChange(feature.name)}
-                                            value="checkedA"
-                                        />
-                                    }
-                                    label={feature.name}
+                                <TextField 
+                                    fullWidth
+                                    defaultValue={this.props.featureEdit.getProperties()["description"]}
+                                    label={"Description"}
+                                    className={classes.textField}
+                                    onChange={this.handleChange("description")}
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
                                 />
-
-                            }
-                        })
-                    }
-
+                                <TextField 
+                                    fullWidth
+           
+                                    defaultValue={this.props.featureEdit.getProperties()["link"]}
+                                    
+                                    label={"Link"}
+                                    className={classes.textField}
+                                    onChange={this.handleChange("link")}
+                                    margin="normal"
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
+                                />
+                                
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                         <Select
