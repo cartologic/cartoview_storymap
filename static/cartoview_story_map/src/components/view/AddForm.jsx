@@ -364,7 +364,7 @@ class addForm extends React.Component {
                         <br />
 
                         <div style={{ display: "flex" }}>
-                            <label style={{ "flexGrow": "1" }} className="lab">Marker color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
+                            <label style={{ "flexGrow": "1" }} className="lab">Marker's color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
                             <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
                                 <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                                 <DialogContent>
@@ -391,7 +391,7 @@ class addForm extends React.Component {
 
 
                         <div style={{ display: "flex" }}>
-                            <label style={{ "flexGrow": "1" }} className="lab"> Numbers on Marker color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
+                            <label style={{ "flexGrow": "1" }} className="lab"> Marker Label's Color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
                             <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
                                 <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                                 <DialogContent>
