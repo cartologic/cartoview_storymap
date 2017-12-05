@@ -69,13 +69,24 @@ class CartoviewList extends React.Component {
         this.state['selectionModeEnabled']=false
         this.setState({detailsModeEnabled: false,selectionModeEnabled :false, detailsOfFeature: null, add: false, edit: false })
        
-
-        if(this.state.edit){
-            this.props.backFromEdit()
-        }
+       
    
     }
-
+    editBack = () => {
+       const {
+            selectionModeEnabled,
+            featureIdentifyResult,
+            addStyleToFeature
+        } = this.props
+        this.state['add']=false
+        this.state['selectionModeEnabled']=false
+        this.setState({detailsModeEnabled: false,selectionModeEnabled :false, detailsOfFeature: null, add: false, edit: false })
+       
+       
+       this.props.backFromEdit()
+       
+   
+    }
     openDetails = (state) => {
         this.setState({ ...state }, () => this.addStyleZoom())
     }
@@ -138,7 +149,7 @@ class CartoviewList extends React.Component {
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled && !add && !edit && <FeatureListComponent handleEditFeature={this.handleEditFeature}{...this.props}  loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry}  message={"No Features Found"} />}
                 {!selectionModeEnabled && !detailsModeEnabled && add && !edit && <AddForm  {...this.props} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
-                {!selectionModeEnabled && !detailsModeEnabled && !add && edit && <EditForm  {...this.props} featureEdit={this.state.feature} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Features Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && !add && edit && <EditForm  {...this.props} featureEdit={this.state.feature} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.editBack} message={"No Features Found"} />}
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>
                 </div>}

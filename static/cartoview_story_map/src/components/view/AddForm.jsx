@@ -145,7 +145,7 @@ class addForm extends React.Component {
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
-        feature.set("order", this.props.features.length + 1)
+        feature.set("order", this.props.features.length)
         feature.set("imageurl", this.state.fileName)
         feature.set("markercolor", this.state.markercolor)
         feature.set("numberscolor", this.state.numberscolor)
@@ -168,7 +168,8 @@ class addForm extends React.Component {
             // this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.removeLocation()
-            this.props.back()
+            // this.props.back()
+            this.cancel()
             this.setState({ loading: false })
             feature.set("featureIndex", ++this.props.features.length)
             this.props.refreshMap(feature)
@@ -458,6 +459,7 @@ class addForm extends React.Component {
                             {this.state.loading ? 'saving' : 'save'}
                             {this.state.loading && <CircularProgress size={20} />}
                         </Button>
+                    <Button  raised color="primary" onClick={()=>back()} className={classes.button} style={{marginLeft:"200px"}} >Cancel</Button>
 
 
                     </div>

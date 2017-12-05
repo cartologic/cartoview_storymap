@@ -207,11 +207,11 @@ class EditForm extends React.Component {
                 this.setState({ success: true })
 
 
-
-                this.props.handleOpen("Feature edited Successfully")
-                //   this.props.handleSwitch()
                 this.props.back()
-                this.props.refreshMapEdit(feature)
+                // this.props.handleOpen("Feature edited Successfully")
+                //   this.props.handleSwitch()
+              
+                // this.props.refreshMapEdit(feature)
 
             }).catch((error) => {
                 throw Error(error)
@@ -369,6 +369,11 @@ class EditForm extends React.Component {
                         {this.state.loading ? 'saving' : 'save'}
                         {this.state.loading && <CircularProgress size={20} />}
                     </Button>
+                </div>
+                <div>
+                
+                    <Button  raised color="primary" onClick={()=>back()} className={classes.button} style={{marginLeft:"200px"}} >Cancel</Button>
+                
                 </div>
                 <div className={classes.textCenter}>
 

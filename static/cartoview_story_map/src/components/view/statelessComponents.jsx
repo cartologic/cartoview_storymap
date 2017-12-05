@@ -82,6 +82,9 @@ export const Item = (props) => {
                 <Typography component="p">
                     {config.description ? feature.getProperties()[config.description] : ''}
                 </Typography>
+                 <Typography component="p">
+                    {config.link ? feature.getProperties()[config.link] : ''}
+                </Typography>
             </CardContent>
         </Card>
         <Divider />
@@ -139,7 +142,7 @@ export class FeatureListComponent extends React.Component {
             })
         }).then((res) => {
             this.props.removeFeatureMarker(this.state.deletedFeature)
-            this.setState({ openDeleteDialoge: false, openSnackBar: true })
+            this.setState({ openDeleteDialoge: false, openSnackBar: true ,loading:false})
         })
 
     }
@@ -298,7 +301,13 @@ export class FeatureListComponent extends React.Component {
                         <Typography component="p">
                             {value.getProperties()['description']}
                         </Typography>
-
+                       <Typography component="p" onMouseDown={(e) => {
+                                e.preventDefault()
+                               window.location.href = "http://www.google.com";
+                            }}>
+                         
+                            <a href={value.getProperties()['link']}>{value.getProperties()['link']}</a>
+                        </Typography>
                     </CardContent>
 
                 </Card>
