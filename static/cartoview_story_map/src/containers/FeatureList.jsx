@@ -102,6 +102,10 @@ class FeatureListContainer extends Component {
 
     }
     getLocation = (x = 0, y = 0) => {
+        if(x==0&&y==0){
+            x=this.state.map.getView().getCenter()[0]
+            y=this.state.map.getView().getCenter()[1]
+        }
 this.state.map.removeLayer(this.state.vectorLayer)
 this.feature=null
         const crs = 'EPSG:' + this.state.crs
