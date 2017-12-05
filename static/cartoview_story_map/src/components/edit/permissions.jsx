@@ -62,13 +62,28 @@ const options = {
                 message: "Select Users or empty for owner(you) only"
             } )
         },
-        whoCanAddEditAndDeleteStory: {
+        whoCanSubmitStory: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+            } )
+        },
+          whoCanEditStory: {
+            factory: t.form.Textbox,
+            template: getAccessTemplate( {
+                loadOptions: getAccessOptions,
+                message: "Select Users or empty for owner(you) only"
+            } )
+        },
+       whoCanDeleteStory: {
             factory: t.form.Textbox,
             template: getAccessTemplate( {
                 loadOptions: getAccessOptions,
                 message: "Select Users or empty for owner(you) only"
             } )
         }
+     
      
     }
 }
@@ -124,7 +139,9 @@ export default class permissions extends Component {
                 whoCanChangeMetadata:access?access.whoCanChangeMetadata: [],
                 whoCanDelete:  access?access.whoCanDelete: [],
                 whoCanChangeConfiguration: access?access.whoCanChangeConfiguration: [],
-                whoCanAddEditAndDeleteStory: access?access.whoCanAddEditAndDeleteAStory:[]
+                whoCanSubmitStory: access?access.whoCanSubmitStory:[],
+                whoCanEditStory: access?access.whoCanEditStory:[],
+                whoCanDeleteStory: access?access.whoCanDeleteStory:[]
             },
             groupDefaultConfig: {
                            
@@ -164,7 +181,9 @@ export default class permissions extends Component {
             whoCanChangeMetadata:  t.maybe(t.list( selectAccessItem )),
             whoCanDelete: t.maybe( t.list( selectAccessItem )),
             whoCanChangeConfiguration:  t.maybe(t.list( selectAccessItem )),
-            whoCanAddEditAndDeleteStory: t.maybe(t.list( selectAccessItem )),
+            whoCanSubmitStory: t.maybe(t.list( selectAccessItem )),
+            whoCanEditStory: t.maybe(t.list( selectAccessItem )),
+            whoCanDeleteStory: t.maybe(t.list( selectAccessItem )),
         } )
         let groupConfig = t.struct( {
           

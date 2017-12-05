@@ -15,7 +15,7 @@ export default class MapViewer extends Component {
             this.map = new ol.Map({
             view: new ol.View({
                 center: [0, 0],
-                zoom: 4
+                zoom: 2
             }),
             layers: [
                 new ol.layer.Tile({

@@ -107,7 +107,9 @@ export class FeatureListComponent extends React.Component {
         super(props)
         this.state = {
             features: this.props.features ? this.props.features : [],
-            access: false,
+            accessAdd: false,
+            accessEdit: false,
+            accessDelete: false,
             crs: "",
             openDeleteDialoge: false,
             deletedFeature: {},
@@ -218,16 +220,33 @@ export class FeatureListComponent extends React.Component {
     };
     checkPermissions = (name) => {
         console.log("check permissions",props.access,owner,loggedUser,props.access.whoCanAddEditAndDeleteStory)
-       {props.access.whoCanAddEditAndDeleteStory&& props.access.whoCanAddEditAndDeleteStory.map((user) => {
+    
+        {props.access.whoCanEditStory&& props.access.whoCanEditStory.map((user) => {
             if (user.value == name || loggedUser==owner) {
-                console.log("in if")
-                 this.setState({ access: true })
+                console.log("in if edit")
+                 this.setState({ accessEdit: true })
+            }
+
+        })}
+        {props.access.whoCanSubmitStory&& props.access.whoCanSubmitStory.map((user) => {
+            console.log(user)
+            if (user.value == name || loggedUser==owner) {
+                console.log("in if add")
+                 this.setState({ accessAdd: true })
+            }
+
+        })}
+        {props.access.whoCanDeleteStory&& props.access.whoCanDeleteStory.map((user) => {
+            if (user.value == name || loggedUser==owner) {
+                console.log("in if delete")
+                 this.setState({accessDelete: true })
             }
 
         })}
         if (loggedUser==owner) {
                console.log("in itherr if ",name,loggedUser)
-                 this.setState({ access: true })
+                 this.setState({ accessAdd: true ,accessEdit: true ,accessDelete: true })
+                
             }
     }
     handleCloseSnackBar = () => {
@@ -271,26 +290,26 @@ export class FeatureListComponent extends React.Component {
                         <CardHeader
                             
                             title={`${value.getProperties()['title']}`}
-                            subheader={`${config.subtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+                            subheader={`${config.ubtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
                             
                         </div>
-                        {this.state.access && <div>
-                            <IconButton onMouseDown={() => {
+                        <div>
+                            {this.state.accessEdit && <IconButton onMouseDown={() => {
                                 this.props.editFeature(value)
                                 this.props.handleEditFeature(value)
                             }}
                                 className={classes.button} aria-label="edit" color="primary">
                                 <EditIcon />
-                            </IconButton>
+                            </IconButton>}
 
-                            <IconButton onMouseDown={() => {
+                            {this.state.accessDelete && <IconButton onMouseDown={() => {
                                 this.deleteDialogeClickOpen(value)
                             }}
                                 className={classes.button} aria-label="edit" color="primary">
                                 <DeleteIcon />
-                            </IconButton>
+                            </IconButton>}
 
-                        </div>}
+                        </div>
                     </div>
                     <img className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ? value.getProperties()['imageurl'] : urls.static + 'cartoview_story_map/img/no-img.png'
                     ]} 
@@ -301,8 +320,8 @@ export class FeatureListComponent extends React.Component {
                         <Typography component="p">
                             {value.getProperties()['description']}
                         </Typography>
-                       <Typography component="p" onMouseDown={(e) => {
-                                e.preventDefault()
+                       <Typography component="p" onMouseDown={() => {
+                         
                                window.location.href = "http://www.google.com";
                             }}>
                          
@@ -370,7 +389,7 @@ export class FeatureListComponent extends React.Component {
                     features && features.length == 0 ?
                         <Message message={message} type="body2" /> :
                         <Loader />}
-  {this.state.access &&  !featuresIsLoading &&  <Paper className='fixed-container'><Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'100%'}} >
+  {this.state.accessAdd &&  !featuresIsLoading &&  <Paper className='fixed-container'><Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'100%'}} >
         submit
       </Button></Paper>}
 
