@@ -354,7 +354,7 @@ class addForm extends React.Component {
                             <MenuItem value={'star'}><StarIcon /> star</MenuItem>
                             <MenuItem value={'cross'}><CrossIcon /> cross</MenuItem>
                             <MenuItem value={'X'}><XICon /> x</MenuItem>
-                            {/* <MenuItem value={'food'}><img style={{width:"30px",height:"30px"}} src={urls.static + 'cartoview_story_map/blue-restourant.png'}/>Food</MenuItem> */}
+                            {/* <MenuItem value={'food'}><img style={{width:"30px",height:"30px"}} src={urls.static + 'cartoview_storymap/blue-restourant.png'}/>Food</MenuItem> */}
                         </Select>
                     </FormControl>
                     <div className={'color-picker'}>
@@ -421,20 +421,12 @@ class addForm extends React.Component {
                     </div>
                     <Divider />
 
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={this.state.locationAddress}
-                                onChange={(event, checked) => this.setState({ locationAddress: checked })}
-                            />
-                        }
-                        label="Add location by address"
-                    />
-                    {this.state.locationAddress && <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>}
+                   
+                  <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>
 
                     <br />
 
-                    {!this.state.locationAddress &&
+           
                         <div>
 
                             <FormControl component="fieldset" required className={classes.formControl}>
@@ -451,7 +443,7 @@ class addForm extends React.Component {
                             </FormControl>
 
 
-                        </div>}
+                        </div>
                     <div>
 
                         <Button disabled={this.state.loading || (!this.props.newFeature && !this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >

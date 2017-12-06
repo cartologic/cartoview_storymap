@@ -22,7 +22,7 @@ class MapViewer extends React.Component {
                 anchorYUnits: 'pixels',
                 color: "#00B7F1",
                 src: this.props.urls.static +
-                'cartoview_story_map/marker.png'
+                'cartoview_storymap/marker.png'
             }),
             text: new ol.style.Text({
                 text: '+',

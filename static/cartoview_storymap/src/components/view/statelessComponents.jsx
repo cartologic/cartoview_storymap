@@ -261,7 +261,7 @@ export class FeatureListComponent extends React.Component {
     }
     addDefaultSrc = (ev) => {
 
-        ev.target.src = urls.static + 'cartoview_story_map/img/no-img.png'
+        ev.target.src = urls.static + 'cartoview_storymap/img/no-img.png'
     }
     render() {
 
@@ -311,7 +311,7 @@ export class FeatureListComponent extends React.Component {
 
                         </div>
                     </div>
-                    <img className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ? value.getProperties()['imageurl'] : urls.static + 'cartoview_story_map/img/no-img.png'
+                    <img className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ? value.getProperties()['imageurl'] : urls.static + 'cartoview_storymap/img/no-img.png'
                     ]} 
 
                         onError={this.addDefaultSrc}
