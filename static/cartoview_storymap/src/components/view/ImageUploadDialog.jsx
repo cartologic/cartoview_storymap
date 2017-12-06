@@ -106,14 +106,15 @@ class ImageDialog extends React.Component {
         files: [],
         fromURL: false,
         ImageURL: '',
-        ImageURLValid: false
+        ImageURLValid: false,
+        imagePreview:null
     }
     handleClickOpen = () => {
         this.setState({ open: true })
     }
     onDrop = (files) => {
         this.setState({
-            files
+            files,imagePreview :files[0].preview
         })
     }
     reset = () => {
@@ -129,6 +130,7 @@ class ImageDialog extends React.Component {
         const inputValue = event.target.value
         this.setState({
             ImageURL: inputValue,
+            imagePreview:inputValue,
             ImageURLValid: checkURL(inputValue)
         })
     }
@@ -159,14 +161,26 @@ class ImageDialog extends React.Component {
             this.reset()
         }
     }
+    // preview=()=>{
+    //     this.setState({imagePreview:this.state.files[0].preview})
+    // }
     render() {
+        
         const { classes,  } = this.props
         const username=loggedUser
         let { files, fromURL, ImageURL, ImageURLValid } = this.state
+        console.log("files",files)
         return (
             <div className="text-center " style={{display:"flex"}} >
 
-             <label  style={{ "flexGrow": "1" }} className="lab">Add Photo</label><Button onTouchTap={this.handleClickOpen} className={classes.button} style={{minWidth:0,padding:3}} color="primary">
+             <label  style={{ "flexGrow": "1" }} className="lab">Add Photo 
+             
+             </label>
+             <img hidden={this.state.imagePreview?false:true} src={this.state.imagePreview} style={{"width": "50px",
+    "height": "50px","borderRadius": "8px";
+    "marginTop": "1px"}} />
+             
+             <Button onTouchTap={this.handleClickOpen} className={classes.button} style={{minWidth:0,padding:3}} color="primary">
                     
                     <FileUpload className={classes.rightIcon} />
                 </Button>
