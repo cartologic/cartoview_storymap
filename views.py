@@ -11,8 +11,8 @@ from .utils import create_layer
 from geoserver.catalog import Catalog, FailedRequestError
 from geonode.maps.models import Map
 username, password = ogc_server_settings.credentials
-gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
-geonode_workspace = gs_catalog.get_workspace("geonode")
+# gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
+# geonode_workspace = gs_catalog.get_workspace("geonode")
 _js_permissions_mapping = {
     'whoCanView': 'view_resourcebase',
     'whoCanChangeMetadata': 'change_resourcebase_metadata',
@@ -146,8 +146,8 @@ def view_app(
         template="%s/view.html" %
         APP_NAME,
         context={}):
-    print("id",instance_id)
-    print(username,geonode_workspace.__dict__)
+    # print("id",instance_id)
+    # print(username,geonode_workspace.__dict__)
     # instance = _resolve_appinstance(
     #     request, instance_id, 'base.view_resourcebase', _PERMISSION_MSG_VIEW)
     instance = AppInstance.objects.get(pk=instance_id)
