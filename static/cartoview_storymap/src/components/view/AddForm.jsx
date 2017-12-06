@@ -169,7 +169,7 @@ class addForm extends React.Component {
             // this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.removeLocation()
-            // this.props.back()
+             this.props.back()
             this.cancel()
             this.setState({ loading: false })
             feature.set("featureIndex", ++this.props.features.length)
@@ -219,6 +219,7 @@ class addForm extends React.Component {
         // this.props.handleSwitch()
         this.props.removeLocation()
         // this.props.hideCurrentLocation()
+        this.props.back()
         this.props.hideAddPanel()
     }
     click = () => {
@@ -261,7 +262,7 @@ class addForm extends React.Component {
             //console.log("on map")
             //  this.props.showCurrentLocation()
             this.props.getLocation()
-        } else {
+        } else if(value=='current') {
             // this.props.hideCurrentLocation()
             // this.props.removeLocation()
             this.geolocation()
@@ -460,7 +461,7 @@ class addForm extends React.Component {
                             {this.state.loading ? 'saving' : 'save'}
                             {this.state.loading && <CircularProgress size={20} />}
                         </Button>
-                    <Button  raised color="primary" onClick={()=>back()} className={classes.button} style={{marginLeft:"150px"}} >Cancel</Button>
+                    <Button  raised color="primary" onClick={()=>this.cancel()} className={classes.button} style={{marginLeft:"150px"}} >Cancel</Button>
 
 
                     </div>
