@@ -106,7 +106,8 @@ class addForm extends React.Component {
             locationAddress: true,
             locationMap: '',
             markerColorOpen: false,
-            numberColorOpen: false
+            numberColorOpen: false,
+            onAddress:true
 
         }
 
@@ -252,6 +253,9 @@ class addForm extends React.Component {
         this.handleNumberColorClose()
     }
     handleChangeLocation = (event, value) => {
+        if (value=='onAddress'){
+        this.setState({onAddress:true})
+        }else{this.setState({onAddress:false})}
         this.setState({ locationMap: value });
         if (value == 'onMap') {
             //console.log("on map")
@@ -328,7 +332,7 @@ class addForm extends React.Component {
                                 <TextField 
                                     fullWidth
            
-                                
+                                   
                                     label={"Link"}
                                     className={classes.textField}
                                     onChange={this.handleChange("link")}
@@ -422,7 +426,7 @@ class addForm extends React.Component {
                     <Divider />
 
                    
-                  <div className="geocode-search"><GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /></div>
+                
 
                     <br />
 
@@ -436,7 +440,12 @@ class addForm extends React.Component {
                                     className={classes.group}
                                     value={this.state.locationMap}
                                     onChange={this.handleChangeLocation}
-                                >
+
+                                >   
+                       
+                                      <FormControlLabel value="onAddress" control={<Radio />} label={  <GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /> }/> 
+                                    
+                                                                
                                     <FormControlLabel value="onMap" control={<Radio />} label="add location on map" />
                                     <FormControlLabel value="current" control={<Radio />} label="add my current location" />
                                 </RadioGroup>

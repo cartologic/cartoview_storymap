@@ -21,7 +21,7 @@ function renderInput(inputProps) {
     return (
     
             <TextField
-               
+
                 className={classes.textField}
                 value={value}
                 inputRef={ref}
@@ -133,7 +133,7 @@ class IntegrationAutosuggest extends React.Component {
         })
     }
     render() {
-        const { classes } = this.props
+        const { classes,disable } = this.props
         return (
             <Autosuggest
                 theme={{
