@@ -177,7 +177,7 @@ class ImageDialog extends React.Component {
              
              </label>
              <img hidden={this.state.imagePreview?false:true} src={this.state.imagePreview} style={{"width": "50px",
-    "height": "50px","borderRadius": "8px";
+    "height": "50px","borderRadius": "8px",
     "marginTop": "1px"}} />
              
              <Button onTouchTap={this.handleClickOpen} className={classes.button} style={{minWidth:0,padding:3}} color="primary">

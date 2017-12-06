@@ -38,6 +38,7 @@ import { getCRSFToken } from '../../helpers/helpers.jsx'
 import Snackbar from 'material-ui/Snackbar';
 import Dropzone from 'react-dropzone'
 import Badge from 'material-ui/Badge';
+import Tooltip from 'material-ui/Tooltip';
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -114,7 +115,8 @@ export class FeatureListComponent extends React.Component {
             openDeleteDialoge: false,
             deletedFeature: {},
             openSnackBar: false,
-            loading:false
+            loading:false,
+            editMode:false
 
         }
 
@@ -263,6 +265,12 @@ export class FeatureListComponent extends React.Component {
 
         ev.target.src = urls.static + 'cartoview_storymap/img/no-img.png'
     }
+    enableEdit=()=>{
+        this.setState({editMode:true})
+    }
+    disableEdit=()=>{
+        this.setState({editMode:false})
+    }
     render() {
 
 
@@ -283,6 +291,7 @@ export class FeatureListComponent extends React.Component {
 
         const SortableItem = SortableElement(({ value, sortIndex, index }) =>
             <div className="card-div" >
+        
                 < Card id={"id" + sortIndex} className='image-container'>
                     <div style={{ display: "flex" }}>
                         <div style={{ "flexGrow": "1" }}> 
@@ -294,7 +303,7 @@ export class FeatureListComponent extends React.Component {
                             
                         </div>
                         <div>
-                            {this.state.accessEdit && <IconButton onMouseDown={() => {
+                            {this.state.accessEdit &&this.state.editMode&& <IconButton onMouseDown={() => {
                                 this.props.editFeature(value)
                                 this.props.handleEditFeature(value)
                             }}
@@ -302,7 +311,7 @@ export class FeatureListComponent extends React.Component {
                                 <EditIcon />
                             </IconButton>}
 
-                            {this.state.accessDelete && <IconButton onMouseDown={() => {
+                            {this.state.accessDelete &&this.state.editMode&& <IconButton onMouseDown={() => {
                                 this.deleteDialogeClickOpen(value)
                             }}
                                 className={classes.button} aria-label="edit" color="primary">
@@ -330,7 +339,6 @@ export class FeatureListComponent extends React.Component {
                     </CardContent>
 
                 </Card>
-
                 <Divider />
                 <br />
             </div>
@@ -344,13 +352,16 @@ export class FeatureListComponent extends React.Component {
                             index={index}
                             sortIndex={index}
                             value={value}
+                            disabled={!this.state.editMode}
                         />
                     ))}
                 </div>
             );
         });
         return (
+          
             <div>
+                
                 <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
                     <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
                     <DialogContent>
@@ -389,11 +400,18 @@ export class FeatureListComponent extends React.Component {
                     features && features.length == 0 ?
                         <Message message={message} type="body2" /> :
                         <Loader />}
-  {this.state.accessAdd &&  !featuresIsLoading &&  <Paper className='fixed-container'><Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'100%'}} >
+                         <Paper className='fixed-container'>
+  {this.state.accessAdd &&  !featuresIsLoading && <Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'45%'}} >
         submit
-      </Button></Paper>}
-
-
+      </Button>}
+      {this.state.accessEdit && !this.state.editMode &&  !featuresIsLoading &&this.state.features&& this.state.features.length >0 && 
+         <Button onClick={()=>    this.enableEdit()} raised color="primary" className={classes.button}style={{width:'45%',float:"right"}} >
+        Edit
+      </Button>}
+      {this.state.accessEdit && this.state.editMode &&  !featuresIsLoading   &&this.state.features&& this.state.features.length >0 &&  <Button onClick={()=>    this.disableEdit()} raised color="primary" className={classes.button}style={{width:'45%',float:"right"}} >
+        cancel
+      </Button>}
+      </Paper>
             </div>
         )
     }
