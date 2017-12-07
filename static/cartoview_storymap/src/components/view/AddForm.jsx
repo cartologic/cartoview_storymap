@@ -117,7 +117,7 @@ class addForm extends React.Component {
     WFS = new WFSClient(this.props.urls)
 
     componentWillReceiveProps(nextProps) {
-        console.log("fole======",nextProps.attachments[1].id)
+      
         if (nextProps.attachments) {
 
             if (nextProps.attachments.file) {
