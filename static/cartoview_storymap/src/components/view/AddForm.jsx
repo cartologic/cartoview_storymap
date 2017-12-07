@@ -97,7 +97,7 @@ class addForm extends React.Component {
             success: false,
             loading: false,
             fileName: "",
-            fileId:"",
+            fileId:null,
             clicked: false,
             coordinates: false,
             markercolor: "#000000",

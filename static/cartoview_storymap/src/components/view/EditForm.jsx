@@ -107,7 +107,7 @@ class EditForm extends React.Component {
             markerColorOpen: false,
             numberColorOpen: false,
             fileName: "",
-            fileId:"",
+            fileId:null,
             id:null,
             clicked: false,
         }
