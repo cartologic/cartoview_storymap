@@ -38,12 +38,16 @@ import Input, { InputLabel } from 'material-ui/Input';
 import GeoCodeSearchInput from './SearchInput';
 import ColorPicker from 'material-ui-color-picker';
 import { MenuItem } from 'material-ui/Menu';
+import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
+import Collapse from 'material-ui/transitions/Collapse';
+import Avatar from 'material-ui/Avatar';
 import Dialog, {
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import DeleteIcon from 'material-ui-icons/Delete';
 const styles = theme => ({
     root: {
         background: theme.palette.background.paper,
@@ -101,13 +105,26 @@ class EditForm extends React.Component {
             id: this.props.featureEdit.getProperties()['featureIndex'],
             geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 },
             markerColorOpen: false,
-            numberColorOpen: false
+            numberColorOpen: false,
+            fileName: "",
+            fileId:"",
+            id:null,
+            clicked: false,
         }
         this.WFS = new WFSClient(this.props.urls)
     }
 
     componentDidMount() {
 
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.attachments) {
+            
+                        if (nextProps.attachments.file) {
+                            this.setState({ fileName: nextProps.attachments.file,fileId:nextProps.attachments.file })
+                        }
+                        else { this.setState({ fileName: nextProps.attachments[1].file,fileId:nextProps.attachments[1].id }) }
+                    }
     }
     handleShape = (event) => {
 
@@ -141,6 +158,37 @@ class EditForm extends React.Component {
     handleNumberColorClose = () => {
         this.setState({ numberColorOpen: false });
     };
+    deletePhoto=()=>{
+        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+
+        this.setState({fileName:"",fileId:null})
+        this.setState({id:feature.getProperties()['imageid']})
+        feature.set("imageurl",'null')
+        this.state.formValue['imageurl']=null
+        this.state.formValue['imageid']=null
+        
+    }
+    deleteRequest=()=>{
+        console.log("Del req",this.state.id)
+        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+        var id=feature.getProperties()['imageid']
+     
+        const url = urls.attachmentDeleteUrl(props.typename,this.state.id)
+        return fetch(url, {
+            method: 'DELETE',
+            
+            credentials: 'include',
+            headers: new Headers({
+                'Content-Type': 'text/xml',
+                "X-CSRFToken": getCRSFToken()
+            })
+        }).then((res) => {
+            // this.props.removeFeatureMarker(this.state.deletedFeature)
+            // this.setState({ openDeleteDialoge: false, openSnackBar: true ,loading:false})
+        })
+
+    }
+    
     save = () => {
         this.setState({ loading: true })
         // var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
@@ -201,16 +249,28 @@ class EditForm extends React.Component {
 
             }
         })
+        if (this.state.clicked == true && this.state.fileName != ""){
+            console.log("filename",this.state.fileName)
+            feature.set('imageurl', this.state.fileName)
+            this.state.formValue["imageurl"] = this.state.fileName
+            this.state.formValue["imageid"] = this.state.fileId
+   
+        }
         feature.set('markershape', this.state.markershape)
         this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue, geometry).then(res =>
             res.text()).then((res) => {
+
+
+
+
+                this.deleteRequest()
                 this.setState({ success: true })
 
 
                 this.props.back()
                 // this.props.handleOpen("Feature edited Successfully")
                 //   this.props.handleSwitch()
-              
+
                 // this.props.refreshMapEdit(feature)
 
             }).catch((error) => {
@@ -223,7 +283,9 @@ class EditForm extends React.Component {
         this.handleMarkerColorClose()
         this.handleNumberColorClose()
     }
-
+    click = () => {
+        this.setState({ clicked: true })
+    }
     render() {
         const vertical = 'bottom', horizontal = 'center'
         const {
@@ -235,57 +297,55 @@ class EditForm extends React.Component {
             addComment,
             username,
             SaveImageBase64,
+            getImageFromURL,
             featureTypes
         } = this.props
         return (
             <div>
-
                 <Hidden smDown>
                     <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
                         <BackIcon />
                     </IconButton>
                 </Hidden>
                 <div>
-             
+                    <TextField
+                        fullWidth
+                        defaultValue={this.props.featureEdit.getProperties()['title']}
 
-                                  <TextField 
-                                    fullWidth
-                                    defaultValue={this.props.featureEdit.getProperties()['title']}
-           
-                                
-                                    label={"Title"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("title")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                <TextField 
-                                    fullWidth
-                                    defaultValue={this.props.featureEdit.getProperties()["description"]}
-                                    label={"Description"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("description")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                <TextField 
-                                    fullWidth
-           
-                                    defaultValue={this.props.featureEdit.getProperties()["link"]}
-                                    
-                                    label={"Link"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("link")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                
+
+                        label={"Title"}
+                        className={classes.textField}
+                        onChange={this.handleChange("title")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+                        defaultValue={this.props.featureEdit.getProperties()["description"]}
+                        label={"Description"}
+                        className={classes.textField}
+                        onChange={this.handleChange("description")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+
+                        defaultValue={this.props.featureEdit.getProperties()["link"]}
+
+                        label={"Link"}
+                        className={classes.textField}
+                        onChange={this.handleChange("link")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                         <Select
@@ -302,14 +362,8 @@ class EditForm extends React.Component {
                             <MenuItem value={'X'}><XICon /> x</MenuItem>
                         </Select>
                     </FormControl>
-
-
-
                     <br />
-
-
-
-                    <div style={{ display: "flex" }}>
+                   <div style={{ display: "flex" }}>
                         <label style={{ "flexGrow": "1" }} className="lab">Marker's color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
                         <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
                             <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
@@ -330,12 +384,6 @@ class EditForm extends React.Component {
 
                     <br />
                     <Divider />
-
-
-
-
-
-
                     <div style={{ display: "flex" }}>
                         <label style={{ "flexGrow": "1" }} className="lab">  Marker Label's Color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
                         <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
@@ -357,17 +405,43 @@ class EditForm extends React.Component {
 
                         </Dialog>
                     </div>
-
-
-
-
-
-                </div>
-
-
-
-               
-
+               </div>
+               {this.props.featureEdit.getProperties()["imageurl"]&&this.props.featureEdit.getProperties()["imageurl"]!="null"&& 
+            
+            
+            <Card style={{margin: "10px" }} className={classes.card}>
+         <div className={"row"} style={{display:"flex"}}>
+         <div style={{flex:1}}>
+         <CardHeader
+          
+         
+            subheader="Edit photo"
+          />
+         </div>
+         <div> <IconButton>
+                <DeleteIcon onClick={()=>this.deletePhoto()}/>
+              </IconButton></div>
+         </div>
+         <div>
+          <img
+            className={classes.media}
+            style={{width: "100%"}}
+            src= {this.props.featureEdit.getProperties()["imageurl"] }
+           
+          />
+      
+     </div>
+        
+        </Card>           
+            
+            
+            }
+                {!this.props.featureEdit.getProperties()["imageurl"]||this.props.featureEdit.getProperties()["imageurl"]=="null"&&
+                <div onClick={() => this.click()}>
+                                        <Slider attachments={[]} />
+                                        <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
+                                    </div>
+                }
                 <div>
                     <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
                         {this.state.loading ? 'saving' : 'save'}
@@ -375,9 +449,9 @@ class EditForm extends React.Component {
                     </Button>
                 </div>
                 <div>
-                
-                    <Button  raised color="primary" onClick={()=>back()} className={classes.button} style={{marginLeft:"150px"}} >Cancel</Button>
-                
+
+                    <Button raised color="primary" onClick={() => back()} className={classes.button} style={{ marginLeft: "150px" }} >Cancel</Button>
+
                 </div>
                 <div className={classes.textCenter}>
 

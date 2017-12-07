@@ -97,6 +97,7 @@ class addForm extends React.Component {
             success: false,
             loading: false,
             fileName: "",
+            fileId:"",
             clicked: false,
             coordinates: false,
             markercolor: "#000000",
@@ -116,12 +117,13 @@ class addForm extends React.Component {
     WFS = new WFSClient(this.props.urls)
 
     componentWillReceiveProps(nextProps) {
+        console.log("fole======",nextProps.attachments[1].id)
         if (nextProps.attachments) {
 
             if (nextProps.attachments.file) {
-                this.setState({ fileName: nextProps.attachments.file })
+                this.setState({ fileName: nextProps.attachments.file,fileId:nextProps.attachments.file })
             }
-            else { this.setState({ fileName: nextProps.attachments[1].file }) }
+            else { this.setState({ fileName: nextProps.attachments[1].file,fileId:nextProps.attachments[1].id }) }
         }
     }
     getType = (type) => {
@@ -148,6 +150,7 @@ class addForm extends React.Component {
         })
         feature.set("order", this.props.features.length+1)
         feature.set("imageurl", this.state.fileName)
+        feature.set("imageid", this.state.fileId)
         feature.set("markercolor", this.state.markercolor)
         feature.set("numberscolor", this.state.numberscolor)
         feature.set("markershape", this.state.markershape)

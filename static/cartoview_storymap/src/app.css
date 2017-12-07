@@ -137,3 +137,31 @@ hr{
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+ 
+  opacity: 1;
+  transition: opacity 0.6s;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
+.alert.success {background-color: #4CAF50;}
+.alert.info {background-color:  rgb(207, 230, 247)}
+.alert.warning {background-color: #ff9800;}
+
+.closebtn {
+  margin-left: 15px;
+  color: black;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

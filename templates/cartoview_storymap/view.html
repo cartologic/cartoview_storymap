@@ -63,6 +63,9 @@
                 attachmentUploadUrl:function(layerName){
                     return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/file'
                 },
+                attachmentDeleteUrl:function(layerName,id){
+                    return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/file/'+id
+                },
                 commentsUploadUrl:function(layerName){
                     return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/comment'
                 },
@@ -93,6 +96,7 @@
 
 
     props.layername="geonode:"+trimmed_layername+"_"+"{{app}}"
+    props.typename=trimmed_layername+"_"+"{{app}}"
     props.layer=trimmed_layername+"_"+"{{app}}"
     console.log(props.layername)
     props.formAbstract="{{instance.abstract}}"

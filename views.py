@@ -85,7 +85,7 @@ def save(request, instance_id=None, app_name=APP_NAME):
         layer_title = title+'_'+app_name
         geometry_type = "Point"
         config.update(layername=layer_title)
-        attributes = json.dumps({"title":"string","description":"string","markerColor":"string","markerShape":"string","numbersColor":"string","title":"string","imageUrl":"string","order":"integer","link":"string"})
+        attributes = json.dumps({"title":"string","description":"string","markerColor":"string","markerShape":"string","numbersColor":"string","title":"string","imageUrl":"string","order":"integer","link":"string","imageId":"integer"})
         # permissions = form.cleaned_data["permissions"]
         layer = create_layer(name, layer_title, request.user.username, geometry_type,attributes)
         # maps=Map(title=name,center_x=0,center_y=0,zoom=3,owner=request.user)

@@ -116,12 +116,15 @@ export class FeatureListComponent extends React.Component {
             deletedFeature: {},
             openSnackBar: false,
             loading:false,
-            editMode:false
+            editMode:false,
+            alert:true
 
         }
 
     }
-
+    closeAlert=()=>{
+        this.setState({alert:false})
+    }
     deleteDialogeClickOpen = (feature) => {
 
         this.setState({ deletedFeature: feature, openDeleteDialoge: true })
@@ -362,7 +365,16 @@ export class FeatureListComponent extends React.Component {
         return (
           
             <div>
+                {this.state.editMode&&this.state.alert&&
                 
+                
+                
+<div className="alert info">
+<span className="closebtn" onClick={()=>{this.closeAlert()}}>&times;</span> 
+  <strong>Info!</strong> Drag Cards to reorder 
+  
+</div>
+                }
                 <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
                     <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
                     <DialogContent>
