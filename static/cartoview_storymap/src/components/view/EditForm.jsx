@@ -115,7 +115,7 @@ class EditForm extends React.Component {
     }
 
     componentDidMount() {
-
+console.log(this.props.featureEdit.getProperties()["imageurl"])
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.attachments) {
@@ -436,7 +436,7 @@ class EditForm extends React.Component {
             
             
             }
-                {!this.props.featureEdit.getProperties()["imageurl"]||this.props.featureEdit.getProperties()["imageurl"]=="null"&&
+                { this.props.featureEdit.getProperties()["imageurl"]==" "||this.props.featureEdit.getProperties()["imageurl"]=="null"||this.props.featureEdit.getProperties()["imageurl"]==null&&
                 <div onClick={() => this.click()}>
                                         <Slider attachments={[]} />
                                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />

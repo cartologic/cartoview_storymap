@@ -96,7 +96,7 @@ class addForm extends React.Component {
             formValue: {},
             success: false,
             loading: false,
-            fileName: "",
+            fileName: null,
             fileId:null,
             clicked: false,
             coordinates: false,
