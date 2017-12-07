@@ -84,7 +84,7 @@ export const Item = (props) => {
                     {config.description ? feature.getProperties()[config.description] : ''}
                 </Typography>
                  <Typography component="p">
-                    {config.link ? feature.getProperties()[config.link] : ''}
+                    {config.link!=null ? feature.getProperties()[config.link] : ''}
                 </Typography>
             </CardContent>
         </Card>
@@ -329,13 +329,14 @@ export class FeatureListComponent extends React.Component {
                         <Typography component="p">
                             {value.getProperties()['description']}
                         </Typography>
-                       <Typography component="p" onMouseDown={() => {
+                      {value.getProperties()['link']&& value.getProperties()['link']!='null'&&<Typography component="p" onMouseDown={() => {
                          
-                               window.location.href = "http://www.google.com";
-                            }}>
+                            //    window.location.href =" value.getProperties()['link']";
+                            // window.location.assign("https://www.w3schools.com")
+                           }}>
                          
                             <a href={value.getProperties()['link']}>{value.getProperties()['link']}</a>
-                        </Typography>
+                        </Typography>}
                     </CardContent>
 
                 </Card>
