@@ -56,9 +56,9 @@ export default class General extends Component {
     save = () => {
       
 		const value = this.form.getValue()
-
-
-        if (value) {
+    
+        if (value) {console.log(value,"????????????????")
+        this.state['value']=value
 			var val= Object.assign({'themeColor':this.state.themeColor,'themeColorName':this.state.themeColorName}, value);
 			this.setState({loading:true})
 			console.log("val",val)
@@ -120,7 +120,8 @@ export default class General extends Component {
 							className={this.state.success === true
 							? "btn btn-primary btn-sm pull-right"
 							: "btn btn-primary btn-sm pull-right disabled"}
-							href={`/apps/cartoview_story_map/${ this.props.id }/view/`}>
+						
+            	href={`/apps/cartoview_story_map/${ this.props.id }/view/`}>
 							View
 						</a>
 
@@ -175,7 +176,7 @@ export default class General extends Component {
                     type={formConfig}
                     value={value}
                     options={options}
-                    onChange={this.onChange}
+                
 					/>
 					<h5>Select Theme Color</h5>
               <button style={{
@@ -185,9 +186,9 @@ export default class General extends Component {
               </button>
 
               <ul className="dropdown-menu" aria-labelledby="dropdownMenu1" style={{
-				width: "100%",
-				position:"initial"
-              }}>
+                  width: "100%",
+                  position:"initial"
+                        }}>
                 <li style={{
                   width: "100%"
                 }}>
@@ -198,6 +199,7 @@ export default class General extends Component {
                     height: "25px",
                     margin: "2% auto 2% auto"
                   }} onClick={() => {
+                    this.state['value']=this.form.getValue()
                     this.setState({themeColor: "#03A9F4",themeColorName: "blue"})
                   }}></div>
                 </li>
@@ -211,6 +213,7 @@ export default class General extends Component {
                     height: "25px",
                     margin: "2% auto 2% auto"
                   }} onClick={() => {
+                    this.state['value']=this.form.getValue()
                     this.setState({themeColor: "#009688",themeColorName:"teal"})
                   }}></div>
                 </li>
@@ -224,6 +227,7 @@ export default class General extends Component {
                     height: "25px",
                     margin: "2% auto 2% auto"
                   }} onClick={() => {
+                    this.state['value']=this.form.getValue()
                     this.setState({themeColor: "#3f51B5",themeColorName:"purple"})
                   }}></div>
                 </li>
@@ -237,6 +241,7 @@ export default class General extends Component {
                     height: "25px",
                     margin: "2% auto 2% auto"
                   }} onClick={() => {
+                    this.state['value']=this.form.getValue()
                     this.setState({themeColor: "#607D8B",themeColorName:"blueGrey"})
                   }}></div>
                 </li>
