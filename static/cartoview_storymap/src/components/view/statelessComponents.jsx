@@ -71,7 +71,7 @@ export const Item = (props) => {
         <Card className="Scrollable" onClick={() => openDetails({ detailsOfFeature: feature })}>
             <CardHeader
 
-                title={`${feature.getProperties()[config.titleAttribute]}`}
+                title={`${feature.getProperties()[config.titleAttribute]!=null ?feature.getProperties()[config.titleAttribute]:""}`}
                 subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
 
             <Img className={classes.bigAvatar}
@@ -84,7 +84,7 @@ export const Item = (props) => {
                     {config.description ? feature.getProperties()[config.description] : ''}
                 </Typography>
                 <Typography component="p">
-                    {config.link != null ? feature.getProperties()[config.link] : ''}
+                    {config.link != null&& config.link != undefined ? feature.getProperties()[config.link] : ''}
                 </Typography>
             </CardContent>
         </Card>
@@ -308,8 +308,8 @@ export class FeatureListComponent extends React.Component {
                         <div style={{ "flexGrow": "1" }}>
                             <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
                             <CardHeader
+                            title={value.getProperties()['title']!=null ? value.getProperties()['title']:"No Title"}
 
-                                title={`${value.getProperties()['title']}`}
                                 subheader={`${config.ubtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
 
                         </div>
@@ -342,8 +342,6 @@ export class FeatureListComponent extends React.Component {
                         </Typography>
                         {value.getProperties()['link'] && value.getProperties()['link'] != 'null' && <Typography component="p" onMouseDown={() => {
 
-                            //    window.location.href =" value.getProperties()['link']";
-                            // window.location.assign("https://www.w3schools.com")
                         }}>
 
                             <a href={value.getProperties()['link']}>visit link</a>
@@ -430,7 +428,7 @@ export class FeatureListComponent extends React.Component {
                             Edit
       </Button>}
                     {this.state.accessEdit && this.state.editMode && !featuresIsLoading && this.state.features && this.state.features.length > 0 && <Button onClick={() => this.disableEdit()} raised color="primary" className={classes.button} style={{ width: '45%', float: "right" }} >
-                        cancel
+                        Back
       </Button>}
                 </Paper>
             </div>
