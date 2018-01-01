@@ -3,7 +3,7 @@ import ol from 'openlayers'
 export const styleFunction = (feature) => {
 
     var shape = feature.getProperties().markershape
-    console.log("shapehh, shape)
+  
     const text = props.config.DisplayNumbersOnMarkers ? new ol.style.Text({
         text: feature.getProperties().order.toString(),
         offsetY: 0,

@@ -338,7 +338,7 @@ export class FeatureListComponent extends React.Component {
                             // window.location.assign("https://www.w3schools.com")
                            }}>
                          
-                            <a href={value.getProperties()['link']}>{value.getProperties()['link']}</a>
+                            <a href={value.getProperties()['link']}>visit link</a>
                         </Typography>}
                     </CardContent>
 
