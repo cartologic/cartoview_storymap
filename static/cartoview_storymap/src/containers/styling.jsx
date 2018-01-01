@@ -2,8 +2,8 @@ import ol from 'openlayers'
 
 export const styleFunction = (feature) => {
 
-var shape=feature.getProperties().markershape
-
+    var shape = feature.getProperties().markershape
+    console.log("shapehh, shape)
     const text = props.config.DisplayNumbersOnMarkers ? new ol.style.Text({
         text: feature.getProperties().order.toString(),
         offsetY: 0,
@@ -12,77 +12,88 @@ var shape=feature.getProperties().markershape
             color: feature.getProperties().numberscolor
         })
     }) : ""
-    var image=''
-       if(shape=='star'){
-                    image = new ol.style.RegularShape({
-                            fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-                        }) ,
-                    
-                            points: 5,
-                            radius: 15,
-                            radius2: 6,
-                            angle: 0
-                        })}
-        // else if(shape=='food'){
-        //           image = new ol.style.Icon(({
-        //                 anchor: [0.5, 45],
-        //                 anchorXUnits: 'fraction',
-        //                 anchorYUnits: 'pixels',
-        //                 size : ['20','20'],
-        //                 src: urls.static + 'cartoview_story_map/blue-restourant.png'
-        //             }))}
-          else if(shape=='circle'){
-
-              image = new ol.style.Circle({
-       fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-             }) ,
-    
-       radius: 10
- });
-          }
-          else if(shape=='triangle'){
-                            image=  new ol.style.RegularShape({
-                            fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-                        }) ,
-                            points: 3,
-                            radius: 15,
-                            rotation: Math.PI / 4,
-                            angle: 0
-                        })
-          }
-          else if(shape=='square')
-                        {image=  new ol.style.RegularShape({
-                             fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-                        }) ,
-                           
-                            points: 4,
-                            radius: 15,
-                            angle: Math.PI / 4
-                        })}
-          else if(shape=='cross'){image=  new ol.style.RegularShape({
+    var image = ''
+    var stroke = new ol.style.Stroke({ color: feature.getProperties().markercolor, width: 2 });
+    if (shape == 'star') {
+        image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-                        }) ,
-       
+                color: feature.getProperties().markercolor
+            }),
+
+            points: 5,
+            radius: 15,
+            radius2: 6,
+            angle: 0
+        })
+    }
+    // else if(shape=='food'){
+    //           image = new ol.style.Icon(({
+    //                 anchor: [0.5, 45],
+    //                 anchorXUnits: 'fraction',
+    //                 anchorYUnits: 'pixels',
+    //                 size : ['20','20'],
+    //                 src: urls.static + 'cartoview_story_map/blue-restourant.png'
+    //             }))}
+    else if (shape == 'circle') {
+
+        image = new ol.style.Circle({
+            fill: new ol.style.Fill({
+                color: feature.getProperties().markercolor
+            }),
+
+            radius: 10
+        });
+    }
+    else if (shape == 'triangle') {
+        image = new ol.style.RegularShape({
+            fill: new ol.style.Fill({
+                color: feature.getProperties().markercolor
+            }),
+            points: 3,
+            radius: 15,
+            rotation: Math.PI / 4,
+            angle: 0
+        })
+    }
+    else if (shape == 'square') {
+        image = new ol.style.RegularShape({
+            fill: new ol.style.Fill({
+                color: feature.getProperties().markercolor
+            }),
+
+            points: 4,
+            radius: 15,
+            angle: Math.PI / 4
+        })
+    }
+    else if (shape == 'cross') {
+        console.log("cross2")
+        image = new ol.style.RegularShape({
+            fill: new ol.style.Fill({
+                color: feature.getProperties().markercolor
+            }),
+
+            fill: fill,
+            stroke: stroke,
             points: 4,
             radius: 10,
             radius2: 0,
             angle: 0
-          })}
-          else {image= new ol.style.RegularShape({
-            fill: new ol.style.Fill({
-                            color:  feature.getProperties().markercolor
-                        }) ,
-        
+        })
+    }
+    else {
+        console.log("X")
+        image = new ol.style.RegularShape({
+
+
+            fill: fill,
+            stroke: stroke,
             points: 4,
             radius: 10,
             radius2: 0,
             angle: Math.PI / 4
-          })}
+        })
+    }
     const styles = {
         'Point': new ol.style.Style({ image: image, text: text }),
         'LineString': new ol.style.Style({
