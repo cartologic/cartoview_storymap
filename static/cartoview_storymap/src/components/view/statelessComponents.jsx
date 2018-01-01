@@ -78,13 +78,13 @@ export const Item = (props) => {
                 src={[
                     attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
                 ]}
-              />
+            />
             <CardContent>
                 <Typography component="p">
                     {config.description ? feature.getProperties()[config.description] : ''}
                 </Typography>
-                 <Typography component="p">
-                    {config.link!=null ? feature.getProperties()[config.link] : ''}
+                <Typography component="p">
+                    {config.link != null ? feature.getProperties()[config.link] : ''}
                 </Typography>
             </CardContent>
         </Card>
@@ -115,15 +115,15 @@ export class FeatureListComponent extends React.Component {
             openDeleteDialoge: false,
             deletedFeature: {},
             openSnackBar: false,
-            loading:false,
-            editMode:false,
-            alert:true
+            loading: false,
+            editMode: false,
+            alert: true
 
         }
 
     }
-    closeAlert=()=>{
-        this.setState({alert:false})
+    closeAlert = () => {
+        this.setState({ alert: false })
     }
     deleteDialogeClickOpen = (feature) => {
 
@@ -134,7 +134,7 @@ export class FeatureListComponent extends React.Component {
         this.setState({ openDeleteDialoge: false });
     };
     deleteFeature = () => {
-        this.setState({loading:true})
+        this.setState({ loading: true })
         var xml = transactWFS("delete", this.state.deletedFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
@@ -149,7 +149,7 @@ export class FeatureListComponent extends React.Component {
             })
         }).then((res) => {
             this.props.removeFeatureMarker(this.state.deletedFeature)
-            this.setState({ openDeleteDialoge: false, openSnackBar: true ,loading:false})
+            this.setState({ openDeleteDialoge: false, openSnackBar: true, loading: false })
         })
 
     }
@@ -224,35 +224,41 @@ export class FeatureListComponent extends React.Component {
         });
     };
     checkPermissions = (name) => {
-        console.log("check permissions",props.access,owner,loggedUser,props.access.whoCanAddEditAndDeleteStory)
-    
-        {props.access.whoCanEditStory&& props.access.whoCanEditStory.map((user) => {
-            if (user.value == name || loggedUser==owner) {
-                console.log("in if edit")
-                 this.setState({ accessEdit: true })
-            }
+        console.log("check permissions", props.access, owner, loggedUser, props.access.whoCanAddEditAndDeleteStory)
 
-        })}
-        {props.access.whoCanSubmitStory&& props.access.whoCanSubmitStory.map((user) => {
-            console.log(user)
-            if (user.value == name || loggedUser==owner) {
-                console.log("in if add")
-                 this.setState({ accessAdd: true })
-            }
+        {
+            props.access.whoCanEditStory && props.access.whoCanEditStory.map((user) => {
+                if (user.value == name || loggedUser == owner) {
+                    console.log("in if edit")
+                    this.setState({ accessEdit: true })
+                }
 
-        })}
-        {props.access.whoCanDeleteStory&& props.access.whoCanDeleteStory.map((user) => {
-            if (user.value == name || loggedUser==owner) {
-                console.log("in if delete")
-                 this.setState({accessDelete: true })
-            }
+            })
+        }
+        {
+            props.access.whoCanSubmitStory && props.access.whoCanSubmitStory.map((user) => {
+                console.log(user)
+                if (user.value == name || loggedUser == owner) {
+                    console.log("in if add")
+                    this.setState({ accessAdd: true })
+                }
 
-        })}
-        if (loggedUser==owner) {
-               console.log("in itherr if ",name,loggedUser)
-                 this.setState({ accessAdd: true ,accessEdit: true ,accessDelete: true })
-                
-            }
+            })
+        }
+        {
+            props.access.whoCanDeleteStory && props.access.whoCanDeleteStory.map((user) => {
+                if (user.value == name || loggedUser == owner) {
+                    console.log("in if delete")
+                    this.setState({ accessDelete: true })
+                }
+
+            })
+        }
+        if (loggedUser == owner) {
+            console.log("in itherr if ", name, loggedUser)
+            this.setState({ accessAdd: true, accessEdit: true, accessDelete: true })
+
+        }
     }
     handleCloseSnackBar = () => {
         this.setState({ openSnackBar: false })
@@ -268,11 +274,11 @@ export class FeatureListComponent extends React.Component {
 
         ev.target.src = urls.static + 'cartoview_storymap/img/no-img.png'
     }
-    enableEdit=()=>{
-        this.setState({editMode:true})
+    enableEdit = () => {
+        this.setState({ editMode: true })
     }
-    disableEdit=()=>{
-        this.setState({editMode:false})
+    disableEdit = () => {
+        this.setState({ editMode: false })
     }
     render() {
 
@@ -289,24 +295,26 @@ export class FeatureListComponent extends React.Component {
             attachmentIsLoading,
             searchFilesById,
             openDetails,
-            addEntry
+            addEntry,
+            feature
         } = this.props
-
         const SortableItem = SortableElement(({ value, sortIndex, index }) =>
             <div className="card-div" >
-        
-                < Card id={"id" + sortIndex} className='image-container'>
+
+                < Card id={"id" + sortIndex} className='image-container'  onClick={() => 
+            
+                    openDetails({ detailsOfFeature:value})}>
                     <div style={{ display: "flex" }}>
-                        <div style={{ "flexGrow": "1" }}> 
-                        <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
-                        <CardHeader
-                            
-                            title={`${value.getProperties()['title']}`}
-                            subheader={`${config.ubtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
-                            
+                        <div style={{ "flexGrow": "1" }}>
+                            <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
+                            <CardHeader
+
+                                title={`${value.getProperties()['title']}`}
+                                subheader={`${config.ubtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
+
                         </div>
                         <div>
-                            {this.state.accessEdit &&this.state.editMode&& <IconButton onMouseDown={() => {
+                            {this.state.accessEdit && this.state.editMode && <IconButton onMouseDown={() => {
                                 this.props.editFeature(value)
                                 this.props.handleEditFeature(value)
                             }}
@@ -314,7 +322,7 @@ export class FeatureListComponent extends React.Component {
                                 <EditIcon />
                             </IconButton>}
 
-                            {this.state.accessDelete &&this.state.editMode&& <IconButton onMouseDown={() => {
+                            {this.state.accessDelete && this.state.editMode && <IconButton onMouseDown={() => {
                                 this.deleteDialogeClickOpen(value)
                             }}
                                 className={classes.button} aria-label="edit" color="primary">
@@ -324,7 +332,7 @@ export class FeatureListComponent extends React.Component {
                         </div>
                     </div>
                     <img className={classes.bigAvatar} style={{ height: "250px" }} src={[value.getProperties()['imageurl'] ? value.getProperties()['imageurl'] : urls.static + 'cartoview_storymap/img/no-img.png'
-                    ]} 
+                    ]}
 
                         onError={this.addDefaultSrc}
                     />
@@ -332,12 +340,12 @@ export class FeatureListComponent extends React.Component {
                         <Typography component="p">
                             {value.getProperties()['description']}
                         </Typography>
-                      {value.getProperties()['link']&& value.getProperties()['link']!='null'&&<Typography component="p" onMouseDown={() => {
-                         
+                        {value.getProperties()['link'] && value.getProperties()['link'] != 'null' && <Typography component="p" onMouseDown={() => {
+
                             //    window.location.href =" value.getProperties()['link']";
                             // window.location.assign("https://www.w3schools.com")
-                           }}>
-                         
+                        }}>
+
                             <a href={value.getProperties()['link']}>visit link</a>
                         </Typography>}
                     </CardContent>
@@ -363,16 +371,16 @@ export class FeatureListComponent extends React.Component {
             );
         });
         return (
-          
+
             <div>
-                {this.state.editMode&&this.state.alert&&
-                
-                
-                
-<div className="alert info">
-<span className="closebtn" onClick={()=>{this.closeAlert()}}>&times;</span> 
-  <strong>Info!</strong> Drag Cards to reorder 
-  
+                {this.state.editMode && this.state.alert &&
+
+
+
+                    <div className="alert info">
+                        <span className="closebtn" onClick={() => { this.closeAlert() }}>&times;</span>
+                        <strong>Info!</strong> Drag Cards to reorder
+
 </div>
                 }
                 <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
@@ -385,11 +393,11 @@ export class FeatureListComponent extends React.Component {
                             Cancel
                         </Button>
                         <Button onClick={this.deleteFeature} color="primary" disabled={this.state.loading}>
-                       
-   
-                           { this.state.loading?'Deleting':'Delete'}
-                            { this.state.loading&&<CircularProgress size={20}/>}
-            </Button>
+
+
+                            {this.state.loading ? 'Deleting' : 'Delete'}
+                            {this.state.loading && <CircularProgress size={20} />}
+                        </Button>
                     </DialogActions>
                 </Dialog>
                 <Snackbar
@@ -405,7 +413,7 @@ export class FeatureListComponent extends React.Component {
                     0 ?
                     <div id="contents"  >
 
-                 
+
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>
@@ -413,18 +421,18 @@ export class FeatureListComponent extends React.Component {
                     features && features.length == 0 ?
                         <Message message={message} type="body2" /> :
                         <Loader />}
-                         <Paper className='fixed-container'>
-  {this.state.accessAdd &&  !featuresIsLoading && <Button onClick={()=>    this.props.showAddPanel()} raised color="primary" className={classes.button}style={{width:'45%'}} >
-        submit
+                <Paper className='fixed-container'>
+                    {this.state.accessAdd && !featuresIsLoading && <Button onClick={() => this.props.showAddPanel()} raised color="primary" className={classes.button} style={{ width: '45%' }} >
+                        submit
       </Button>}
-      {this.state.accessEdit && !this.state.editMode &&  !featuresIsLoading &&this.state.features&& this.state.features.length >0 && 
-         <Button onClick={()=>    this.enableEdit()} raised color="primary" className={classes.button}style={{width:'45%',float:"right"}} >
-        Edit
+                    {this.state.accessEdit && !this.state.editMode && !featuresIsLoading && this.state.features && this.state.features.length > 0 &&
+                        <Button onClick={() => this.enableEdit()} raised color="primary" className={classes.button} style={{ width: '45%', float: "right" }} >
+                            Edit
       </Button>}
-      {this.state.accessEdit && this.state.editMode &&  !featuresIsLoading   &&this.state.features&& this.state.features.length >0 &&  <Button onClick={()=>    this.disableEdit()} raised color="primary" className={classes.button}style={{width:'45%',float:"right"}} >
-        cancel
+                    {this.state.accessEdit && this.state.editMode && !featuresIsLoading && this.state.features && this.state.features.length > 0 && <Button onClick={() => this.disableEdit()} raised color="primary" className={classes.button} style={{ width: '45%', float: "right" }} >
+                        cancel
       </Button>}
-      </Paper>
+                </Paper>
             </div>
         )
     }
@@ -477,14 +485,14 @@ PropsTable.propTypes = {
     selectedFeature: PropTypes.object.isRequired
 }
 
-export const DropZoneComponent = ( props ) => {
+export const DropZoneComponent = (props) => {
     const { classes, files, onDrop } = props
     return (
         <div className="center-div">
             <Dropzone maxSize={5242880} multiple={false} accept="image/*" onDrop={onDrop}>
                 <div>
                     <Message message={"Click to select Image to upload."} type="body1" />
-                    {files.map(f =><img src={f.preview} style={{    "width": "200px","height": "180px"}}/> )}
+                    {files.map(f => <img src={f.preview} style={{ "width": "200px", "height": "180px" }} />)}
                 </div>
             </Dropzone>
         </div>
@@ -523,7 +531,7 @@ export const MobileDrawer = (props) => {
             classes={{
                 paper: classes.drawerPaper,
             }}
-         
+
             ModalProps={{
                 keepMounted: true,
             }}

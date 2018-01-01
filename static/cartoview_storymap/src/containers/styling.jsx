@@ -73,7 +73,7 @@ export const styleFunction = (feature) => {
                 color: feature.getProperties().markercolor
             }),
 
-            fill: fill,
+            // fill: fill,
             stroke: stroke,
             points: 4,
             radius: 10,
@@ -86,7 +86,7 @@ export const styleFunction = (feature) => {
         image = new ol.style.RegularShape({
 
 
-            fill: fill,
+            // fill: fill,
             stroke: stroke,
             points: 4,
             radius: 10,
