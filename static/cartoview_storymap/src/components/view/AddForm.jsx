@@ -97,7 +97,7 @@ class addForm extends React.Component {
             success: false,
             loading: false,
             fileName: null,
-            fileId:null,
+            fileId: null,
             clicked: false,
             coordinates: false,
             markercolor: "#000000",
@@ -108,7 +108,7 @@ class addForm extends React.Component {
             locationMap: '',
             markerColorOpen: false,
             numberColorOpen: false,
-            onAddress:true
+            onAddress: true
 
         }
 
@@ -117,15 +117,16 @@ class addForm extends React.Component {
     WFS = new WFSClient(this.props.urls)
 
     componentWillReceiveProps(nextProps) {
-      
+
         if (nextProps.attachments) {
 
             if (nextProps.attachments.file) {
-                this.setState({ fileName: nextProps.attachments.file,fileId:nextProps.attachments.file })
+                this.setState({ fileName: nextProps.attachments.file, fileId: nextProps.attachments.file })
             }
-            else { 
-                console.log("attachhhhhhh",nextProps.attachments,nextProps.attachments.length)
-                this.setState({ fileName: nextProps.attachments[nextProps.attachments.length-1].file,fileId:nextProps.attachments[nextProps.attachments.length-1].id }) }
+            else {
+                console.log("attachhhhhhh", nextProps.attachments, nextProps.attachments.length)
+                this.setState({ fileName: nextProps.attachments[nextProps.attachments.length - 1].file, fileId: nextProps.attachments[nextProps.attachments.length - 1].id })
+            }
         }
     }
     getType = (type) => {
@@ -150,15 +151,15 @@ class addForm extends React.Component {
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
-        console.log("imageid",this.state.fileId,"image url",this.state.fileName)
-        feature.set("order", this.props.features.length+1)
+        console.log("imageid", this.state.fileId, "image url", this.state.fileName)
+        feature.set("order", this.props.features.length + 1)
         feature.set("imageurl", this.state.fileName)
         feature.set("imageid", this.state.fileId)
-        this.setState({'fileId':null,'fileName':null })
+        this.setState({ 'fileId': null, 'fileName': null })
         feature.set("markercolor", this.state.markercolor)
         feature.set("numberscolor", this.state.numberscolor)
         feature.set("markershape", this.state.markershape)
-        console.log("aaaaaaaa",feature)
+        console.log("aaaaaaaa", feature)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
         var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
@@ -172,18 +173,18 @@ class addForm extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-            this.setState({'fileId':null,'fileName':null })
+            this.setState({ 'fileId': null, 'fileName': null })
             this.setState({ success: true })
             // this.props.handleSwitch()
             this.props.handleOpen("Feature created Successfully")
             this.props.removeLocation()
-             this.props.back()
-             this.props.refreshMap(feature)
+            this.props.back()
+            this.props.refreshMap(feature)
             this.cancel()
-            this.setState({ loading: false,fileId:null,fileName:null })
-            console.log("sssssss",this.props.features.length)
+            this.setState({ loading: false, fileId: null, fileName: null })
+            console.log("sssssss", this.props.features.length)
             feature.set("featureIndex", this.props.features.length++)
-            
+
 
         }).catch((error) => {
             throw Error(error)
@@ -264,15 +265,15 @@ class addForm extends React.Component {
         this.handleNumberColorClose()
     }
     handleChangeLocation = (event, value) => {
-        if (value=='onAddress'){
-        this.setState({onAddress:true})
-        }else{this.setState({onAddress:false})}
+        if (value == 'onAddress') {
+            this.setState({ onAddress: true })
+        } else { this.setState({ onAddress: false }) }
         this.setState({ locationMap: value });
         if (value == 'onMap') {
             //console.log("on map")
             //  this.props.showCurrentLocation()
             this.props.getLocation()
-        } else if(value=='current') {
+        } else if (value == 'current') {
             // this.props.hideCurrentLocation()
             // this.props.removeLocation()
             this.geolocation()
@@ -314,46 +315,46 @@ class addForm extends React.Component {
                 </IconButton>
 
                 <div>
-                    
-                        
-                            <TextField 
-                                    fullWidth
-           
-                                
-                                    label={"Title"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("title")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                <TextField 
-                                    fullWidth
-           
-                                
-                                    label={"Description"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("description")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                <TextField 
-                                    fullWidth
-           
-                                   
-                                    label={"Link"}
-                                    className={classes.textField}
-                                    onChange={this.handleChange("link")}
-                                    margin="normal"
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
-                                />
-                                
-                     
+
+
+                    <TextField
+                        fullWidth
+
+
+                        label={"Title"}
+                        className={classes.textField}
+                        onChange={this.handleChange("title")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+
+
+                        label={"Description"}
+                        className={classes.textField}
+                        onChange={this.handleChange("description")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+
+
+                        label={"Link"}
+                        className={classes.textField}
+                        onChange={this.handleChange("link")}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                    />
+
+
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                         <Select
@@ -373,9 +374,6 @@ class addForm extends React.Component {
                         </Select>
                     </FormControl>
                     <div className={'color-picker'}>
-
-
-
 
                         <br />
 
@@ -400,12 +398,6 @@ class addForm extends React.Component {
 
                         <br />
                         <Divider />
-
-
-
-
-
-
                         <div style={{ display: "flex" }}>
                             <label style={{ "flexGrow": "1" }} className="lab"> Marker Label's Color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
                             <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
@@ -435,35 +427,29 @@ class addForm extends React.Component {
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
                     <Divider />
+                   <br />
+                   <div>
 
-                   
-                
+                        <FormControl component="fieldset" required className={classes.formControl}>
+                            <RadioGroup
 
-                    <br />
+                                name="location"
+                                className={classes.group}
+                                value={this.state.locationMap}
+                                onChange={this.handleChangeLocation}
 
-           
-                        <div>
+                            >
 
-                            <FormControl component="fieldset" required className={classes.formControl}>
-                                <RadioGroup
-
-                                    name="location"
-                                    className={classes.group}
-                                    value={this.state.locationMap}
-                                    onChange={this.handleChangeLocation}
-
-                                >   
-                       
-                                      <FormControlLabel value="onAddress" control={<Radio />} label={  <GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} /> }/> 
-                                    
-                                                                
-                                    <FormControlLabel value="onMap" control={<Radio />} label="add location on map" />
-                                    <FormControlLabel value="current" control={<Radio />} label="add my current location" />
-                                </RadioGroup>
-                            </FormControl>
+                                <FormControlLabel value="onAddress" control={<Radio />} label={<GeoCodeSearchInput search={this.props.geocodeSearch} action={this.zoomToLocation} />} />
 
 
-                        </div>
+                                <FormControlLabel value="onMap" control={<Radio />} label="add location on map" />
+                                <FormControlLabel value="current" control={<Radio />} label="add my current location" />
+                            </RadioGroup>
+                        </FormControl>
+
+
+                    </div>
                     <div>
 
                         <Button disabled={this.state.loading || (!this.props.newFeature && !this.state.coordinates)} raised color="primary" onClick={this.save} className={classes.button} style={{ "float": "right" }} >
@@ -471,7 +457,7 @@ class addForm extends React.Component {
                             {this.state.loading ? 'saving' : 'save'}
                             {this.state.loading && <CircularProgress size={20} />}
                         </Button>
-                    <Button  raised color="primary" onClick={()=>this.cancel()} className={classes.button} style={{marginLeft:"150px"}} >Cancel</Button>
+                        <Button raised color="primary" onClick={() => this.cancel()} className={classes.button} style={{ marginLeft: "150px" }} >Cancel</Button>
 
 
                     </div>

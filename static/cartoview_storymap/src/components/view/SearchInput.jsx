@@ -42,7 +42,8 @@ const styles = theme => ({
         position: 'relative',
         height: 'auto',
         margin: "15px",
-        width: "100%"
+        width: "100%",
+
     },
     suggestionsContainerOpen: {
         position: 'absolute',
@@ -50,6 +51,7 @@ const styles = theme => ({
         marginBottom: theme.spacing.unit * 3,
         left: 0,
         right: 0,
+
     },
     suggestion: {
         display: 'block',
@@ -102,8 +104,7 @@ class IntegrationAutosuggest extends React.Component {
             <Paper style={{
                 zIndex: 1149,
                 maxHeight: 200,
-                // overflowX: 'overlay',
-                // overflowX: 'scroll',
+                overflow: 'overlay',
             }} className={classes.paperContainer} {...containerProps} square>
                 {children}
             </Paper>

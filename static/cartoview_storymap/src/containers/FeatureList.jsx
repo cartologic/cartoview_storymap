@@ -57,7 +57,7 @@ class FeatureListContainer extends Component {
             fileName: "",
             addEntry: false,
             map: getMap(),
-            initialCoordinate:[]
+            initialCoordinate: []
 
 
         }
@@ -90,12 +90,13 @@ class FeatureListContainer extends Component {
     }
 
     refreshMap = (feature) => {
-        console.log("feaaaa b4",this.state.features,feature)
+        console.log("feaaaa b4", this.state.features, feature)
         this.state.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
-    //    this.state.features.push(feature)
-        console.log("feaaaa",this.state.features)
-        // this.getLocation()
+        this.state.features.push(feature)
+        var fea = this.state.features.filter(function (n) { return n != undefined });
+        this.setState({ features: fea })
+
 
     }
     refreshMapEdit = (feature) => {
@@ -104,12 +105,12 @@ class FeatureListContainer extends Component {
 
     }
     getLocation = (x = 0, y = 0) => {
-        if(x==0&&y==0){
-            x=this.state.map.getView().getCenter()[0]
-            y=this.state.map.getView().getCenter()[1]
+        if (x == 0 && y == 0) {
+            x = this.state.map.getView().getCenter()[0]
+            y = this.state.map.getView().getCenter()[1]
         }
-this.state.map.removeLayer(this.state.vectorLayer)
-this.feature=null
+        this.state.map.removeLayer(this.state.vectorLayer)
+        this.feature = null
         const crs = 'EPSG:' + this.state.crs
         var center = ol.proj.transform([x, y], crs, this.state.map.getView().getProjection(),
         )
@@ -129,7 +130,7 @@ this.feature=null
                 anchorYUnits: 'pixels',
 
                 src: this.props.urls.static +
-                'cartoview_storymap/greenmarker.png'
+                    'cartoview_storymap/greenmarker.png'
             }),
             text: new ol.style.Text({
                 text: '+',
@@ -174,7 +175,7 @@ this.feature=null
 
             this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
 
-       }
+        }
 
 
 
@@ -182,12 +183,12 @@ this.feature=null
 
         this.vectorLayer.setZIndex(10)
         this.state.map.addInteraction(this.modifyInteraction)
-      
+
     }
-    showAddPanel=()=>{
+    showAddPanel = () => {
         this.setState({ addEntry: true })
     }
-    hideAddPanel=()=>{
+    hideAddPanel = () => {
         this.setState({ addEntry: false })
     }
     removeLocation = () => {
@@ -217,7 +218,7 @@ this.feature=null
     }
 
     editFeature = (feature) => {
-        this.setState({initialCoordinate:feature.getGeometry().getCoordinates()})
+        this.setState({ initialCoordinate: feature.getGeometry().getCoordinates() })
         this.editedFeature = feature
         this.setState({ removedFeature: feature })
         const featureStyle = new ol.style.Style({
@@ -229,7 +230,7 @@ this.feature=null
                 anchorYUnits: 'pixels',
 
                 src: this.props.urls.static +
-                'cartoview_storymap/greenmarker.png'
+                    'cartoview_storymap/greenmarker.png'
             }),
             text: new ol.style.Text({
                 text: '',
@@ -415,7 +416,7 @@ this.feature=null
                 if (totalFeatures == 0) {
                     this.setState({ totalFeatures: total })
                 }
-                this.setState({ features },console.log("set feature"))
+                this.setState({ features }, console.log("set feature"))
             })
     }
 
@@ -604,13 +605,13 @@ this.feature=null
     backFromEdit = () => {
         this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
         this.state.map.removeInteraction(this.modifyInteractionEdit)
-        
+
 
         this.state.map.removeLayer(this.state.vectorLayerEdit)
     }
     backFromEdit2 = () => {
-       this.state.removedFeature.getGeometry().setCoordinates(this.state.initialCoordinate)
-        
+        this.state.removedFeature.getGeometry().setCoordinates(this.state.initialCoordinate)
+
         this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
 
         this.state.map.removeInteraction(this.modifyInteractionEdit)
@@ -717,9 +718,9 @@ this.feature=null
             crs: this.state.crs ? this.state.crs : "3857",
             getImageFromURL: this.getImageFromURL,
             result: this.state.result,
-            showAddPanel:this.showAddPanel,
-            hideAddPanel:this.hideAddPanel,
-            geocodeSearch:GeoCoding.search
+            showAddPanel: this.showAddPanel,
+            hideAddPanel: this.hideAddPanel,
+            geocodeSearch: GeoCoding.search
         }
         return <FeatureList childrenProps={childrenProps} map={this.state.map} />
     }
