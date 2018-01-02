@@ -10,10 +10,10 @@ import match from 'autosuggest-highlight/match'
 import ol from 'openlayers'
 import parse from 'autosuggest-highlight/parse'
 import { withStyles } from 'material-ui/styles'
-
+import Tooltip from 'material-ui/Tooltip';
 // import { Loader, Message } from 'Source/CommonComponents'
 
-
+import ReactTooltip from 'react-tooltip'
 
 function renderInput(inputProps) {
     const { classes, autoFocus, value, ref, ...
@@ -69,6 +69,7 @@ class IntegrationAutosuggest extends React.Component {
     state = {
         value: '',
         suggestions: [],
+        label:""
     }
     renderSuggestion = (suggestion, { query, isHighlighted }) => {
         const { action } = this.props
@@ -101,13 +102,21 @@ class IntegrationAutosuggest extends React.Component {
         const { classes } = this.props
         const { containerProps, children } = options
         return (
-            <Paper style={{
+             <div>
+            <Paper  data-tip data-for='happyFace' style={{
                 zIndex: 1149,
                 maxHeight: 200,
                 overflow: 'overlay',
             }} className={classes.paperContainer} {...containerProps} square>
-                {children}
+             
+{children}
             </Paper>
+           
+
+            <ReactTooltip   id='happyFace' splace="top" type="dark" effect="float">
+  <span >{this.state.label}</span>
+</ReactTooltip>
+           </div>
         )
     }
     handleSuggestionsFetchRequested = ({ value }) => {
@@ -129,6 +138,9 @@ class IntegrationAutosuggest extends React.Component {
             suggestions: [],
         })
     }
+    onSuggestionHighlighted=(suggestion )=>{
+if(suggestion.suggestion){this.setState({label:suggestion.suggestion['label']})
+    }}
     handleChange = (event, { newValue }) => {
         this.setState({
             value: newValue,
@@ -145,6 +157,8 @@ class IntegrationAutosuggest extends React.Component {
                     suggestion: classes.suggestion,
                 }}
                 renderInputComponent={renderInput}
+    onSuggestionHighlighted={this.onSuggestionHighlighted}
+                
                 suggestions={this.state.suggestions}
                 onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
                 onSuggestionsClearRequested={this.handleSuggestionsClearRequested}

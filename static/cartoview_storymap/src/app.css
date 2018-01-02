@@ -165,3 +165,9 @@ hr{
 .closebtn:hover {
   color: black;
 }
+.__react_component_tooltip{
+  z-index: 10000 !important;
+}
+#happyFace{
+  z-index: 10000 !important;
+}
