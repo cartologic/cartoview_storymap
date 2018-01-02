@@ -173,10 +173,12 @@ class addForm extends React.Component {
             this.props.handleOpen("Feature created Successfully")
             this.props.removeLocation()
              this.props.back()
+             this.props.refreshMap(feature)
             this.cancel()
             this.setState({ loading: false })
-            feature.set("featureIndex", ++this.props.features.length)
-            this.props.refreshMap(feature)
+            console.log("sssssss",this.props.features.length)
+            feature.set("featureIndex", this.props.features.length++)
+            
 
         }).catch((error) => {
             throw Error(error)

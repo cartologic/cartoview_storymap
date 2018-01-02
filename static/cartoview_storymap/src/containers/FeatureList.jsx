@@ -56,7 +56,8 @@ class FeatureListContainer extends Component {
             result: "",
             fileName: "",
             addEntry: false,
-            map: getMap()
+            map: getMap(),
+            initialCoordinate:[]
 
 
         }
@@ -89,10 +90,11 @@ class FeatureListContainer extends Component {
     }
 
     refreshMap = (feature) => {
-
+        console.log("feaaaa b4",this.state.features,feature)
         this.state.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
-        this.state.features.push(feature)
+    //    this.state.features.push(feature)
+        console.log("feaaaa",this.state.features)
         // this.getLocation()
 
     }
@@ -215,6 +217,7 @@ this.feature=null
     }
 
     editFeature = (feature) => {
+        this.setState({initialCoordinate:feature.getGeometry().getCoordinates()})
         this.editedFeature = feature
         this.setState({ removedFeature: feature })
         const featureStyle = new ol.style.Style({
@@ -267,9 +270,9 @@ this.feature=null
     removeFeatureMarker = (feature) => {
         this.featureCollection.removeAt(feature.getProperties().featureIndex - 1)
 
-        this.setState({
-            features: update(this.state.features, { $splice: [[feature.getProperties().featureIndex - 1, 1]] })
-        })
+        // this.setState({
+        //     features: update(this.state.features, { $splice: [[feature.getProperties().featureIndex - 1, 1]] })
+        // })
     }
     addComment = (data) => {
         const { urls, config } = this.props
@@ -412,7 +415,7 @@ this.feature=null
                 if (totalFeatures == 0) {
                     this.setState({ totalFeatures: total })
                 }
-                this.setState({ features })
+                this.setState({ features },console.log("set feature"))
             })
     }
 
@@ -600,7 +603,17 @@ this.feature=null
     }
     backFromEdit = () => {
         this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
+        this.state.map.removeInteraction(this.modifyInteractionEdit)
+        
 
+        this.state.map.removeLayer(this.state.vectorLayerEdit)
+    }
+    backFromEdit2 = () => {
+       this.state.removedFeature.getGeometry().setCoordinates(this.state.initialCoordinate)
+        
+        this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
+
+        this.state.map.removeInteraction(this.modifyInteractionEdit)
 
         this.state.map.removeLayer(this.state.vectorLayerEdit)
     }
@@ -699,6 +712,7 @@ this.feature=null
             editedFeature: this.editedFeature,
             geometry: this.state.geometry,
             backFromEdit: this.backFromEdit,
+            backFromEdit2: this.backFromEdit2,
             removeFeatureMarker: this.removeFeatureMarker,
             crs: this.state.crs ? this.state.crs : "3857",
             getImageFromURL: this.getImageFromURL,

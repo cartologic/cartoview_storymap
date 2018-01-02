@@ -293,6 +293,7 @@ console.log(this.props.featureEdit.getProperties()["imageurl"])
             searchFilesById,
             classes,
             back,
+            back2,
             searchCommentById,
             addComment,
             username,
@@ -302,11 +303,11 @@ console.log(this.props.featureEdit.getProperties()["imageurl"])
         } = this.props
         return (
             <div>
-                <Hidden smDown>
-                    <IconButton className={classes.button} aria-label="Delete" onClick={() => back()} >
+                {/* <Hidden smDown>
+                    <IconButton className={classes.button} aria-label="Delete" onClick={() => back2()} >
                         <BackIcon />
                     </IconButton>
-                </Hidden>
+                </Hidden> */}
                 <div>
                     <TextField
                         fullWidth
@@ -450,7 +451,7 @@ console.log(this.props.featureEdit.getProperties()["imageurl"])
                 </div>
                 <div>
 
-                    <Button raised color="primary" onClick={() => back()} className={classes.button} style={{ marginLeft: "150px" }} >Cancel</Button>
+                    <Button raised color="primary" onClick={() => back2()} className={classes.button} style={{ marginLeft: "150px" }} >Cancel</Button>
 
                 </div>
                 <div className={classes.textCenter}>
