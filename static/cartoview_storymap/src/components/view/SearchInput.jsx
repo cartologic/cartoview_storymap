@@ -102,7 +102,8 @@ class IntegrationAutosuggest extends React.Component {
             <Paper style={{
                 zIndex: 1149,
                 maxHeight: 200,
-                overflowY: 'overlay'
+                // overflowX: 'overlay',
+                // overflowX: 'scroll',
             }} className={classes.paperContainer} {...containerProps} square>
                 {children}
             </Paper>
