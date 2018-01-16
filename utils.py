@@ -144,6 +144,7 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
 
     # TODO refactor this and geoserver.helpers._create_db_featurestore
     dsname = ogc_server_settings.DATASTORE
+
     if not ogc_server_settings.DATASTORE:
         msg = ("To use the createlayer application you must set ogc_server_settings.datastore_db['ENGINE']"
                " to 'django.contrib.gis.db.backends.postgis")
@@ -154,7 +155,7 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
         ds = cat.get_store(dsname, workspace)
     except FailedRequestError:
         ds = cat.create_datastore(dsname, workspace=workspace)
-
+    print("ds--------",ds)
     db = ogc_server_settings.datastore_db
     ds.connection_parameters.update(
         {'validate connections': 'true',

@@ -71,7 +71,7 @@ export const Item = (props) => {
         <Card className="Scrollable" onClick={() => openDetails({ detailsOfFeature: feature })}>
             <CardHeader
 
-                title={`${feature.getProperties()[config.titleAttribute]!=null ?feature.getProperties()[config.titleAttribute]:""}`}
+                title={`${feature.getProperties()[config.titleAttribute]!=null ?  unescape(feature.getProperties()[config.titleAttribute]):""}`}
                 subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
 
             <Img className={classes.bigAvatar}
@@ -81,10 +81,10 @@ export const Item = (props) => {
             />
             <CardContent>
                 <Typography component="p">
-                    {config.description ? feature.getProperties()[config.description] : ''}
+                    {config.description ? unescape(feature.getProperties()[config.description] ): ''}
                 </Typography>
                 <Typography component="p">
-                    {config.link != null&& config.link != undefined ? feature.getProperties()[config.link] : ''}
+                    {config.link != null&& config.link != undefined ?  unescape(feature.getProperties()[config.link]) : ''}
                 </Typography>
             </CardContent>
         </Card>
@@ -308,7 +308,7 @@ export class FeatureListComponent extends React.Component {
                         <div style={{ "flexGrow": "1" }}>
                             <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
                             <CardHeader
-                            title={value.getProperties()['title']!=null ? value.getProperties()['title']:"No Title"}
+                            title={value.getProperties()['title']!=null ?  unescape(value.getProperties()['title']):"No Title"}
 
                                 subheader={`${config.ubtitleAttribute ? value.getProperties()[config.subtitleAttribute] : ''}`} />
 
@@ -338,13 +338,13 @@ export class FeatureListComponent extends React.Component {
                     />
                     <CardContent>
                         <Typography component="p">
-                            {value.getProperties()['description']}
+                            { unescape(value.getProperties()['description'])}
                         </Typography>
                         {value.getProperties()['link'] && value.getProperties()['link'] != 'null' && <Typography component="p" onMouseDown={() => {
 
                         }}>
 
-                            <a href={value.getProperties()['link']}>visit link</a>
+                            <a href={ unescape(value.getProperties()['link'])}>visit link</a>
                         </Typography>}
                     </CardContent>
 

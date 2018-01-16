@@ -91,7 +91,7 @@ class WFSClient {
       Object.keys(properties).map(key => 
         {if(key!=="geometry"&&key!=="featureIndex")  { return (`<Property>
         <Name>${key}</Name>prop
-        <Value>${properties[key]}</Value>
+        <Value>${escape(properties[key])}</Value>
       </Property>`)}})
       }
         <Property>

@@ -112,14 +112,22 @@ class EditForm extends React.Component {
             clicked: false,
         }
         this.WFS = new WFSClient(this.props.urls)
+      
     }
-
+   
     componentDidMount() {
-        console.log(this.props.featureEdit.getProperties()["imageurl"])
-    }
+        console.log(this.state.formValue)
+        Object.keys(this.state.formValue).map(property => {
+            if (property != 'geometry' && property != 'featureIndex') {
+                // feature.set(property, unescape(this.state.formValue[property]))
+                console.log(this.state.formValue[property],unescape(this.state.formValue[property]))
+                this.state.formValue[property]=unescape(this.state.formValue[property])
+            }
+        })
+           }
     componentWillReceiveProps(nextProps) {
         if (nextProps.attachments) {
-            console.log("Zzzzzzzzzzzzzzzzzzzz")
+          
             if (nextProps.attachments.file) {
                 this.setState({ fileName: nextProps.attachments.file, fileId: nextProps.attachments.file })
             }
@@ -245,8 +253,8 @@ class EditForm extends React.Component {
         }
         Object.keys(this.state.formValue).map(property => {
             if (property != 'geometry' && property != 'featureIndex') {
-                feature.set(property, this.state.formValue[property])
-
+                feature.set(property, unescape(this.state.formValue[property]))
+                console.log(this.state.formValue[property],unescape(this.state.formValue[property]))
             }
         })
         feature.unset("imageurl")
@@ -314,7 +322,7 @@ class EditForm extends React.Component {
                 <div>
                     <TextField
                         fullWidth
-                        defaultValue={this.props.featureEdit.getProperties()['title']}
+                        defaultValue={unescape(this.props.featureEdit.getProperties()['title'])}
 
 
                         label={"Title"}
@@ -327,7 +335,7 @@ class EditForm extends React.Component {
                     />
                     <TextField
                         fullWidth
-                        defaultValue={this.props.featureEdit.getProperties()["description"]}
+                        defaultValue={unescape(this.props.featureEdit.getProperties()["description"])}
                         label={"Description"}
                         className={classes.textField}
                         onChange={this.handleChange("description")}
@@ -339,7 +347,7 @@ class EditForm extends React.Component {
                     <TextField
                         fullWidth
 
-                        defaultValue={this.props.featureEdit.getProperties()["link"]}
+                        defaultValue={unescape(this.props.featureEdit.getProperties()["link"])}
 
                         label={"Link"}
                         className={classes.textField}
