@@ -9,15 +9,15 @@ export const styleFunction = (feature) => {
         offsetY: 0,
         scale: 1,
         fill: new ol.style.Fill({
-            color: feature.getProperties().numberscolor
+            color: unescape(feature.getProperties().numberscolor)
         })
     }) : ""
     var image = ''
-    var stroke = new ol.style.Stroke({ color: feature.getProperties().markercolor, width: 2 });
+    var stroke = new ol.style.Stroke({ color: unescape(feature.getProperties().markercolor), width: 2 });
     if (shape == 'star') {
         image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
-                color: feature.getProperties().markercolor
+                color: unescape(feature.getProperties().markercolor)
             }),
 
             points: 5,
@@ -26,19 +26,11 @@ export const styleFunction = (feature) => {
             angle: 0
         })
     }
-    // else if(shape=='food'){
-    //           image = new ol.style.Icon(({
-    //                 anchor: [0.5, 45],
-    //                 anchorXUnits: 'fraction',
-    //                 anchorYUnits: 'pixels',
-    //                 size : ['20','20'],
-    //                 src: urls.static + 'cartoview_story_map/blue-restourant.png'
-    //             }))}
     else if (shape == 'circle') {
 
         image = new ol.style.Circle({
             fill: new ol.style.Fill({
-                color: feature.getProperties().markercolor
+                color: unescape(feature.getProperties().markercolor)
             }),
 
             radius: 10
@@ -47,7 +39,7 @@ export const styleFunction = (feature) => {
     else if (shape == 'triangle') {
         image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
-                color: feature.getProperties().markercolor
+                color: unescape(feature.getProperties().markercolor)
             }),
             points: 3,
             radius: 15,
@@ -58,7 +50,7 @@ export const styleFunction = (feature) => {
     else if (shape == 'square') {
         image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
-                color: feature.getProperties().markercolor
+                color: unescape(feature.getProperties().markercolor)
             }),
 
             points: 4,
@@ -70,7 +62,7 @@ export const styleFunction = (feature) => {
         console.log("cross2")
         image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
-                color: feature.getProperties().markercolor
+                color: unescape(feature.getProperties().markercolor)
             }),
 
             // fill: fill,

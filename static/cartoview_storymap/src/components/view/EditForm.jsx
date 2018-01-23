@@ -100,39 +100,41 @@ class EditForm extends React.Component {
             success: false,
             loading: false,
             markershape: this.props.featureEdit.getProperties()['markershape'],
-            markercolor: this.props.featureEdit.getProperties()['markercolor'],
-            numberscolor: this.props.featureEdit.getProperties()['numberscolor'],
+            markercolor: unescape(this.props.featureEdit.getProperties()['markercolor']),
+            numberscolor: unescape(this.props.featureEdit.getProperties()['numberscolor']),
+            imageurl: this.props.featureEdit.getProperties()['imageurl'],
+            imageid: this.props.featureEdit.getProperties()['imageid'],
             id: this.props.featureEdit.getProperties()['featureIndex'],
             geometry: { name: "the_geom", srsName: "EPSG:3857", x: -11684820.440542927, y: 4824883.141910212 },
             markerColorOpen: false,
             numberColorOpen: false,
             fileName: "",
-            fileId:"",
-            id:null,
+            fileId: "",
+            id: null,
             clicked: false,
+            DeleteOpen: false,
         }
         this.WFS = new WFSClient(this.props.urls)
     }
-
     componentDidMount() {
-        console.log(this.state.formValue)
         Object.keys(this.state.formValue).map(property => {
             if (property != 'geometry' && property != 'featureIndex') {
                 // feature.set(property, unescape(this.state.formValue[property]))
-                console.log(this.state.formValue[property],unescape(this.state.formValue[property]))
-                this.state.formValue[property]=unescape(this.state.formValue[property])
+                this.state.formValue[property] = unescape(this.state.formValue[property])
+                if (property == 'markercolor' || property != 'numberscolor') { this.state.formValue[property] = this.state.formValue[property] }
             }
         })
-           }
+        this.state.formValue['markercolor'] = this.state.markercolor
+        this.setState({ formValue: this.state.formValue })
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.attachments) {
-            
-                        if (nextProps.attachments.file) {
-                            this.setState({ fileName: nextProps.attachments.file,fileId:nextProps.attachments.file })
-                        }
-                        else { this.setState({ fileName: nextProps.attachments[1].file,fileId:nextProps.attachments[1].id }) }
-                    }
+            if (nextProps.attachments.file) {
+                this.setState({ fileName: nextProps.attachments.file, fileId: nextProps.attachments.file })
+            }
+            else { this.setState({ fileName: nextProps.attachments[1].file, fileId: nextProps.attachments[1].id }) }
+        }
     }
     handleShape = (event) => {
 
@@ -166,36 +168,37 @@ class EditForm extends React.Component {
     handleNumberColorClose = () => {
         this.setState({ numberColorOpen: false });
     };
-    deletePhoto=()=>{
-        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+    deletePhoto = () => {
 
-        this.setState({fileName:"",fileId:null})
-        this.setState({id:feature.getProperties()['imageid']})
-        feature.set("imageurl",'null')
-        this.state.formValue['imageurl']=null
-        this.state.formValue['imageid']=null
-        
+        this.setState({ DeleteOpen: true })
     }
-    deleteRequest=()=>{
-        console.log("Del req",this.state.id)
+    handleDeleteClickOpen = () => {
+        this.setState({ DeleteOpen: true });
+    };
+    handleDeleteClose = () => {
+        this.setState({ DeleteOpen: false });
+    };
+    deleteRequest = () => {
         var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
-        var id=feature.getProperties()['imageid']
-     
-        const url = urls.attachmentDeleteUrl(props.typename,this.state.id)
+        this.setState({ fileName: "", fileId: null })
+        this.setState({ id: feature.getProperties()['imageid'] })
+        feature.set("imageurl", )
+        this.state.formValue['imageurl'] = null
+        this.state.formValue['imageid'] = null
+        var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
+        var id = feature.getProperties()['imageid']
+        const url = urls.attachmentDeleteUrl(props.typename, this.state.id)
         return fetch(url, {
             method: 'DELETE',
-            
             credentials: 'include',
             headers: new Headers({
                 'Content-Type': 'text/xml',
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-    
+            this.setState({ DeleteOpen: false })
         })
-
     }
-    
     save = () => {
         this.setState({ loading: true })
         var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
@@ -210,32 +213,24 @@ class EditForm extends React.Component {
             if (property != 'geometry' && property != 'featureIndex') {
                 feature.set(property, unescape(this.state.formValue[property]))
 
+                if (property == 'markercolor' || property != 'numberscolor') {
+                    this.state.formValue[property] = this.state.formValue[property]
+                }
+
             }
         })
-        if (this.state.clicked == true && this.state.fileName != ""){
-            console.log("filename",this.state.fileName)
+        if (this.state.clicked == true && this.state.fileName != "") {
+
             feature.set('imageurl', this.state.fileName)
             this.state.formValue["imageurl"] = this.state.fileName
             this.state.formValue["imageid"] = this.state.fileId
-   
+
         }
         feature.set('markershape', this.state.markershape)
         this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue, geometry).then(res =>
             res.text()).then((res) => {
-
-
-
-
-                this.deleteRequest()
                 this.setState({ success: true })
-
-
                 this.props.back()
-                // this.props.handleOpen("Feature edited Successfully")
-                //   this.props.handleSwitch()
-
-                // this.props.refreshMapEdit(feature)
-
             }).catch((error) => {
                 throw Error(error)
             })
@@ -250,6 +245,7 @@ class EditForm extends React.Component {
         this.setState({ clicked: true })
     }
     render() {
+        console.log(this.props.editedFeature,this.props.featureEdit.getProperties()["imageurl"] )
         const vertical = 'bottom', horizontal = 'center'
         const {
             selectedFeature,
@@ -271,11 +267,9 @@ class EditForm extends React.Component {
                     </IconButton>
                 </Hidden>
                 <div>
-                <TextField
+                    <TextField
                         fullWidth
                         defaultValue={unescape(this.props.featureEdit.getProperties()['title'])}
-
-
                         label={"Title"}
                         className={classes.textField}
                         onChange={this.handleChange("title")}
@@ -297,9 +291,7 @@ class EditForm extends React.Component {
                     />
                     <TextField
                         fullWidth
-
                         defaultValue={unescape(this.props.featureEdit.getProperties()["link"])}
-
                         label={"Link"}
                         className={classes.textField}
                         onChange={this.handleChange("link")}
@@ -308,7 +300,6 @@ class EditForm extends React.Component {
                             shrink: true
                         }}
                     />
-
                     <FormControl className={classes.formControl}>
                         <InputLabel htmlFor="age-simple">Marker Shape</InputLabel>
                         <Select
@@ -316,7 +307,6 @@ class EditForm extends React.Component {
                             onChange={(e) => this.handleShape(e)}
                             input={<Input id="age-simple" />}
                         >
-
                             <MenuItem value={'circle'}><CircleIcon /> circle</MenuItem>
                             <MenuItem value={'triangle'}><TriangleIcon />triangle</MenuItem>
                             <MenuItem value={'square'}><SquareIcon /> square</MenuItem>
@@ -326,12 +316,11 @@ class EditForm extends React.Component {
                         </Select>
                     </FormControl>
                     <br />
-                   <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex" }}>
                         <label style={{ "flexGrow": "1" }} className="lab">Marker's color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
                         <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
                             <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                             <DialogContent>
-
                                 <MaterialColorPicker
                                     initColor={this.state.markercolor}
                                     onSubmit={(color) => this.handleColor('markercolor', color)}
@@ -341,10 +330,8 @@ class EditForm extends React.Component {
                                     resetLabel='Cancel'
                                 />
                             </DialogContent>
-
                         </Dialog>
                     </div>
-
                     <br />
                     <Divider />
                     <div style={{ display: "flex" }}>
@@ -352,9 +339,6 @@ class EditForm extends React.Component {
                         <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
                             <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                             <DialogContent>
-
-
-
                                 <MaterialColorPicker
                                     initColor={this.state.numberscolor}
                                     onSubmit={(color) => this.handleColor('numberscolor', color)}
@@ -363,48 +347,40 @@ class EditForm extends React.Component {
                                     submitLabel='Apply'
                                     resetLabel='Cancel'
                                 />
-
                             </DialogContent>
-
                         </Dialog>
                     </div>
-               </div>
-               {this.props.featureEdit.getProperties()["imageurl"]&&this.props.featureEdit.getProperties()["imageurl"]!="null"&& 
-            
-            
-            <Card style={{margin: "10px" }} className={classes.card}>
-         <div className={"row"} style={{display:"flex"}}>
-         <div style={{flex:1}}>
-         <CardHeader
-          
-         
-            subheader="Edit photo"
-          />
-         </div>
-         <div> <IconButton>
-                <DeleteIcon onClick={()=>this.deletePhoto()}/>
-              </IconButton></div>
-         </div>
-         <div>
-          <img
-            className={classes.media}
-            style={{width: "100%"}}
-            src= {this.props.featureEdit.getProperties()["imageurl"] }
-           
-          />
-      
-     </div>
-        
-        </Card>           
-            
-            
-            }
-                {!this.props.featureEdit.getProperties()["imageurl"]||this.props.featureEdit.getProperties()["imageurl"]=="null"&&
-                <div onClick={() => this.click()}>
-                                        <Slider attachments={[]} />
-                                        <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
-                                    </div>
+                </div>
+                {this.props.featureEdit.getProperties()["imageurl"] && this.props.featureEdit.getProperties()["imageurl"] != "null" &&
+                    <Card style={{ margin: "10px" }} className={classes.card}>
+                        <div className={"row"} style={{ display: "flex" }}>
+                            <div style={{ flex: 1 }}>
+                                <CardHeader
+
+
+                                    subheader="Edit photo"
+                                />
+                            </div>
+                            <div> <IconButton>
+                                <DeleteIcon onClick={() => this.deletePhoto()} />
+                            </IconButton></div>
+                        </div>
+                        <div>
+                            <img
+                                className={classes.media}
+                                style={{ width: "100%" }}
+                                src={this.props.featureEdit.getProperties()["imageurl"]}
+
+                            />
+                        </div>
+                    </Card>
                 }
+                { !this.props.featureEdit.getProperties()["imageurl"] &&
+                    <div onClick={() => this.click()}>
+                        <Slider attachments={[]} />
+                        <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
+                    </div>}
+                
                 <div>
                     <Button disabled={this.state.loading} raised color="primary" onClick={this.save} className={classes.button} style={{ float: "right" }}>
                         {this.state.loading ? 'saving' : 'save'}
@@ -412,23 +388,30 @@ class EditForm extends React.Component {
                     </Button>
                 </div>
                 <div>
-
                     <Button raised color="primary" onClick={() => back()} className={classes.button} style={{ marginLeft: "150px" }} >Cancel</Button>
-
                 </div>
                 <div className={classes.textCenter}>
-
                 </div>
+                <Dialog
+                    open={this.state.DeleteOpen}
+                    onClose={this.handleDeleteClose}
 
+                >
+                    <DialogTitle id="alert-dialog-title">{"are you sure you want to delete this photo?"}</DialogTitle>
+                    <DialogContent>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleDeleteClose} color="primary">
+                            Cancel
+            </Button>
+                        <Button onClick={this.deleteRequest} color="primary" autoFocus>
+                            Delete
+            </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
 }
-// ItemDetails.propTypes = { ...commentsPropTypes,
-// searchFilesById: PropTypes.func.isRequired,
-// back: PropTypes.func.isRequired,
-// searchCommentById: PropTypes.func.isRequired,
-// username: PropTypes.string.isRequired,
-// SaveImageBase64: PropTypes.func.isRequired,
-// }
+
 export default withStyles(styles)(EditForm)
