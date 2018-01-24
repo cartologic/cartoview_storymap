@@ -45,6 +45,9 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import * as Scroll from 'react-scroll';
+import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+
 import { transactWFS } from '../../containers/staticMethods'
 
 export const Loader = (props) => {
@@ -64,45 +67,9 @@ Message.propTypes = {
     message: PropTypes.string.isRequired,
     align: PropTypes.string
 }
-export const Item = (props) => {
 
-    const { openDetails, classes, feature, attachment, config } = props
-    return <div >
-        <Card className="Scrollable" onClick={() => openDetails({ detailsOfFeature: feature })}>
-            <CardHeader
 
-                title={`${feature.getProperties()[config.titleAttribute]!=null ?  unescape(feature.getProperties()[config.titleAttribute]):""}`}
-                subheader={`${config.subtitleAttribute ? feature.getProperties()[config.subtitleAttribute] : ''}`} />
 
-            <Img className={classes.bigAvatar}
-                src={[
-                    attachment.length > 0 ? attachment[0].file : '../../img/no-img.png'
-                ]}
-            />
-            <CardContent>
-                <Typography component="p">
-                    {config.description ? unescape(feature.getProperties()[config.description] ): ''}
-                </Typography>
-                <Typography component="p">
-                    {config.link != null&& config.link != undefined ?  unescape(feature.getProperties()[config.link]) : ''}
-                </Typography>
-            </CardContent>
-        </Card>
-        <Divider />
-        <br />
-    </div>
-}
-Item.propTypes = {
-    classes: PropTypes.object.isRequired,
-    feature: PropTypes.object.isRequired,
-    attachment: PropTypes.array.isRequired,
-    config: PropTypes.object.isRequired,
-    openDetails: PropTypes.func.isRequired,
-
-}
-$('#contents').scroll(function () {
-    // scrollPosition = $(this).scrollTop();
-});
 export class FeatureListComponent extends React.Component {
     constructor(props) {
         super(props)
@@ -265,9 +232,26 @@ export class FeatureListComponent extends React.Component {
     }
     componentDidMount() {
         this.checkPermissions(loggedUser)
+        Events.scrollEvent.register('begin',  function(to, element) {
+            console.log("begin", arguments);
+          });
+      
+          Events.scrollEvent.register('end', function(to, element) {
+            console.log("end", arguments);
+          });
+      
+          scrollSpy.update();
     }
     componentWillReceiveProps(nextProps) {
-
+           
+          if(nextProps.zoomedFeature){ 
+            
+          
+       
+            
+           
+           
+        }
         this.setState({ features: nextProps.features, crs: nextProps.crs })
     }
     addDefaultSrc = (ev) => {
@@ -301,10 +285,10 @@ export class FeatureListComponent extends React.Component {
         const SortableItem = SortableElement(({ value, sortIndex, index }) =>
             <div className="card-div" >
 
-                < Card id={"id" + sortIndex} className='image-container'  onClick={() => 
+                < Card  ref={(div) => {value.getProperties()['order'] = div; }}  id={"id" + sortIndex} className='image-container'  onClick={() => 
             
                     openDetails({ detailsOfFeature:value})}>
-                    <div style={{ display: "flex" }}>
+                    <div style={{ display: "flex" }}   >
                         <div style={{ "flexGrow": "1" }}>
                             <Badge className={classes.badge} badgeContent={`${value.getProperties()['order']}`} color="primary">  </Badge>
                             <CardHeader
@@ -355,7 +339,7 @@ export class FeatureListComponent extends React.Component {
         );
         const SortableList = SortableContainer(({ items }) => {
             return (
-                <div>
+                <div id="cards" >
                     {items.map((value, index) => (
                         <SortableItem
                             key={`item-${index}`}
@@ -398,6 +382,7 @@ export class FeatureListComponent extends React.Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
+                
                 <Snackbar
                     anchorOrigin={{ vertical, horizontal }}
                     open={this.state.openSnackBar}
@@ -415,6 +400,7 @@ export class FeatureListComponent extends React.Component {
                         <List style={{ "marginTop": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>
+                     
                     </div> :
                     features && features.length == 0 ?
                         <Message message={message} type="body2" /> :
@@ -430,6 +416,7 @@ export class FeatureListComponent extends React.Component {
                     {this.state.accessEdit && this.state.editMode && !featuresIsLoading && this.state.features && this.state.features.length > 0 && <Button onClick={() => this.disableEdit()} raised color="primary" className={classes.button} style={{ width: '45%', float: "right" }} >
                         Back
       </Button>}
+      
                 </Paper>
             </div>
         )

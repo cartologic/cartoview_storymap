@@ -57,7 +57,8 @@ class FeatureListContainer extends Component {
             fileName: "",
             addEntry: false,
             map: getMap(),
-            initialCoordinate: []
+            initialCoordinate: [],
+            zoomedFeature:null
 
 
         }
@@ -88,7 +89,11 @@ class FeatureListContainer extends Component {
 
         this.setState({ geometry, mapProjection: this.state.map.getView().getProjection() })
     }
+    
 
+    getFeature=()=>{
+
+    }
     refreshMap = (feature) => {
         console.log("feaaaa b4", this.state.features, feature)
         this.state.map.removeInteraction(this.modifyInteraction)
@@ -597,10 +602,21 @@ class FeatureListContainer extends Component {
             }
         }
     }
-    singleClickListner = () => {
-        this.state.map.on('singleclick', (e) => {
+       singleClickListner = () => {
+        let { map } = this.state
+        var select_interaction = new ol.interaction.Select({
+            style: []
+        });
 
+        select_interaction.getFeatures().on("add", (e)=> { 
+             var feature = e.element; //the feature selected
+             this.setState({zoomedFeature:feature})
+         
+             feature.setStyle(styleFunction(feature))
+             console.log("jjjjjjj",feature)
         })
+        
+         map.addInteraction(select_interaction)
     }
     backFromEdit = () => {
         this.featureCollection.insertAt(this.state.removedFeature.featureIndex - 1, this.state.removedFeature)
@@ -647,7 +663,7 @@ class FeatureListContainer extends Component {
             this.featureCollection.extend(features)
         }
     }
-    featureIdentify = (map, coordinate) => {
+    featureIdentify = ( map, coordinate ) => {
         const { config } = this.props
         const view = map.getView()
         const layer = getWMSLayer(config.layer, this.state.map.getLayers().getArray())
@@ -684,8 +700,8 @@ class FeatureListContainer extends Component {
                     document.body.style.cursor = "default"
                 }
             })
+    
     }
-
     render() {
         const { config, urls } = this.props
         let childrenProps = {
@@ -720,7 +736,8 @@ class FeatureListContainer extends Component {
             result: this.state.result,
             showAddPanel: this.showAddPanel,
             hideAddPanel: this.hideAddPanel,
-            geocodeSearch: GeoCoding.search
+            geocodeSearch: GeoCoding.search,
+            zoomedFeature:this.state.zoomedFeature
         }
         return <FeatureList childrenProps={childrenProps} map={this.state.map} />
     }

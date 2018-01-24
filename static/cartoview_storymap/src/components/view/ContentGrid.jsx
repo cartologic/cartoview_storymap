@@ -36,6 +36,7 @@ import Dialog, {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 
 
 const styles = theme => ({
@@ -80,7 +81,7 @@ class ContentGrid extends Component {
         map.setTarget(this.mapDiv)
         map.getView().fit(props.extent, map.getSize())
         this.checkPermissions(loggedUser)
-     
+        
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -105,25 +106,35 @@ class ContentGrid extends Component {
         this.props.childrenProps.removeLocation()
     }
     handleScroll = () => {
-
+    
     }
     checkPermissions = (name) => {
 
         
 
     }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.childrenProps.zoomedFeature){
+             $('#car').animate({
+            scrollTop: $("#id"+(nextProps.childrenProps.zoomedFeature.getProperties()['featureIndex']-1)).offset().top-90+$('#car').scrollTop()
+        }, 500);
+    }}
+   
     render() {
 
         const { classes, childrenProps } = this.props
         return (
+
             <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
+       
                 <Grid item xs={12} sm={12} md={8} lg={8} xl={8} style={{ position: "relative" }}>
                     <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classes.mapPanel}>
                     </div>
              
                 </Grid>
                 <Grid item md={4} lg={4} xl={4} hidden={{ smDown: true }}>
-                    <Paper onScroll={this.handleScroll} className={classes.paper}><CartoviewList 
+               
+                    <Paper id='car' onScroll={this.handleScroll} className={classes.paper}><CartoviewList 
                      addEntry={this.state.add} {...childrenProps} /></Paper>
                 </Grid>
                 <div>
