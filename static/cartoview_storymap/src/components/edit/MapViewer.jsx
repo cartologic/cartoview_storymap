@@ -31,7 +31,7 @@ export default class MapViewer extends Component {
     componentDidMount(){
         this.map.setTarget(this.mapRef)
         if(this.state.extent)
-        { console.log("in did mount",this.state.extent)
+        { 
         this.map.getView().fit(this.state.extent,this.map.getSize())}
           this.map.updateSize()
     }

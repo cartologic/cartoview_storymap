@@ -45,7 +45,7 @@ export default class Edit extends Component {
         var config = { projection:this.state.projection,center:this.state.center,zoom:this.state.zoom,abstract:this.state.config.config.abstract,title: this.state.config.config.title, config: this.state.config, extent: this.state.extent, access: this.state.access ,permissions:this.state.miniAccess,groupPermissions:this.state.groupAccess}
         const { urls } = this.props
         const { id } = this.props
-        console.log("id",id)
+      
         const url = id ? urls.editURL(id) : urls.newURL
         this.setState({
             config: instanceConfig
@@ -88,7 +88,7 @@ export default class Edit extends Component {
                     username: username,
                     extent: extent,
                     onComplete: (extent,zoom,projection,center) => {
-                    console.log("hjhkjh",extent,zoom,projection,center)
+                
                         var { step, config } = this.state
                         this.setState({ extent ,zoom,projection,center})
                         this.goToStep(++step)
@@ -107,7 +107,7 @@ export default class Edit extends Component {
                     id: id,
                     access: this.state.access ? this.state.access : null,
                     onComplete: (access,miniAccess,groupAccess) => {
-                        console.log(access, "access")
+                      
                         this.setState({ access,miniAccess,groupAccess }, this.goToStep(++step))
 
 
@@ -129,7 +129,7 @@ export default class Edit extends Component {
                     general: this.props.config &&this.props.config.config.config ? this.props.config.config.config : null,
                     
                     onComplete: (basicConfig) => {
-                        console.log("general", basicConfig)
+
                         let { step, config } = this.state
                         this.setState({
                             config: {

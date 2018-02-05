@@ -167,7 +167,7 @@ export default class permissions extends Component {
     save( ) {
         var basicConfig = this.form.getValue( )
          var groupconf=this.groupform.getValue()
-        console.log("group conf",basicConfig,groupconf)
+       
         if ( basicConfig ) {
             
             this.props.onComplete(basicConfig,this.getFormValueForSaving(basicConfig),this.getFormValueForSaving(groupconf))

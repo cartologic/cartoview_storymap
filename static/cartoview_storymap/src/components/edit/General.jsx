@@ -57,11 +57,11 @@ export default class General extends Component {
       
 		const value = this.form.getValue()
     
-        if (value) {console.log(value,"????????????????")
+        if (value) {
         this.state['value']=value
 			var val= Object.assign({'themeColor':this.state.themeColor,'themeColorName':this.state.themeColorName}, value);
 			this.setState({loading:true})
-			console.log("val",val)
+		
             this.props.onComplete({
                 config: {
                     ...val
@@ -78,7 +78,7 @@ export default class General extends Component {
 			width: "inherit",
 			height: "25px"
 		  }
-		  console.log( this.state.themeColor)
+		 
         let {
             loading,
             value

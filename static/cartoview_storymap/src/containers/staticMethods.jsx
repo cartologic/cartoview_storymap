@@ -107,17 +107,38 @@ export const getdescribeFeatureType = (typename = props.layername) => {
     var url = urls.describeFeatureType(typename)
     var proxy_url = proxy_urls.getProxiedURL(url)
 
-    return fetch(proxy_url).then((response) => { return response.json() }).then((data) => { return data.featureTypes[0].properties })
+    return fetch(proxy_url).then((response) => { 
+        
+        return response.json()
+     }).then((data) => { 
+       
+         return data.featureTypes[0].properties })
 
 
 }
-export const transactWFS = (action, feature, layerName, crs) => {
+export const getNameSpacerUri = (typename = props.layername) => {
+    var proxy_urls = new URLS(urls)
+    var url = urls.describeFeatureType(typename)
+    var proxy_url = proxy_urls.getProxiedURL(url)
+
+    return fetch(proxy_url).then((response) => { 
+        
+        return response.json()
+     }).then((data) => { 
+       
+         return data.targetNamespace})
+
+
+}
+export const transactWFS = (action,feature,  nameSpaceUri,layerName, crs) => {
     var formatWFS = new WFS
-    console.log(feature)
+
     const [namespace, name] = layerName.split(":")
+
     var formatGMLOptions = {
-        featureNS: "http://www.geonode.org/",
+        featureNS: nameSpaceUri,
         featurePrefix: namespace,
+        
         featureType: name,
         gmlOptions: {
             srsName: "EPSG:" + crs
@@ -125,6 +146,7 @@ export const transactWFS = (action, feature, layerName, crs) => {
 
     };
     var node = ""
+   
     switch (action) {
         case 'insert':
             node = formatWFS.writeTransaction([feature], null, null, formatGMLOptions);

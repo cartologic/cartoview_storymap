@@ -57,7 +57,7 @@ class WFSClient {
     }
     insertFeature(typeName, properties, geometry) {
         const [namespace, name] = typeName.split(":");
-     
+
         const xml =
             `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
           <Insert>
@@ -74,40 +74,81 @@ class WFSClient {
         return this.sendXMLRequest(xml);
     }
     getProps = (properties) => {
-        const propsXML = Object.keys(properties).map(key =>
-      {if(key!=="geometry"&&key!=="featureIndex")  { return (`<Property>
+        const propsXML = Object.keys(properties).map(key => {
+            if (key !== "geometry" && key !== "featureIndex") {
+                return (`<Property>
         <Name>${key}</Name>prop
         <Value>${properties[key]}</Value>
-      </Property>`)}})
-    
-      return propsXML
+      </Property>`)
+            }
+        })
+const xml=`   <wfs:Property>
+<wfs:Name>imageid</wfs:Name>
+<wfs:Value>${properties['imageid']}</wfs:Value>
+</wfs:Property>
+`
+        return propsXML
     }
-    updateFeature( typeName, fid, properties, geometry ) {
+    updateFeature(typeName, fid, properties, geometry,ns) {
+    
+       
         const [namespace, name] = typeName.split(":");
-        const xml =
-            `<Transaction xmlns="http://www.opengis.net/wfs" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
-      <Update typeName="${typeName}" >
-        ${
-      Object.keys(properties).map(key => 
-        {if(key!=="geometry"&&key!=="featureIndex")  { return (`<Property>
-        <Name>${key}</Name>prop
-        <Value>${escape(properties[key])}</Value>
-      </Property>`)}})
-      }
-        <Property>
-          <Name>${geometry.name}</Name>
-          <Value>
-            <Point xmlns="http://www.opengis.net/gml"  srsName="${geometry.srsName}">
-              <pos>${geometry.x} ${geometry.y}</pos>
-            </Point>
-          </Value>
-        </Property>
-        <Filter xmlns="http://www.opengis.net/ogc">
-          <FeatureId fid="${fid}" />
-        </Filter>
-      </Update>
-    </Transaction>`;
-        return this.sendXMLRequest( xml )
+        const featureName="feature:"+name
+        const xml_test = `<?xml version="1.0" encoding="UTF-8"?>
+        <wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WFS" version="1.1.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+           <wfs:Update xmlns:feature="${ns}" typeName="${featureName}">
+              <wfs:Property>
+                 <wfs:Name>title</wfs:Name>
+                 <wfs:Value>${properties['title']}</wfs:Value>
+              </wfs:Property>
+              <wfs:Property>
+              <wfs:Name>description</wfs:Name>
+              <wfs:Value>${properties['description']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>link</wfs:Name>
+                <wfs:Value>${properties['link']}</wfs:Value>
+                </wfs:Property>
+              
+                <wfs:Property>
+                <wfs:Name>imageurl</wfs:Name>
+                <wfs:Value>${properties['imageurl']}</wfs:Value>
+                </wfs:Property>
+                
+                <wfs:Property>
+                <wfs:Name>markercolor</wfs:Name>
+                <wfs:Value>${properties['markercolor']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>markershape</wfs:Name>
+                <wfs:Value>${properties['markershape']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>numberscolor</wfs:Name>
+                <wfs:Value>${properties['numberscolor']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>order</wfs:Name>
+                <wfs:Value>${properties['order']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>imageid</wfs:Name>
+                <wfs:Value>${properties['imageid']=='null'||properties['imageid']==-1?-1:properties['imageid']}</wfs:Value>
+                </wfs:Property>
+                <wfs:Property>
+                <wfs:Name>the_geom</wfs:Name>
+                <wfs:Value>
+                <gml:Point xmlns:gml="http://www.opengis.net/gml" srsName="${geometry.srsName}">
+                <gml:pos>${geometry.x} ${geometry.y}</gml:pos>
+                </gml:Point>
+                </wfs:Value>
+                </wfs:Property>
+              <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+                 <ogc:FeatureId fid="${fid}" />
+              </ogc:Filter>
+           </wfs:Update>
+        </wfs:Transaction>`
+        return this.sendXMLRequest(xml_test)
     }
 }
 export default WFSClient;

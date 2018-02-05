@@ -33,7 +33,7 @@ from geonode.layers.models import Layer
 from geonode.layers.utils import get_valid_name
 from geonode.people.models import Profile
 from geonode.geoserver.helpers import ogc_server_settings
-
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -143,8 +143,9 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
     """
 
     # TODO refactor this and geoserver.helpers._create_db_featurestore
-    dsname = ogc_server_settings.DATASTORE
-
+    db = ogc_server_settings.datastore_db
+    dsname = db['NAME']
+    
     if not ogc_server_settings.DATASTORE:
         msg = ("To use the createlayer application you must set ogc_server_settings.datastore_db['ENGINE']"
                " to 'django.contrib.gis.db.backends.postgis")
@@ -152,11 +153,14 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
         raise GeoNodeException(msg)
 
     try:
-        ds = cat.get_store(dsname, workspace)
-    except FailedRequestError:
+        ds = cat.get_store(dsname,settings.DEFAULT_WORKSPACE)
+        print("in try",settings.DEFAULT_WORKSPACE, workspace,ds)
+    except :
         ds = cat.create_datastore(dsname, workspace=workspace)
-    print("ds--------",ds)
-    db = ogc_server_settings.datastore_db
+       
+    
+    
+    print("connnnnn",ds)
     ds.connection_parameters.update(
         {'validate connections': 'true',
          'max connections': '10',
@@ -175,8 +179,9 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
 
     # we need to reload the ds as gsconfig-1.0.6 apparently does not populate ds.type
     # using create_datastore (TODO fix this in gsconfig)
-    ds = cat.get_store(dsname, workspace)
-
+    # commented for geosites
+    # ds = cat.get_store(dsname, workspace)
+    print("dss",ds)
     return ds
 
 
@@ -192,8 +197,9 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
     cat = Catalog(ogc_server_settings.internal_rest, gs_user, gs_password)
 
     # get workspace and store
-    workspace = cat.get_default_workspace()
-
+    # workspace = cat.get_default_workspace()
+    workspace = cat.get_workspace(settings.DEFAULT_WORKSPACE)
+    print("workspace",workspace)
     # get (or create the datastore)
     datastore = get_or_create_datastore(cat, workspace)
 
@@ -201,7 +207,7 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
     if datastore.type != 'PostGIS':
         msg = ("To use the createlayer application you must use PostGIS")
         logger.error(msg)
-        raise GeoNodeException(msg)
+        # raise GeoNodeException(msg)
 
     # check if layer is existing
     resources = datastore.get_resources()

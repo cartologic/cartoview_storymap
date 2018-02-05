@@ -39,6 +39,7 @@ import Snackbar from 'material-ui/Snackbar';
 import Dropzone from 'react-dropzone'
 import Badge from 'material-ui/Badge';
 import Tooltip from 'material-ui/Tooltip';
+import { getNameSpacerUri } from '../../containers/staticMethods'
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -84,10 +85,11 @@ export class FeatureListComponent extends React.Component {
             openSnackBar: false,
             loading: false,
             editMode: false,
-            alert: true
+            alert: true,
+            nameSpace:""
 
         }
-
+        getNameSpacerUri().then((data)=>{this.setState({nameSpace:data})})
     }
     closeAlert = () => {
         this.setState({ alert: false })
@@ -102,7 +104,7 @@ export class FeatureListComponent extends React.Component {
     };
     deleteFeature = () => {
         this.setState({ loading: true })
-        var xml = transactWFS("delete", this.state.deletedFeature, props.layername, this.props.crs)
+        var xml = transactWFS("delete", this.state.deletedFeature, this.state.nameSpace,props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
 
@@ -129,8 +131,8 @@ export class FeatureListComponent extends React.Component {
         f2.unset("featureIndex")
         f2.unset('geometry')
 
-        var xml1 = transactWFS("update", f1, props.layername, this.props.crs)
-        var xml2 = transactWFS("update", f2, props.layername, this.props.crs)
+        var xml1 = transactWFS("update", f1,this.state.nameSpace, props.layername, this.props.crs)
+        var xml2 = transactWFS("update", f2,this.state.nameSpace, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
 
@@ -191,22 +193,21 @@ export class FeatureListComponent extends React.Component {
         });
     };
     checkPermissions = (name) => {
-        console.log("check permissions", props.access, owner, loggedUser, props.access.whoCanAddEditAndDeleteStory)
+     
 
         {
             props.access.whoCanEditStory && props.access.whoCanEditStory.map((user) => {
                 if (user.value == name || loggedUser == owner) {
-                    console.log("in if edit")
-                    this.setState({ accessEdit: true })
+               this.setState({ accessEdit: true })
                 }
 
             })
         }
         {
             props.access.whoCanSubmitStory && props.access.whoCanSubmitStory.map((user) => {
-                console.log(user)
+            
                 if (user.value == name || loggedUser == owner) {
-                    console.log("in if add")
+                  
                     this.setState({ accessAdd: true })
                 }
 
@@ -215,14 +216,13 @@ export class FeatureListComponent extends React.Component {
         {
             props.access.whoCanDeleteStory && props.access.whoCanDeleteStory.map((user) => {
                 if (user.value == name || loggedUser == owner) {
-                    console.log("in if delete")
-                    this.setState({ accessDelete: true })
+                this.setState({ accessDelete: true })
                 }
 
             })
         }
         if (loggedUser == owner) {
-            console.log("in itherr if ", name, loggedUser)
+         
             this.setState({ accessAdd: true, accessEdit: true, accessDelete: true })
 
         }
@@ -233,11 +233,11 @@ export class FeatureListComponent extends React.Component {
     componentDidMount() {
         this.checkPermissions(loggedUser)
         Events.scrollEvent.register('begin',  function(to, element) {
-            console.log("begin", arguments);
+           
           });
       
           Events.scrollEvent.register('end', function(to, element) {
-            console.log("end", arguments);
+           
           });
       
           scrollSpy.update();
@@ -365,7 +365,7 @@ export class FeatureListComponent extends React.Component {
 
 </div>
                 }
-                <Dialog open={this.state.openDeleteDialoge} onRequestClose={this.deleteDialogeRequestClose}>
+                <Dialog open={this.state.openDeleteDialoge} onClose={this.deleteDialogeRequestClose}>
                     <DialogTitle>{"Are you sure you want to delete this feature?"}</DialogTitle>
                     <DialogContent>
 
@@ -386,7 +386,7 @@ export class FeatureListComponent extends React.Component {
                 <Snackbar
                     anchorOrigin={{ vertical, horizontal }}
                     open={this.state.openSnackBar}
-                    onRequestClose={this.handleCloseSnackBar}
+                    onClose={this.handleCloseSnackBar}
                     SnackbarContentProps={{
                         'aria-describedby': 'message-id',
                     }}
@@ -435,7 +435,7 @@ FeatureListComponent.propTypes = {
 }
 export const URL = (props) => {
     const { classes, url } = props
-    return <Button color="accent" href={url} className={classes.button}>
+    return <Button  href={url} className={classes.button}>
         Link
         </Button>
 }
@@ -564,7 +564,7 @@ export const CommentBox = (props) => {
                     margin="normal"
                     fullWidth
                 />}
-            <Button onClick={addComment} raised color="accent" className={classes.button}>
+            <Button onClick={addComment} raised  className={classes.button}>
                 {`Send`} <SendIcon />
             </Button>
         </div>

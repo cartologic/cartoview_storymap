@@ -91,14 +91,14 @@
     const owner="{{instance.owner.username}}"
     const layerTitle="{{instance.title}}"
     const trimmed_layername=layerTitle.replace(/[&#39; , - : & ! * ( ) + ^ $ # @ ~ " % ']+/g, "_")
-    console.log(trimmed_layername)
+   
     props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
 
 
-    props.layername="geonode:"+trimmed_layername+"_"+"{{app}}"
+    props.layername="{{workspace}}"+":"+trimmed_layername+"_"+"{{app}}"
     props.typename=trimmed_layername+"_"+"{{app}}"
     props.layer=trimmed_layername+"_"+"{{app}}"
-    console.log(props.layername)
+
     props.formAbstract="{{instance.abstract}}"
     props.username="{{request.user.username}}"
   </script>
@@ -112,19 +112,6 @@
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
-  <script>
-  var scrollPosition = 0;
-$('div#contents').scroll(function() {
-  scrollPosition = $(this).scrollTop();
-});
-$('div#contents').scroll(function() {
-            if ($(this).scrollTop() >= areaTop && $(this).scrollTop() < areaBottom) {
-              $('.image-container').removeClass("inFocus").addClass("outFocus");
-              $('div#container' + feature.properties['id']).addClass("inFocus").removeClass("outFocus");
-console.log("scrollunggg")
-            //   map.flyTo([feature.geometry.coordinates[1], feature.geometry.coordinates[0] ], feature.properties['zoom']);
-            }
-          });
-  </script>
+
 </body>
 </html>

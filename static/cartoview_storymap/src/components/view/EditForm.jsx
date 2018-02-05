@@ -23,6 +23,7 @@ import URLS from '../../containers/URLS'
 import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { transactWFS } from '../../containers/staticMethods'
+import { getNameSpacerUri } from '../../containers/staticMethods'
 import { CircularProgress } from 'material-ui/Progress'
 import StarIcon from 'material-ui-icons/Star';
 import TriangleIcon from 'material-ui-icons/ChangeHistory';
@@ -113,7 +114,10 @@ class EditForm extends React.Component {
             id: null,
             clicked: false,
             DeleteOpen: false,
+            nameSpace:null
+            
         }
+        getNameSpacerUri().then((data)=>{this.setState({nameSpace:data})})
         this.WFS = new WFSClient(this.props.urls)
     }
     componentDidMount() {
@@ -227,7 +231,8 @@ class EditForm extends React.Component {
 
         }
         feature.set('markershape', this.state.markershape)
-        this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue, geometry).then(res =>
+        
+        this.WFS.updateFeature(props.layername, feature.getId(), this.state.formValue, geometry,this.state.nameSpace).then(res =>
             res.text()).then((res) => {
                 this.setState({ success: true })
                 this.props.back()
@@ -245,7 +250,7 @@ class EditForm extends React.Component {
         this.setState({ clicked: true })
     }
     render() {
-        console.log(this.props.editedFeature,this.props.featureEdit.getProperties()["imageurl"] )
+      
         const vertical = 'bottom', horizontal = 'center'
         const {
             selectedFeature,
@@ -318,7 +323,7 @@ class EditForm extends React.Component {
                     <br />
                     <div style={{ display: "flex" }}>
                         <label style={{ "flexGrow": "1" }} className="lab">Marker's color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
-                        <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+                        <Dialog open={this.state.markerColorOpen} onClose={this.handleMarkerColorClose}>
                             <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                             <DialogContent>
                                 <MaterialColorPicker
@@ -336,7 +341,7 @@ class EditForm extends React.Component {
                     <Divider />
                     <div style={{ display: "flex" }}>
                         <label style={{ "flexGrow": "1" }} className="lab">  Marker Label's Color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
-                        <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+                        <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                             <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                             <DialogContent>
                                 <MaterialColorPicker
@@ -375,7 +380,7 @@ class EditForm extends React.Component {
                         </div>
                     </Card>
                 }
-                { !this.props.featureEdit.getProperties()["imageurl"] &&
+                { this.props.featureEdit.getProperties()["imageurl"]=="null" ||this.props.featureEdit.getProperties()["imageurl"]==null &&
                     <div onClick={() => this.click()}>
                         <Slider attachments={[]} />
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />

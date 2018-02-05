@@ -23,6 +23,7 @@ import Feature from 'ol/feature';
 import ol from 'openlayers'
 import { CircularProgress } from 'material-ui/Progress'
 import { transactWFS } from '../../containers/staticMethods'
+import { getNameSpacerUri } from '../../containers/staticMethods'
 import Switch from 'material-ui/Switch';
 import GeoCodeSearchInput from './SearchInput';
 import Dialog, {
@@ -108,11 +109,11 @@ class addForm extends React.Component {
             locationMap: '',
             markerColorOpen: false,
             numberColorOpen: false,
-            onAddress: true
+            onAddress: true,
+            nameSpace: null
 
         }
-
-        //console.log(this.props)
+        getNameSpacerUri().then((data) => { this.setState({ nameSpace: data }) })
     }
     WFS = new WFSClient(this.props.urls)
 
@@ -124,7 +125,7 @@ class addForm extends React.Component {
                 this.setState({ fileName: nextProps.attachments.file, fileId: nextProps.attachments.file })
             }
             else {
-                console.log("attachhhhhhh", nextProps.attachments, nextProps.attachments.length)
+
                 this.setState({ fileName: nextProps.attachments[nextProps.attachments.length - 1].file, fileId: nextProps.attachments[nextProps.attachments.length - 1].id })
             }
         }
@@ -151,7 +152,7 @@ class addForm extends React.Component {
         Object.keys(this.state.formValue).map(property => {
             feature.set(property, this.state.formValue[property])
         })
-        console.log("imageid", this.state.fileId, "image url", this.state.fileName)
+
         feature.set("order", this.props.features.length + 1)
         feature.set("imageurl", this.state.fileName)
         feature.set("imageid", this.state.fileId)
@@ -159,9 +160,8 @@ class addForm extends React.Component {
         feature.set("markercolor", this.state.markercolor)
         feature.set("numberscolor", this.state.numberscolor)
         feature.set("markershape", this.state.markershape)
-        console.log("aaaaaaaa", feature)
         feature.getGeometry().transform(this.props.mapProjection, "EPSG:" + this.props.crs)
-        var xml = transactWFS("insert", this.props.newFeature, props.layername, this.props.crs)
+        var xml = transactWFS("insert", this.props.newFeature, this.state.nameSpace, props.layername, this.props.crs)
         var proxy_urls = new URLS(urls)
         const proxiedURL = proxy_urls.getProxiedURL(urls.wfsURL)
         return fetch(proxiedURL, {
@@ -182,7 +182,7 @@ class addForm extends React.Component {
             this.props.refreshMap(feature)
             this.cancel()
             this.setState({ loading: false, fileId: null, fileName: null })
-            console.log("sssssss", this.props.features.length)
+
             feature.set("featureIndex", this.props.features.length++)
 
 
@@ -218,11 +218,9 @@ class addForm extends React.Component {
 
     }
     zoomToLocation = (pointArray) => {
-        //console.log(pointArray)
+
         var center = ol.proj.transform(pointArray, "EPSG:4326",
             this.props.map.getView().getProjection())
-        //console.log(center)
-        // this.setState({coordinates:center})
         this.props.getLocation(center[0], center[1])
 
     }
@@ -237,7 +235,7 @@ class addForm extends React.Component {
         this.setState({ clicked: true })
     }
     geolocation = () => {
-        //console.log("geo")
+
         var map = this.props.map
         // create a Geolocation object setup to track the position of the device
         var geolocation = new ol.Geolocation({
@@ -245,7 +243,7 @@ class addForm extends React.Component {
             projection: 'EPSG:3857'
         });
         geolocation.on('change', (evt) => {
-            //console.log(geolocation.getPosition());
+
             this.props.removeLocation()
             this.props.getLocation(geolocation.getPosition()[0], geolocation.getPosition()[1])
             this.setState({ geolocation })
@@ -255,11 +253,11 @@ class addForm extends React.Component {
 
     }
     handleShape = (event) => {
-        //console.log("sss",event.target.value )
+
         this.setState({ markershape: event.target.value });
     };
     handleColor(value, color) {
-        //console.log(value,color.target.value)
+
         this.setState({ [value]: color.target.value })
         this.handleMarkerColorClose()
         this.handleNumberColorClose()
@@ -270,12 +268,10 @@ class addForm extends React.Component {
         } else { this.setState({ onAddress: false }) }
         this.setState({ locationMap: value });
         if (value == 'onMap') {
-            //console.log("on map")
-            //  this.props.showCurrentLocation()
+
             this.props.getLocation()
         } else if (value == 'current') {
-            // this.props.hideCurrentLocation()
-            // this.props.removeLocation()
+
             this.geolocation()
         }
     };
@@ -319,8 +315,6 @@ class addForm extends React.Component {
 
                     <TextField
                         fullWidth
-
-
                         label={"Title"}
                         className={classes.textField}
                         onChange={this.handleChange("title")}
@@ -331,8 +325,6 @@ class addForm extends React.Component {
                     />
                     <TextField
                         fullWidth
-
-
                         label={"Description"}
                         className={classes.textField}
                         onChange={this.handleChange("description")}
@@ -379,7 +371,7 @@ class addForm extends React.Component {
 
                         <div style={{ display: "flex" }}>
                             <label style={{ "flexGrow": "1" }} className="lab">Marker's color</label> <Button onClick={this.handleMarkerColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.markercolor }}></div></Button>
-                            <Dialog open={this.state.markerColorOpen} onRequestClose={this.handleMarkerColorClose}>
+                            <Dialog open={this.state.markerColorOpen} onClose={this.handleMarkerColorClose}>
                                 <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                                 <DialogContent>
 
@@ -400,7 +392,7 @@ class addForm extends React.Component {
                         <Divider />
                         <div style={{ display: "flex" }}>
                             <label style={{ "flexGrow": "1" }} className="lab"> Marker Label's Color</label><Button onClick={this.handleNumberColorOpen} style={{ minWidth: 0, padding: 3 }}> <div className="box" style={{ backgroundColor: this.state.numberscolor }}></div></Button>
-                            <Dialog open={this.state.numberColorOpen} onRequestClose={this.handleNumberColorClose}>
+                            <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                                 <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                                 <DialogContent>
 
@@ -427,8 +419,8 @@ class addForm extends React.Component {
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
                     </div>
                     <Divider />
-                   <br />
-                   <div>
+                    <br />
+                    <div>
 
                         <FormControl component="fieldset" required className={classes.formControl}>
                             <RadioGroup
