@@ -98,8 +98,7 @@
     props.layername="{{workspace}}"+":"+trimmed_layername+"_"+"{{app}}"
     props.typename=trimmed_layername+"_"+"{{app}}"
     props.layer=trimmed_layername+"_"+"{{app}}"
-
-    props.formAbstract="{{instance.abstract}}"
+    props.formAbstract="{{instance.abstract|escapejs}}"
     props.username="{{request.user.username}}"
   </script>
   
