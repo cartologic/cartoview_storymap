@@ -59,7 +59,7 @@ export const styleFunction = (feature) => {
         })
     }
     else if (shape == 'cross') {
-        console.log("cross2")
+      
         image = new ol.style.RegularShape({
             fill: new ol.style.Fill({
                 color: unescape(feature.getProperties().markercolor)
@@ -74,7 +74,7 @@ export const styleFunction = (feature) => {
         })
     }
     else {
-        console.log("X")
+     
         image = new ol.style.RegularShape({
 
 

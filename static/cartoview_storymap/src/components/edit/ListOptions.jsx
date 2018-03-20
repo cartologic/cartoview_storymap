@@ -89,7 +89,7 @@ export default class ListOptions extends Component {
             (response) => response.json()).then((data) => {
                 this.setState({ layers: data.objects, loading: false })
             }).catch((error) => {
-                console.error(error)
+               
             })
     }
     getLayerOptions = () => {

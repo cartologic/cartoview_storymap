@@ -22,7 +22,7 @@ class Viewer {
     view( ) {
         if ( this.urls.appInstance ) {
             this.loadConfig( ).then( ( res ) => {
-                console.log("res",res)
+               
                 this.config = {
                     config: res.config,
                   

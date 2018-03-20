@@ -10,6 +10,7 @@ from django.shortcuts import HttpResponse, render
 from .utils import create_layer
 from geoserver.catalog import Catalog, FailedRequestError
 from geonode.maps.models import Map
+from django.conf import settings
 username, password = ogc_server_settings.credentials
 # gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
 # geonode_workspace = gs_catalog.get_workspace("geonode")
@@ -151,7 +152,7 @@ def view_app(
     # instance = _resolve_appinstance(
     #     request, instance_id, 'base.view_resourcebase', _PERMISSION_MSG_VIEW)
     instance = AppInstance.objects.get(pk=instance_id)
-    context.update(instance=instance,id=instance_id,app=APP_NAME)
+    context.update(instance=instance,id=instance_id,app=APP_NAME,workspace=settings.DEFAULT_WORKSPACE)
     return render(request, template, context)
 
 def new(

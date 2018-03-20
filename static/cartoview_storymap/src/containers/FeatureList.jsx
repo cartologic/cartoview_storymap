@@ -95,8 +95,7 @@ class FeatureListContainer extends Component {
 
     }
     refreshMap = (feature) => {
-        console.log("feaaaa b4", this.state.features, feature)
-        this.state.map.removeInteraction(this.modifyInteraction)
+            this.state.map.removeInteraction(this.modifyInteraction)
         this.featureCollection.push(feature)
         this.state.features.push(feature)
         var fea = this.state.features.filter(function (n) { return n != undefined });
@@ -421,7 +420,7 @@ class FeatureListContainer extends Component {
                 if (totalFeatures == 0) {
                     this.setState({ totalFeatures: total })
                 }
-                this.setState({ features }, console.log("set feature"))
+                this.setState({ features })
             })
     }
 
@@ -613,7 +612,7 @@ class FeatureListContainer extends Component {
              this.setState({zoomedFeature:feature})
          
              feature.setStyle(styleFunction(feature))
-             console.log("jjjjjjj",feature)
+            
         })
         
          map.addInteraction(select_interaction)

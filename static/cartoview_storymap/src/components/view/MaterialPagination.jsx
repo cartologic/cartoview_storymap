@@ -27,25 +27,25 @@ const Ellipsis = ({ onClick }) => (
 	<IconButton style={flatButtonStyle} onClick={onClick}>{'...'}</IconButton>
 );
 const FirstPageLink = ({ isActive, onClick }) => (
-	<IconButton color="accent"
+	<IconButton 
 		onClick={onClick}>
 		<FirstPage />
 	</IconButton>
 );
 const PreviousPageLink = ({ isActive, onClick }) => (
-	<IconButton color="accent"
+	<IconButton 
 		onClick={onClick}>
 		< ChevronLeft />
 	</IconButton>
 );
 const NextPageLink = ({ isActive, onClick }) => (
-	<IconButton color="accent"
+	<IconButton 
 		onClick={onClick}>
 		< ChevronRight />
 	</IconButton>
 );
 const LastPageLink = ({ isActive, onClick }) => (
-	<IconButton color="accent"
+	<IconButton 
 		onClick={onClick}>< LastPage /></IconButton>
 );
 const itemTypeToComponent = {

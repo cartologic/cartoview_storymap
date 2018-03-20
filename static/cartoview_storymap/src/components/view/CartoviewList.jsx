@@ -59,7 +59,7 @@ class CartoviewList extends React.Component {
 
     }
     back = () => {
-      console.log("back")
+     
         const {
             selectionModeEnabled,
             featureIdentifyResult,

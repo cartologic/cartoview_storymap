@@ -35,7 +35,7 @@ export default class ResourceSelector extends Component {
                     loading: false
                 } )
             } ).catch( ( error ) => {
-                console.error( error );
+              
             } );
     }
     componentDidMount( ) {
@@ -82,7 +82,7 @@ export default class ResourceSelector extends Component {
                 response.json( ) ).then( ( data ) => {
                 this.setState( { resources: data.objects, loading: false } )
             } ).catch( ( error ) => {
-                console.error( error );
+               
             } );
         }
     }

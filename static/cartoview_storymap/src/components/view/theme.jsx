@@ -15,7 +15,7 @@ import {
     blueGrey
 } from 'material-ui/colors';
 
-console.log( props.config.themeColorName)
+
 let palette={
     primary: props.config.themeColorName=="blueGrey"?blueGrey: 
              props.config.themeColorName=="purple"?purple:
