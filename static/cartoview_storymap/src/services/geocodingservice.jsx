@@ -1,5 +1,5 @@
 import UrlAssembler from 'url-assembler'
-const nominatimURL = " http://nominatim.openstreetmap.org/search?"
+const nominatimURL = window.location.protocol+"//nominatim.openstreetmap.org/search?"
 class OSMGeoCoding {
     constructor() {
         this.OSMSettings = {
