@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 export default class Navigator extends Component {
 	state = {}
 	onClick(e, index) {
-		if (index < this.props.step) {
+
 			this.props.onStepSelected(index)
-		}
+		
 	}
 	item(label, index) {
 		const { step, onStepSelected } = this.props;
-		const className = index == step ? "list-group-item active" : index >
-			step ? "list-group-item disabled" : "list-group-item";
+		const className = index == step ? "list-group-item active" : "list-group-item" 
+		
 		return (
-			<li key={index} className={className} onClick={e => this.onClick(e, index)}>
-				{index < step && <i className="fa fa-check" aria-hidden="true"></i>}
+			<li key={index} className={className} onClick={(e) =>this.onClick(e, index)}>
+
 				{label}
 			</li>
 		)

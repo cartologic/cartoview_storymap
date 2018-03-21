@@ -90,14 +90,15 @@
     const loggedUser="{{request.user.username}}"
     const owner="{{instance.owner.username}}"
     const layerTitle="{{instance.title}}"
-    const trimmed_layername=layerTitle.replace(/[&#39; , - : & ! * ( ) + ^ $ # @ ~ " % ']+/g, "_")
+    
+    const trimmed_layername=props.layername.replace(/[&#39; , - : & ! * ( ) + ^ $ # @ ~ " % ']+/g, "_")
    
     props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
 
 
-    props.layername="{{workspace}}"+":"+trimmed_layername+"_"+"{{app}}"
-    props.typename=trimmed_layername+"_"+"{{app}}"
-    props.layer=trimmed_layername+"_"+"{{app}}"
+    props.layername="{{workspace}}"+":"+trimmed_layername
+    props.typename=trimmed_layername
+    props.layer=trimmed_layername
     props.formAbstract="{{instance.abstract|escapejs}}"
     props.username="{{request.user.username}}"
   </script>

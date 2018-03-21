@@ -7,7 +7,7 @@ from geonode.geoserver.helpers import ogc_server_settings, get_store, get_sld_fo
 from . import APP_NAME
 from django.template.defaultfilters import slugify
 from django.shortcuts import HttpResponse, render
-from .utils import create_layer
+from .utils import create_layer, update_layer
 from geoserver.catalog import Catalog, FailedRequestError
 from geonode.maps.models import Map
 from django.conf import settings
@@ -83,9 +83,14 @@ def save(request, instance_id=None, app_name=APP_NAME):
         
         # name = form.cleaned_data['name']
         name = title+'_'+app_name
-        layer_title = title+'_'+app_name
+        layer_title = title+" "+app_name
+      
         geometry_type = "Point"
-        config.update(layername=layer_title)
+        config = data.get('config', None)
+        config.update(layername=name)
+    
+        config = json.dumps(config)
+        instance_obj.config=config
         attributes = json.dumps({"title":"string","description":"string","markerColor":"string","markerShape":"string","numbersColor":"string","title":"string","imageUrl":"string","order":"integer","link":"string","imageId":"integer"})
         # permissions = form.cleaned_data["permissions"]
         layer = create_layer(name, layer_title, request.user.username, geometry_type,attributes)
@@ -100,14 +105,21 @@ def save(request, instance_id=None, app_name=APP_NAME):
 
     else:
         instance_obj = AppInstance.objects.get(pk=instance_id)
-    config = json.dumps(data.get('config', None))
+        layername= json.loads(instance_obj.config)
+        layer=layername.get('layername' ,None)
+     
+        config = data.get('config', None)
+        config.update(layername=layer)
+        config = json.dumps(config)
+        instance_obj.config = config
+        update_layer(layer,title)
     instance_obj.title = title
     instance_obj.config = config
     instance_obj.abstract = abstract
     # instance_obj.map_id = map_id
     
     instance_obj.save()
-
+   
     owner_permissions = [
         'view_resourcebase',
         'download_resourcebase',

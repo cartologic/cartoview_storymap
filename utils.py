@@ -30,7 +30,7 @@ from geoserver.catalog import FailedRequestError
 
 from geonode import GeoNodeException
 from geonode.layers.models import Layer
-from geonode.layers.utils import get_valid_name
+from geonode.layers.utils import get_valid_name, _clean_string
 from geonode.people.models import Profile
 from geonode.geoserver.helpers import ogc_server_settings
 from django.conf import settings
@@ -154,8 +154,9 @@ def get_or_create_datastore(cat, workspace=None, charset="UTF-8"):
 
     try:
         ds = cat.get_store(dsname,settings.DEFAULT_WORKSPACE)
-        print("in try",settings.DEFAULT_WORKSPACE, workspace,ds)
-    except :
+        assert ds
+    except Exception as e :
+        print(e.message)
         ds = cat.create_datastore(dsname, workspace=workspace)
        
     
@@ -245,6 +246,7 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
 
     url = ('%s/workspaces/%s/datastores/%s/featuretypes'
            % (ogc_server_settings.internal_rest, workspace.name, datastore.name))
+    print("**************",url)      
     headers = {'Content-Type': 'application/xml'}
     req = requests.post(url, data=xml, headers=headers, auth=(gs_user, gs_password))
     if req.status_code != 201:
@@ -253,3 +255,15 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
         raise GeoNodeException("Layer could not be created in GeoServer")
 
     return workspace, datastore
+
+
+def update_layer(name,title):
+    
+    valid_name= _clean_string(name)
+  
+    try:
+       layer=Layer.objects.filter(name=valid_name).update(title=title+" "+"story map")
+   
+    except:
+        pass
+
