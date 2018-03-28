@@ -16,6 +16,7 @@ import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import SendIcon from 'material-ui-icons/Send'
+import ErrorIcon from 'material-ui-icons/Error'
 import TextField from 'material-ui/TextField'
 import Typography from 'material-ui/Typography'
 import { checkURL } from '../../containers/staticMethods'
@@ -120,7 +121,7 @@ export class FeatureListComponent extends React.Component {
         }).then((res) => {
             this.props.removeFeatureMarker(this.state.deletedFeature)
             var index= this.state.features.indexOf(this.state.deletedFeature)
-            console.log("index**********",index,this.state)
+
             let {features}=this.state
             let newFeatures=features
             newFeatures.splice(index,1)
@@ -391,6 +392,18 @@ export class FeatureListComponent extends React.Component {
                     </DialogActions>
                 </Dialog>
                 
+
+                <Dialog open={this.props.error} >
+                    <DialogTitle> Error</DialogTitle>
+                    <DialogContent>
+                   {"Layer can not be accessed !"}
+                    </DialogContent>
+                    <DialogActions>
+                      
+                    </DialogActions>
+                </Dialog>
+
+
                 <Snackbar
                     anchorOrigin={{ vertical, horizontal }}
                     open={this.state.openSnackBar}
@@ -414,7 +427,7 @@ export class FeatureListComponent extends React.Component {
                         <Message message={message} type="body2" /> :
                         <Loader />}
                 <Paper className='fixed-container'>
-                    {this.state.accessAdd && !featuresIsLoading && <Button onClick={() => this.props.showAddPanel()} raised color="primary" className={classes.button} style={{ width: '45%' }} >
+                    {this.state.accessAdd && !featuresIsLoading &&!this.props.error &&<Button onClick={() => this.props.showAddPanel()} raised color="primary" className={classes.button} style={{ width: '45%' }} >
                         submit
       </Button>}
                     {this.state.accessEdit && !this.state.editMode && !featuresIsLoading && this.state.features && this.state.features.length > 0 &&

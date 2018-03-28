@@ -58,7 +58,8 @@ class FeatureListContainer extends Component {
             addEntry: false,
             map: getMap(),
             initialCoordinate: [],
-            zoomedFeature:null
+            zoomedFeature:null,
+            error:null
 
 
         }
@@ -421,7 +422,10 @@ class FeatureListContainer extends Component {
                     this.setState({ totalFeatures: total })
                 }
                 this.setState({ features })
-            })
+            }).catch((error)=> {
+             console.log("error")
+             this.setState({features:[],featuresIsLoading: false,error:"Layer not found"})
+              });
     }
 
     search = (text) => {
