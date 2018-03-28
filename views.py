@@ -11,7 +11,9 @@ from .utils import create_layer, update_layer
 from geoserver.catalog import Catalog, FailedRequestError
 from geonode.maps.models import Map
 from django.conf import settings
+import uuid
 username, password = ogc_server_settings.credentials
+
 # gs_catalog = Catalog(ogc_server_settings.internal_rest, username, password)
 # geonode_workspace = gs_catalog.get_workspace("geonode")
 _js_permissions_mapping = {
@@ -81,9 +83,8 @@ def save(request, instance_id=None, app_name=APP_NAME):
         instance_obj.app = App.objects.get(name=app_name)
         instance_obj.owner = request.user
         
-        # name = form.cleaned_data['name']
-        name = title+'_'+app_name
-        layer_title = title+" "+app_name
+        name = "_"+uuid.uuid4().hex
+        layer_title = title
       
         geometry_type = "Point"
         config = data.get('config', None)

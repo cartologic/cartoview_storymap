@@ -262,7 +262,7 @@ def update_layer(name,title):
     valid_name= _clean_string(name)
   
     try:
-       layer=Layer.objects.filter(name=valid_name).update(title=title+" "+"story map")
+       layer=Layer.objects.filter(name=valid_name).update(title=title)
    
     except:
         pass

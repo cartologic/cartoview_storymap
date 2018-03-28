@@ -48,7 +48,7 @@ import Dialog, {
 } from 'material-ui/Dialog';
 import * as Scroll from 'react-scroll';
 import { Link, DirectLink, Element , Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
-
+import update from 'react-addons-update'
 import { transactWFS } from '../../containers/staticMethods'
 
 export const Loader = (props) => {
@@ -97,6 +97,7 @@ export class FeatureListComponent extends React.Component {
     deleteDialogeClickOpen = (feature) => {
 
         this.setState({ deletedFeature: feature, openDeleteDialoge: true })
+
     };
 
     deleteDialogeRequestClose = () => {
@@ -118,7 +119,14 @@ export class FeatureListComponent extends React.Component {
             })
         }).then((res) => {
             this.props.removeFeatureMarker(this.state.deletedFeature)
-            this.setState({ openDeleteDialoge: false, openSnackBar: true, loading: false })
+            var index= this.state.features.indexOf(this.state.deletedFeature)
+            console.log("index**********",index,this.state)
+            let {features}=this.state
+            let newFeatures=features
+            newFeatures.splice(index,1)
+
+          
+            this.setState({ openDeleteDialoge: false, openSnackBar: true, loading: false ,features:newFeatures})
         })
 
     }
@@ -397,7 +405,7 @@ export class FeatureListComponent extends React.Component {
                     <div id="contents"  >
 
 
-                        <List style={{ "marginTop": "10%" }}  >
+                        <List style={{ "marginBottom": "10%" }}  >
                             <SortableList items={this.state.features.length > 0 ? this.state.features : features} onSortEnd={this.onSortEnd} />
                         </List>
                      

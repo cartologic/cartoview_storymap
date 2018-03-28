@@ -96,9 +96,9 @@
     props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
 
 
-    props.layername="{{workspace}}"+":"+trimmed_layername
-    props.typename=trimmed_layername
-    props.layer=trimmed_layername
+    props.layername="{{workspace}}"+":"+props.layername
+    props.typename="{{workspace}}"+":"+props.layername
+    props.layer=props.layername
     props.formAbstract="{{instance.abstract|escapejs}}"
     props.username="{{request.user.username}}"
   </script>

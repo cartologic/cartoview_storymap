@@ -21,7 +21,7 @@ export default class Navigator extends Component {
 		const { steps } = this.props;
 		return (
 			<div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 list-group">
-				<ul className={"list-group"}>
+				<ul className={"list-group"} style={{"cursor":"pointer"}}>
 					{steps.map((s, index) => this.item(s.label, index))}
 				</ul>
 			</div>

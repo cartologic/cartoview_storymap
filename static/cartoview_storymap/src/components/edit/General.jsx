@@ -6,14 +6,30 @@ import Spinner from 'react-spinkit'
 import t from 'tcomb-form'
 import { CircularProgress } from 'material-ui/Progress'
 
+const title_length = t.refinement(t.String, (n) => {
+  if (n.length < 50){
+      return true
+  } else {
+      return false
+  }
+})
+title_length.getValidationErrorMessage = (value) => {
+  if (!value) {
+      return 'Required'
+  } else {
+      return 'Title too long'
+  }
+}
+
 const filter = t.struct({
     type: t.String,
     name: t.String
 })
 const formConfig = t.struct({
-    title: t.String,
+    title: title_length,
     abstract: t.String,
-    DisplayNumbersOnMarkers: t.maybe(t.Boolean),
+    DisplayNumbersOnMarkers: t.maybe(t
+.Boolean),
     zoomOnClick: t.maybe(t.Boolean)
 })
 const options = {
