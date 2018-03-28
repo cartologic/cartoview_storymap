@@ -11,7 +11,12 @@ import ResourceSelector from './components/edit/ResourceSelector.jsx'
 import MapViewer from './components/edit/MapViewer.jsx'
 import permissions from './components/edit/permissions.jsx'
 import { getCRSFToken } from './helpers/helpers.jsx'
-
+import Dialog, {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from 'material-ui/Dialog';
 export default class Edit extends Component {
     constructor(props) {
         super(props)
@@ -22,7 +27,8 @@ export default class Edit extends Component {
             config: config ? config.config : null,
             id: config ? config.id : null,
             extent: config &&this.props.config.config.extent ? this.props.config.config.extent : null,
-            general: config && this.props.config.config.config ? this.props.config.config.config : null
+            general: config && this.props.config.config.config ? this.props.config.config.config : null,
+            error:null
         }
 
     }
@@ -65,6 +71,8 @@ export default class Edit extends Component {
 
                 window.location.href = urls.viewURL(result.id)
             }
+        }).catch((error)=>{
+            this.setState({error:true})
         })
     }
     render() {
@@ -154,6 +162,15 @@ export default class Edit extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-9 col-lg-9 right-panel">
                     {steps.map((s, index) => index == step && <s.component key={index} {...s.props} />)}
                 </div>
+                <Dialog open={this.state.error} >
+                    <DialogTitle> </DialogTitle>
+                    <DialogContent>
+                   {"Error saving app instance !"}
+                    </DialogContent>
+                    <DialogActions>
+                      
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }
