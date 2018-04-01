@@ -9,7 +9,7 @@ import NavigationTools from './components/edit/NavigationTools.jsx'
 import Navigator from './components/edit/Navigator.jsx'
 import ResourceSelector from './components/edit/ResourceSelector.jsx'
 import MapViewer from './components/edit/MapViewer.jsx'
-import permissions from './components/edit/permissions.jsx'
+import Permissions from './components/edit/permissions.jsx'
 import { getCRSFToken } from './helpers/helpers.jsx'
 import Dialog, {
     DialogActions,
@@ -28,11 +28,13 @@ export default class Edit extends Component {
             id: config ? config.id : null,
             extent: config &&this.props.config.config.extent ? this.props.config.config.extent : null,
             general: config && this.props.config.config.config ? this.props.config.config.config : null,
-            error:null
+            error:null,
+            save_flag:null
         }
 
     }
     goToStep(step) {
+      
         this.setState({ step })
     }
     onPrevious() {
@@ -40,7 +42,7 @@ export default class Edit extends Component {
         this.goToStep(step -= 1)
     }
     save = (instanceConfig) => {
-
+        if (this.state.config){
         this.state.config['extent'] = this.state.extent
         this.state.config['zoom']=this.state.zoom
         this.state.config['projection']=this.state.projection
@@ -74,8 +76,12 @@ export default class Edit extends Component {
         }).catch((error)=>{
             this.setState({error:true})
         })
-    }
+    }else{
+        console.log("not ready")
+        this.setState({save_flag:true})
+    }}
     render() {
+      
         let { urls, username, keywords } = this.props
         let {
             step,
@@ -87,36 +93,41 @@ export default class Edit extends Component {
             id,
             extent
         } = this.state
+        console.log("step",step)
         const steps = [
             {
-                label: "Select Map",
+                label: "Select Extent",
                 component: MapViewer,
                 props: {
                     resourcesUrl: urls.resources_url,
                     username: username,
                     extent: extent,
+                    save_flag:this.state.save_flag,
+                    save:()=>{this.save(this.state.config)},
                     onComplete: (extent,zoom,projection,center) => {
                 
                         var { step, config } = this.state
                         this.setState({ extent ,zoom,projection,center})
-                        this.goToStep(++step)
+                     
                     }
                 },
 
 
             }, {
                 label: "Permissions",
-                component: permissions,
+                component: Permissions,
                 props: {
                     instance: selectedResource,
+                    save_flag:this.state.save_flag,
                     config,
                     urls,
                     success,
                     id: id,
                     access: this.state.access ? this.state.access : null,
+                    save:()=>{this.save(this.state.config)},
                     onComplete: (access,miniAccess,groupAccess) => {
                       
-                        this.setState({ access,miniAccess,groupAccess }, this.goToStep(++step))
+                        this.setState({ access,miniAccess,groupAccess })
 
 
                     },
@@ -134,19 +145,41 @@ export default class Edit extends Component {
                     urls,
                     abstract,
                     title,
-                    general: this.props.config &&this.props.config.config.config ? this.props.config.config.config : null,
-                    
-                    onComplete: (basicConfig) => {
+                    general: this.props.config &&this.props.config.config.config ? this.props.config.config.config : this.state.config?this.state.config.config:null,
+                    save:(basicConfig)=>{
+                    console.log(basicConfig)
+                    let { step, config } = this.state
+                    this.setState({
+                        config: {
+                            ...basicConfig,
 
-                        let { step, config } = this.state
-                        this.setState({
-                            config: {
-                                ...basicConfig,
+                        }
+                    }, () => this.save(this.state.config)
+                )
 
-                            }
-                        }, () => this.save(this.state.config))
+                        },
+                 save: (basicConfig) => {
 
-                    },
+                            let { step, config } = this.state
+                            this.setState({
+                                config: {
+                                    ...basicConfig,
+    
+                                }
+                            }, () => this.save(this.state.config))
+    
+                        },
+                        onComplete: (basicConfig) => {
+
+                            let { step, config } = this.state
+                            this.setState({
+                                config: {
+                                    ...basicConfig,
+    
+                                }
+                            })
+    
+                        },
                     onPrevious: () => {
                         this.onPrevious()
                     }
@@ -155,9 +188,13 @@ export default class Edit extends Component {
         ]
         return (
             <div className="wrapping">
+            <div style={{'display':'none'}}>
+   
+           </div>
                 <Navigator
                     steps={steps}
                     step={step}
+                    save_flag= {this.state.save_flag}
                     onStepSelected={(step) => this.goToStep(step)} />
                 <div className="col-xs-12 col-sm-12 col-md-9 col-lg-9 right-panel">
                     {steps.map((s, index) => index == step && <s.component key={index} {...s.props} />)}

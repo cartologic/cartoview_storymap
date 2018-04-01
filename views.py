@@ -23,12 +23,14 @@ _js_permissions_mapping = {
     'whoCanChangeConfiguration': 'change_resourcebase'
 }
 def change_dict_None_to_list(access):
-    for permission, users in list(access.items()):
-        if not users:
-            access[permission] = []
+    if access:
+        for permission, users in list(access.items()):
+            if not users:
+                access[permission] = []
 def get_users_permissions(access, initial, owner):
-        change_dict_None_to_list(access)
-        users = []
+     change_dict_None_to_list(access)
+     users = []
+     if access:
         for permission_users in list(access.values()):
             if permission_users:
                 users.extend(permission_users)
@@ -46,8 +48,9 @@ def get_users_permissions(access, initial, owner):
                     'view_resourcebase',
                 ]})
 def get_groups_permissions(access, initial, owner):
-        change_dict_None_to_list(access)
-        groups = []
+    change_dict_None_to_list(access)
+    groups = []
+    if access:
         for permission_groups in list(access.values()):
             if permission_groups:
                 groups.extend(permission_groups)
@@ -83,7 +86,7 @@ def save(request, instance_id=None, app_name=APP_NAME):
         instance_obj.app = App.objects.get(name=app_name)
         instance_obj.owner = request.user
         
-        name = "_"+uuid.uuid4().hex
+        name = "storymap_"+uuid.uuid4().hex
         layer_title = title
       
         geometry_type = "Point"

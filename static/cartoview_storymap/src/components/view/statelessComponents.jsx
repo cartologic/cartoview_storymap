@@ -204,7 +204,7 @@ export class FeatureListComponent extends React.Component {
     checkPermissions = (name) => {
      
 
-        {
+        { if (props.access){
             props.access.whoCanEditStory && props.access.whoCanEditStory.map((user) => {
                 if (user.value == name || loggedUser == owner) {
                this.setState({ accessEdit: true })
@@ -212,7 +212,9 @@ export class FeatureListComponent extends React.Component {
 
             })
         }
-        {
+  }
+    
+        {  if (props.access){
             props.access.whoCanSubmitStory && props.access.whoCanSubmitStory.map((user) => {
             
                 if (user.value == name || loggedUser == owner) {
@@ -222,14 +224,14 @@ export class FeatureListComponent extends React.Component {
 
             })
         }
-        {
+        { {  if (props.access){
             props.access.whoCanDeleteStory && props.access.whoCanDeleteStory.map((user) => {
                 if (user.value == name || loggedUser == owner) {
                 this.setState({ accessDelete: true })
                 }
 
             })
-        }
+        }}}}
         if (loggedUser == owner) {
          
             this.setState({ accessAdd: true, accessEdit: true, accessDelete: true })

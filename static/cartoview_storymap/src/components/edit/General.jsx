@@ -49,6 +49,7 @@ export default class General extends Component {
         const { config } = this.props
      
         this.state = {
+            config:{},
             value: {
                 title: this.props.general&&this.props.general.title?this.props.general.title:null,
                 abstract: this.props.general&&this.props.general.abstract?this.props.general.abstract:null,
@@ -68,10 +69,11 @@ export default class General extends Component {
         }
      
     }
-
-    save = () => {
-      
-		const value = this.form.getValue()
+    componentWillUnmount(){
+      this.next()
+   }
+   next=()=>{
+     const value = this.form.getValue()
     
         if (value) {
         this.state['value']=value
@@ -79,6 +81,22 @@ export default class General extends Component {
 			this.setState({loading:true})
 		
             this.props.onComplete({
+                config: {
+                    ...val
+                }
+            })
+        }
+   }
+    save = () => {
+      
+		const value = this.form.getValue()
+    this.setState({loading:true})
+        if (value) {
+        this.state['value']=value
+			var val= Object.assign({'themeColor':this.state.themeColor,'themeColorName':this.state.themeColorName}, value);
+			this.setState({loading:true})
+		
+            this.props.save({
                 config: {
                     ...val
                 }
@@ -109,17 +127,11 @@ export default class General extends Component {
 							display: "inline-block",
 							margin: "0px 3px 0px 3px"
 						}}
-							className="btn btn-primary btn-sm pull-right disabled"
-							onClick={this.save.bind( this )}>{"next "}<i className="fa fa-arrow-right"></i></button>
+              className="btn btn-primary btn-sm pull-right"
+              disabled={this.state.loading}
+							onClick={()=>this.save()}>{"Save "}</button>
 
-						<button
-							style={{
-							display: "inline-block",
-							margin: "0px 3px 0px 3px"
-						}}
-							className="btn btn-primary btn-sm pull-right"
-							onClick={( ) => this.props.onPrevious( )}><i className="fa fa-arrow-left"></i>{" Previous"}</button>
-					</div>
+									</div>
 				</div>
 				<div className="row" style={{
 					marginTop: "3%"
@@ -127,63 +139,7 @@ export default class General extends Component {
 					<div className="col-xs-5 col-md-4">
 						<h4>{'General '}</h4>
 					</div>
-					<div className="col-xs-7 col-md-8">
-						<a
-							style={{
-							display: "inline-block",
-							margin: "0px 3px 0px 3px"
-						}}
-							className={this.state.success === true
-							? "btn btn-primary btn-sm pull-right"
-							: "btn btn-primary btn-sm pull-right disabled"}
-						
-            	href={`/apps/cartoview_story_map/${ this.props.id }/view/`}>
-							View
-						</a>
-
-						<a
-							style={{
-							display: "inline-block",
-							margin: "0px 3px 0px 3px"
-						}}
-							className={this.state.success === true
-							? "btn btn-primary btn-sm pull-right"
-							: "btn btn-primary btn-sm pull-right disabled"}
-							href={`/apps/appinstance/${ this.props.id }/`}
-							target={"_blank"}>
-							Details
-						</a>
-
-						<button
-							style={{
-							display: "inline-block",
-							margin: "0px 3px 0px 3px"
-						}}
-                            disabled={this.state.loading}
-							className={this.state.success === true
-							? "btn btn-primary btn-sm pull-right disabled"
-							: "btn btn-primary btn-sm pull-right"}
-							onClick={this.save.bind( this )}>
-                            
-                             { this.state.loading?'saving':'save'}
-                            { this.state.loading&&<CircularProgress size={20}/>}
-               
-                            
-                            </button>
-
-						<p
-							style={this.state.success == true
-							? {
-								display: "inline-block",
-								margin: "0px 3px 0px 3px",
-								float: "right"
-							}
-							: {
-								display: "none",
-								margin: "0px 3px 0px 3px",
-								float: "right"
-							}}>App instance successfully created!</p>
-					</div>
+				
 				</div>
 				<hr></hr>
               

@@ -27,7 +27,9 @@ export default class MapViewer extends Component {
         
         
     }
-   
+    componentWillUnmount(){
+       this.save()
+    }
     componentDidMount(){
         this.map.setTarget(this.mapRef)
         if(this.state.extent)
@@ -54,12 +56,12 @@ export default class MapViewer extends Component {
                         }}>
                           
 
-                            <button
+                         <button
                                 type='button'
                                 className="btn btn-sm btn-primary"
-                                onClick={this.save.bind(this)}>Next
-								<i className="fa fa-arrow-right"></i>
-                            </button>
+                                onClick={()=>this.props.save()}>Save
+							
+                            </button> 
                         </div>
                     </div>
                 </div>

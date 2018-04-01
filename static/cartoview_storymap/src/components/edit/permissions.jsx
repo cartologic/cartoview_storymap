@@ -127,8 +127,9 @@ const groupOptions = {
      
     }
 }
-export default class permissions extends Component {
+export default class Permissions extends Component {
     constructor( props ) {
+      
         super( props )
         let { config, keywords, selectedResource, title, abstract,access } = this.props
         this.state = {
@@ -163,6 +164,10 @@ export default class permissions extends Component {
             data[attr] = attributeValue ? this.flattenedUsers(attributeValue) : null
         })
         return data
+    }
+    componentWillUnmount(){
+
+       this.save()
     }
     save( ) {
         var basicConfig = this.form.getValue( )
@@ -202,15 +207,11 @@ export default class permissions extends Component {
                     <div className="col-xs-7 col-md-8">
                         <button
                             className="btn navigation-buttons btn-primary btn-sm pull-right"
-                            onClick={this.save.bind(this)}>{"next "}
-                            <i className="fa fa-arrow-right"></i>
+                            onClick={()=>this.props.save()}>{"Save"}
+                        
                         </button>
 
-                        <button
-                            className="btn navigation-buttons btn-primary btn-sm pull-right"
-                            onClick={() => onPrevious()}>
-                            <i className="fa fa-arrow-left"></i>{" Previous"}</button>
-                    </div>
+                             </div>
                 </div>
                 <hr></hr>
                 <div className="panel-group" style={{overFlow: "visible" }}>
