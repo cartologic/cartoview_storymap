@@ -94,11 +94,9 @@
     const trimmed_layername=props.layername.replace(/[&#39; , - : & ! * ( ) + ^ $ # @ ~ " % ']+/g, "_")
    
     props.formTitle="{{instance.title}}".replace(/[&#39;]+/g, "'")
-
-
-    props.layername="{{workspace}}"+":"+props.layername
     props.typename=props.layername
     props.layer=props.layername
+    props.layername="{{workspace}}"+":"+props.layername
     props.formAbstract="{{instance.abstract|escapejs}}"
     props.username="{{request.user.username}}"
   </script>
