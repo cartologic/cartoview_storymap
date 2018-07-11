@@ -42,6 +42,8 @@ import { MenuItem } from 'material-ui/Menu';
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Collapse from 'material-ui/transitions/Collapse';
 import Avatar from 'material-ui/Avatar';
+import { SketchPicker } from 'react-color';
+
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -240,11 +242,12 @@ class EditForm extends React.Component {
                 throw Error(error)
             })
     }
-    handleColor(value, color) {
-        this.setState({ [value]: color.target.value })
-        this.state.formValue[value] = color.target.value
-        this.handleMarkerColorClose()
-        this.handleNumberColorClose()
+    handleColor(value, color, evt) {
+        //console.log(value, " ", color, " ", evt)
+        this.setState({ [value]: color.hex })
+        this.state.formValue[value] = color.hex
+        // this.handleMarkerColorClose()
+        // this.handleNumberColorClose()
     }
     click = () => {
         this.setState({ clicked: true })
@@ -326,14 +329,20 @@ class EditForm extends React.Component {
                         <Dialog open={this.state.markerColorOpen} onClose={this.handleMarkerColorClose}>
                             <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                             <DialogContent>
-                                <MaterialColorPicker
+                                {/* <MaterialColorPicker
                                     initColor={this.state.markercolor}
                                     onSubmit={(color) => this.handleColor('markercolor', color)}
                                     onReset={this.handleMarkerColorClose}
                                     style={{ width: 300, backgroundColor: '#c7c7c7' }}
                                     submitLabel='Apply'
                                     resetLabel='Cancel'
+                                /> */}
+                                <SketchPicker 
+                                color={this.state.markercolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChangeComplete={(color, evt) => this.handleColor('markercolor', color, evt)}
                                 />
+                               <Button onClick={this.handleMarkerColorClose} raised color="primary">Choose</Button> 
                             </DialogContent>
                         </Dialog>
                     </div>
@@ -344,14 +353,20 @@ class EditForm extends React.Component {
                         <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                             <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                             <DialogContent>
-                                <MaterialColorPicker
+                                {/* <MaterialColorPicker
                                     initColor={this.state.numberscolor}
                                     onSubmit={(color) => this.handleColor('numberscolor', color)}
                                     onReset={this.handleNumberColorClose}
                                     style={{ width: 300, backgroundColor: '#c7c7c7' }}
                                     submitLabel='Apply'
                                     resetLabel='Cancel'
+                                /> */}
+                                <SketchPicker 
+                                color={this.state.numberscolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChangeComplete={(color, evt) => this.handleColor('numberscolor', color, evt)}
                                 />
+                               <Button onClick={this.handleNumberColorClose} raised color="primary">Choose</Button>  
                             </DialogContent>
                         </Dialog>
                     </div>

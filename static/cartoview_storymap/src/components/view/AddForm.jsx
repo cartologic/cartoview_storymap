@@ -44,7 +44,7 @@ import Select from 'material-ui/Select';
 import XICon from 'material-ui-icons/Clear'
 import MaterialColorPicker from 'react-material-color-picker';
 import Radio, { RadioGroup } from 'material-ui/Radio';
-
+import { SketchPicker } from 'react-color';
 
 const styles = theme => ({
     root: {
@@ -256,11 +256,12 @@ class addForm extends React.Component {
 
         this.setState({ markershape: event.target.value });
     };
-    handleColor(value, color) {
-
-        this.setState({ [value]: color.target.value })
-        this.handleMarkerColorClose()
-        this.handleNumberColorClose()
+    handleColor(value, color, evt) {
+        //console.log(value, " ", color, " ", evt)
+        this.setState({ [value]: color.hex })
+        //this.state.formValue[value] = color.hex
+        // this.handleMarkerColorClose()
+        // this.handleNumberColorClose()
     }
     handleChangeLocation = (event, value) => {
         if (value == 'onAddress') {
@@ -375,14 +376,20 @@ class addForm extends React.Component {
                                 <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                                 <DialogContent>
 
-                                    <MaterialColorPicker
+                                    {/* <MaterialColorPicker
                                         initColor={this.state.markercolor}
                                         onSubmit={(color) => this.handleColor('markercolor', color)}
                                         onReset={this.handleMarkerColorClose}
                                         style={{ width: 300, backgroundColor: '#c7c7c7' }}
                                         submitLabel='Apply'
                                         resetLabel='Cancel'
-                                    />
+                                    /> */}
+                                    <SketchPicker 
+                                color={this.state.markercolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChangeComplete={(color, evt) => this.handleColor('markercolor', color, evt)}
+                                />
+                               <Button onClick={this.handleMarkerColorClose} raised color="primary">Choose</Button> 
                                 </DialogContent>
 
                             </Dialog>
@@ -395,18 +402,20 @@ class addForm extends React.Component {
                             <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                                 <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                                 <DialogContent>
-
-
-
-                                    <MaterialColorPicker
+                                    {/* <MaterialColorPicker
                                         initColor={this.state.numberscolor}
                                         onSubmit={(color) => this.handleColor('numberscolor', color)}
                                         onReset={this.handleNumberColorClose}
                                         style={{ width: 300, backgroundColor: '#c7c7c7' }}
                                         submitLabel='Apply'
                                         resetLabel='Cancel'
-                                    />
-
+                                    /> */}
+                                    <SketchPicker 
+                                color={this.state.numberscolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChangeComplete={(color, evt) => this.handleColor('numberscolor', color, evt)}
+                                />
+                               <Button onClick={this.handleNumberColorClose} raised color="primary">Choose</Button> 
                                 </DialogContent>
 
                             </Dialog>
