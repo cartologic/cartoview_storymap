@@ -44,7 +44,7 @@ import Select from 'material-ui/Select';
 import XICon from 'material-ui-icons/Clear'
 import MaterialColorPicker from 'react-material-color-picker';
 import Radio, { RadioGroup } from 'material-ui/Radio';
-
+import { PhotoshopPicker } from 'react-color';
 
 const styles = theme => ({
     root: {
@@ -257,9 +257,18 @@ class addForm extends React.Component {
         this.setState({ markershape: event.target.value });
     };
     handleColor(value, color) {
-
-        this.setState({ [value]: color.target.value })
-        this.handleMarkerColorClose()
+        this.setState({ [value]: color.hex })
+    }
+    handleColorReset(value, evt){
+        if (value === 'markercolor'){
+            const oldmarkercolor = "#000000"
+        this.setState({markercolor: oldmarkercolor})
+        }
+        if (value === 'numberscolor'){
+            const oldnumberscolor = "#ffffff"
+        this.setState({ numberscolor: oldnumberscolor })
+        }
+           this.handleMarkerColorClose()
         this.handleNumberColorClose()
     }
     handleChangeLocation = (event, value) => {
@@ -374,17 +383,14 @@ class addForm extends React.Component {
                             <Dialog open={this.state.markerColorOpen} onClose={this.handleMarkerColorClose}>
                                 <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                                 <DialogContent>
-
-                                    <MaterialColorPicker
-                                        initColor={this.state.markercolor}
-                                        onSubmit={(color) => this.handleColor('markercolor', color)}
-                                        onReset={this.handleMarkerColorClose}
-                                        style={{ width: 300, backgroundColor: '#c7c7c7' }}
-                                        submitLabel='Apply'
-                                        resetLabel='Cancel'
-                                    />
+                                <PhotoshopPicker 
+                                color={this.state.markercolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChange={(color) => this.handleColor('markercolor', color)}
+                                onAccept={this.handleMarkerColorClose}
+                                onCancel={(evt)=>this.handleColorReset('markercolor', evt)}
+                                />
                                 </DialogContent>
-
                             </Dialog>
                         </div>
 
@@ -395,20 +401,14 @@ class addForm extends React.Component {
                             <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                                 <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                                 <DialogContent>
-
-
-
-                                    <MaterialColorPicker
-                                        initColor={this.state.numberscolor}
-                                        onSubmit={(color) => this.handleColor('numberscolor', color)}
-                                        onReset={this.handleNumberColorClose}
-                                        style={{ width: 300, backgroundColor: '#c7c7c7' }}
-                                        submitLabel='Apply'
-                                        resetLabel='Cancel'
-                                    />
-
-                                </DialogContent>
-
+                                       <PhotoshopPicker 
+                                color={this.state.numberscolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChange={(color) => this.handleColor('numberscolor', color)}
+                                onAccept={this.handleNumberColorClose}
+                                onCancel={(evt)=>this.handleColorReset('numberscolor', evt)}
+                                />
+                                 </DialogContent>
                             </Dialog>
                         </div>
                     </div>

@@ -42,6 +42,8 @@ import { MenuItem } from 'material-ui/Menu';
 import Card, { CardHeader, CardMedia, CardContent, CardActions } from 'material-ui/Card';
 import Collapse from 'material-ui/transitions/Collapse';
 import Avatar from 'material-ui/Avatar';
+import { PhotoshopPicker } from 'react-color';
+
 import Dialog, {
     DialogActions,
     DialogContent,
@@ -103,6 +105,8 @@ class EditForm extends React.Component {
             markershape: this.props.featureEdit.getProperties()['markershape'],
             markercolor: unescape(this.props.featureEdit.getProperties()['markercolor']),
             numberscolor: unescape(this.props.featureEdit.getProperties()['numberscolor']),
+            oldmarkercolor: unescape(this.props.featureEdit.getProperties()['markercolor']),
+            oldnumberscolor: unescape(this.props.featureEdit.getProperties()['numberscolor']),
             imageurl: this.props.featureEdit.getProperties()['imageurl'],
             imageid: this.props.featureEdit.getProperties()['imageid'],
             id: this.props.featureEdit.getProperties()['featureIndex'],
@@ -220,7 +224,6 @@ class EditForm extends React.Component {
                 if (property == 'markercolor' || property != 'numberscolor') {
                     this.state.formValue[property] = this.state.formValue[property]
                 }
-
             }
         })
         if (this.state.clicked == true && this.state.fileName != "") {
@@ -241,16 +244,25 @@ class EditForm extends React.Component {
             })
     }
     handleColor(value, color) {
-        this.setState({ [value]: color.target.value })
-        this.state.formValue[value] = color.target.value
-        this.handleMarkerColorClose()
+        this.setState({ [value]: color.hex })
+        this.state.formValue[value] = color.hex
+    }
+    handleColorReset(value, evt){
+        if (value === 'oldmarkercolor'){
+            const oldmarkercolor = this.state.oldmarkercolor
+        this.setState({markercolor: oldmarkercolor})
+        }
+        if (value === 'oldnumberscolor'){
+            const oldnumberscolor = this.state.oldnumberscolor
+        this.setState({ numberscolor: oldnumberscolor })
+        }
+           this.handleMarkerColorClose()
         this.handleNumberColorClose()
     }
     click = () => {
         this.setState({ clicked: true })
     }
     render() {
-      
         const vertical = 'bottom', horizontal = 'center'
         const {
             selectedFeature,
@@ -326,13 +338,12 @@ class EditForm extends React.Component {
                         <Dialog open={this.state.markerColorOpen} onClose={this.handleMarkerColorClose}>
                             <DialogTitle>{"Please choose a color for the marker"}</DialogTitle>
                             <DialogContent>
-                                <MaterialColorPicker
-                                    initColor={this.state.markercolor}
-                                    onSubmit={(color) => this.handleColor('markercolor', color)}
-                                    onReset={this.handleMarkerColorClose}
-                                    style={{ width: 300, backgroundColor: '#c7c7c7' }}
-                                    submitLabel='Apply'
-                                    resetLabel='Cancel'
+                                <PhotoshopPicker 
+                                color={this.state.markercolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChange={(color) => this.handleColor('markercolor', color)}
+                                onAccept={this.handleMarkerColorClose}
+                                onCancel={(evt)=>this.handleColorReset('oldmarkercolor', evt)}
                                 />
                             </DialogContent>
                         </Dialog>
@@ -344,13 +355,12 @@ class EditForm extends React.Component {
                         <Dialog open={this.state.numberColorOpen} onClose={this.handleNumberColorClose}>
                             <DialogTitle>{"Please choose a color for the numbers on marker"}</DialogTitle>
                             <DialogContent>
-                                <MaterialColorPicker
-                                    initColor={this.state.numberscolor}
-                                    onSubmit={(color) => this.handleColor('numberscolor', color)}
-                                    onReset={this.handleNumberColorClose}
-                                    style={{ width: 300, backgroundColor: '#c7c7c7' }}
-                                    submitLabel='Apply'
-                                    resetLabel='Cancel'
+                                <PhotoshopPicker 
+                                color={this.state.numberscolor}  
+                                style={{ marginLeft:'15%' }}
+                                onChange={(color) => this.handleColor('numberscolor', color)}
+                                onAccept={this.handleNumberColorClose}
+                                onCancel={(evt)=>this.handleColorReset('oldnumberscolor', evt)}
                                 />
                             </DialogContent>
                         </Dialog>
