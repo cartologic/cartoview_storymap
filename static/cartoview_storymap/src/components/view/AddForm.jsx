@@ -44,7 +44,7 @@ import Select from 'material-ui/Select';
 import XICon from 'material-ui-icons/Clear'
 import MaterialColorPicker from 'react-material-color-picker';
 import Radio, { RadioGroup } from 'material-ui/Radio';
-import { SketchPicker } from 'react-color';
+import { PhotoshopPicker } from 'react-color';
 
 const styles = theme => ({
     root: {
@@ -259,6 +259,18 @@ class addForm extends React.Component {
     handleColor(value, color) {
         this.setState({ [value]: color.hex })
     }
+    handleColorReset(value, evt){
+        if (value === 'markercolor'){
+            const oldmarkercolor = "#000000"
+        this.setState({markercolor: oldmarkercolor})
+        }
+        if (value === 'numberscolor'){
+            const oldnumberscolor = "#ffffff"
+        this.setState({ numberscolor: oldnumberscolor })
+        }
+           this.handleMarkerColorClose()
+        this.handleNumberColorClose()
+    }
     handleChangeLocation = (event, value) => {
         if (value == 'onAddress') {
             this.setState({ onAddress: true })
@@ -376,7 +388,7 @@ class addForm extends React.Component {
                                 style={{ marginLeft:'15%' }}
                                 onChange={(color) => this.handleColor('markercolor', color)}
                                 onAccept={this.handleMarkerColorClose}
-                                onCancel={this.handleMarkerColorClose}
+                                onCancel={(evt)=>this.handleColorReset('markercolor', evt)}
                                 />
                                 </DialogContent>
                             </Dialog>
@@ -394,7 +406,7 @@ class addForm extends React.Component {
                                 style={{ marginLeft:'15%' }}
                                 onChange={(color) => this.handleColor('numberscolor', color)}
                                 onAccept={this.handleNumberColorClose}
-                                onCancel={this.handleNumberColorClose}
+                                onCancel={(evt)=>this.handleColorReset('numberscolor', evt)}
                                 />
                                  </DialogContent>
                             </Dialog>
