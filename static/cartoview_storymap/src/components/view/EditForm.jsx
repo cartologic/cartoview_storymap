@@ -130,6 +130,7 @@ class EditForm extends React.Component {
         })
         this.state.formValue['markercolor'] = this.state.markercolor
         this.setState({ formValue: this.state.formValue })
+        this.validImage()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -191,7 +192,7 @@ class EditForm extends React.Component {
         this.state.formValue['imageid'] = null
         var feature = this.props.editedFeature ? this.props.editedFeature : this.props.featureEdit
         var id = feature.getProperties()['imageid']
-        const url = urls.attachmentDeleteUrl(props.typename, this.state.id)
+        const url = urls.attachmentDeleteUrl(props.typename, id)
         return fetch(url, {
             method: 'DELETE',
             credentials: 'include',
@@ -200,7 +201,7 @@ class EditForm extends React.Component {
                 "X-CSRFToken": getCRSFToken()
             })
         }).then((res) => {
-            this.setState({ DeleteOpen: false })
+            this.setState({ DeleteOpen: false, imageExist: false })
         })
     }
     save = () => {
@@ -248,6 +249,18 @@ class EditForm extends React.Component {
     }
     click = () => {
         this.setState({ clicked: true })
+    }
+    validImage(){
+        // test if the image exist!
+        console.log("inside valid image")
+        fetch(this.props.featureEdit.getProperties()["imageurl"])
+        .then((res)=>{
+            if (res.status == 404){
+                this.setState({imageExist: false})
+            }else{
+                this.props.featureEdit.getProperties()["imageurl"] && this.props.featureEdit.getProperties()["imageurl"] != "null" && this.setState({imageExist: true})
+            }
+        })
     }
     render() {
       
@@ -356,7 +369,7 @@ class EditForm extends React.Component {
                         </Dialog>
                     </div>
                 </div>
-                {this.props.featureEdit.getProperties()["imageurl"] && this.props.featureEdit.getProperties()["imageurl"] != "null" &&
+                {this.state.imageExist &&
                     <Card style={{ margin: "10px" }} className={classes.card}>
                         <div className={"row"} style={{ display: "flex" }}>
                             <div style={{ flex: 1 }}>
@@ -380,7 +393,7 @@ class EditForm extends React.Component {
                         </div>
                     </Card>
                 }
-                { this.props.featureEdit.getProperties()["imageurl"]=="null" ||this.props.featureEdit.getProperties()["imageurl"]==null &&
+                { !this.state.imageExist &&
                     <div onClick={() => this.click()}>
                         <Slider attachments={[]} />
                         <ImageDialog onClick={() => this.click} getImageFromURL={getImageFromURL} SaveImageBase64={SaveImageBase64} featureId={this.props.features.length + 1} />
