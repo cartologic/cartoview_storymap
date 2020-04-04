@@ -53,7 +53,16 @@
               }
         {% endif %}
           var username="{{instance.owner.username}}"
-          var viewer=new Viewer('root',username,urls);
+          const baseMaps = [
+            {
+              name: 'imagery_base_maps:osm_imagery',
+              title: 'Egypt',
+              params: { 'LAYERS': ['imagery_base_maps:osm_imagery'], 'TILED': true },
+              url: 'https://gistiles.te.eg/geoserver/wms',
+              visible: true
+            },
+          ]
+          var viewer=new Viewer('root',username,urls, baseMaps);
           viewer.view();
     </script>
   
