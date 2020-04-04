@@ -252,7 +252,6 @@ class EditForm extends React.Component {
     }
     validImage(){
         // test if the image exist!
-        console.log("inside valid image")
         fetch(this.props.featureEdit.getProperties()["imageurl"])
         .then((res)=>{
             if (res.status == 404){

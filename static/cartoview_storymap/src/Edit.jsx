@@ -77,7 +77,6 @@ export default class Edit extends Component {
             this.setState({error:true})
         })
     }else{
-        console.log("not ready")
         this.setState({save_flag:true})
     }}
     render() {
@@ -93,7 +92,6 @@ export default class Edit extends Component {
             id,
             extent
         } = this.state
-        console.log("step",step)
         const steps = [
             {
                 label: "Select Extent",
@@ -147,7 +145,6 @@ export default class Edit extends Component {
                     title,
                     general: this.props.config &&this.props.config.config.config ? this.props.config.config.config : this.state.config?this.state.config.config:null,
                     save:(basicConfig)=>{
-                    console.log(basicConfig)
                     let { step, config } = this.state
                     this.setState({
                         config: {

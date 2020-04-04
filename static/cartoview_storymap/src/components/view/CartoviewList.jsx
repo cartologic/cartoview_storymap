@@ -122,6 +122,7 @@ class CartoviewList extends React.Component {
         this.setState({ add: nextProps.addEntry })
     }
     handleClose = () => {
+        console.log('Inside handle close')
         this.setState({ success: false })
     }
     handleOpen = (msg) => {
@@ -163,7 +164,7 @@ class CartoviewList extends React.Component {
 
                 </div>}
                 {!selectionModeEnabled && !detailsModeEnabled && !add && !edit && <FeatureListComponent handleEditFeature={this.handleEditFeature}{...this.props}  loading={featuresIsLoading} openDetails={this.openDetails} addEntry={this.addEntry}  message={"No Stories Found"} />}
-                {!selectionModeEnabled && !detailsModeEnabled && add && !edit && <AddForm  {...this.props} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back={this.back} message={"No Stories Found"} />}
+                {!selectionModeEnabled && !detailsModeEnabled && add && !edit && <AddForm  {...this.props} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} handleClose={this.handleClose} addEntry={this.addEntry} back={this.back} message={"No Stories Found"} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !add && edit && <EditForm  {...this.props} featureEdit={this.state.feature} subheader="" featureTypes={this.state.featureTypes} loading={featuresIsLoading} openDetails={this.openDetails} handleOpen={this.handleOpen} addEntry={this.addEntry} back2={this.editBack2} back={this.editBack} message={"No Stories Found"} />}
                 {detailsModeEnabled && detailsOfFeature && <ItemDetails SaveImageBase64={SaveImageBase64} username={config.username} addComment={addComment} selectionModeEnabled={selectionModeEnabled} back={this.back} selectedFeature={detailsOfFeature} searchCommentById={searchCommentById} comments={comments} searchFilesById={searchFilesById} />}
                 {!selectionModeEnabled && !detailsModeEnabled && !(featuresIsLoading || attachmentIsLoading) && totalFeatures > 0 && <div className={classes.pagination}>
@@ -175,6 +176,7 @@ class CartoviewList extends React.Component {
                     SnackbarContentProps={{
                         'aria-describedby': 'message-id',
                     }}
+                    autoHideDuration={3000}
                     message={<span id="message-id">{this.state.msg}</span>}
                 />
             </div>
