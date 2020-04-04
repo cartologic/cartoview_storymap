@@ -76,6 +76,10 @@ def create_gn_layer(workspace, datastore, name, title, owner_name):
         bbox_y1=90
     )
     print(layer)
+    # setting permissions in GeoServer GeoFence data rules with the owner of the layer
+    perms = {u'users': {u'AnonymousUser': [], owner_name: [u'view_resourcebase', u'download_resourcebase', u'change_resourcebase_metadata', u'change_layer_data', u'change_layer_style', u'change_resourcebase', u'delete_resourcebase', u'change_resourcebase_permissions', u'publish_resourcebase']}, u'groups': {}}
+    layer.set_permissions(perms)
+
     return layer
 
 
@@ -195,7 +199,7 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
     native_name = name
     gs_user = ogc_server_settings.credentials[0]
     gs_password = ogc_server_settings.credentials[1]
-    cat = Catalog(ogc_server_settings.internal_rest, gs_user, gs_password)
+    cat = Catalog(ogc_server_settings.rest, gs_user, gs_password, disable_ssl_certificate_validation=True)
 
     # get workspace and store
     # workspace = cat.get_default_workspace()
@@ -245,7 +249,7 @@ def create_gs_layer(name, title, geometry_type, attributes=None):
                 attributes=attributes_block)
 
     url = ('%s/workspaces/%s/datastores/%s/featuretypes'
-           % (ogc_server_settings.internal_rest, workspace.name, datastore.name))
+           % (ogc_server_settings.rest, workspace.name, datastore.name))
     print("**************",url)      
     headers = {'Content-Type': 'application/xml'}
     req = requests.post(url, data=xml, headers=headers, auth=(gs_user, gs_password))
