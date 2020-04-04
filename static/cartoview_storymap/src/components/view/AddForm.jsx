@@ -182,9 +182,10 @@ class addForm extends React.Component {
             this.props.refreshMap(feature)
             this.cancel()
             this.setState({ loading: false, fileId: null, fileName: null })
-
             feature.set("featureIndex", this.props.features.length++)
-
+            setTimeout(() => {
+                this.props.handleClose()
+            }, 3000);
 
         }).catch((error) => {
             throw Error(error)

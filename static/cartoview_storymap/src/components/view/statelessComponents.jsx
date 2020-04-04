@@ -128,6 +128,9 @@ export class FeatureListComponent extends React.Component {
 
           
             this.setState({ openDeleteDialoge: false, openSnackBar: true, loading: false ,features:newFeatures})
+            setTimeout(() => {
+                this.handleCloseSnackBar()
+            }, 3000);
         })
 
     }
@@ -413,7 +416,7 @@ export class FeatureListComponent extends React.Component {
                     SnackbarContentProps={{
                         'aria-describedby': 'message-id',
                     }}
-                    message={<span id="message-id">"Feature Deleted Successfully"</span>}
+                    message={<span id="message-id">Feature Deleted Successfully</span>}
                 />
                 {!featuresIsLoading && !attachmentIsLoading && features && features.length >
                     0 ?
