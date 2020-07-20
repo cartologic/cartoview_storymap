@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d37b6fe-e106-4763-8796-08f72072c1f0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cartoview_story_map.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cartoview_story_map.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +17,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="2" />
     <option name="recentBranches">
       <RecentBranches>
         <option name="branchesForRepo">
@@ -45,12 +42,6 @@
       </RecentBranches>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="55" />
-    <option name="y" value="6" />
-    <option name="width" value="1215" />
-    <option name="height" value="1016" />
-  </component>
   <component name="ProjectId" id="1dgVHngO6TbyrgeUX9VeWvEwait" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -59,7 +50,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../saudiTerriaMap" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -100,7 +91,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1510561485316</updated>
-      <workItem from="1592846638537" duration="260000" />
+      <workItem from="1592846638537" duration="1049000" />
+      <workItem from="1592895695616" duration="26000" />
+      <workItem from="1592942196121" duration="274000" />
+      <workItem from="1593084177329" duration="15000" />
+      <workItem from="1595256092965" duration="101000" />
     </task>
     <servers />
   </component>
@@ -108,6 +103,10 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="743" y="274" width="424" height="491" key="FileChooserDialogImpl" timestamp="1593084190883">
+      <screen x="0" y="0" width="1920" height="1032" />
+    </state>
+    <state x="743" y="274" width="424" height="491" key="FileChooserDialogImpl/0.0.1920.1032@0.0.1920.1032" timestamp="1593084190883" />
     <state x="449" y="151" width="1022" height="737" key="SettingsEditor" timestamp="1592846656355">
       <screen x="0" y="0" width="1920" height="1032" />
     </state>
@@ -116,10 +115,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/urls.py</url>
-          <line>2</line>
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/utils.py</url>
           <line>77</line>
