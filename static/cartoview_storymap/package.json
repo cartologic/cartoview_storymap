@@ -11,7 +11,7 @@
   "author": "cartologic",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@boundlessgeo/sdk": "^1.0.0",
+    "@boundlessgeo/sdk": "^2.7.5",
     "autosuggest-highlight": "^3.1.0",
     "babel-eslint": "^8.0.1",
     "jquery": "^3.2.1",
